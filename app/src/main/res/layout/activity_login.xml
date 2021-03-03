@@ -15,17 +15,17 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white">
 
-        <!-- Tady bude lottie
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/ActivityLogin_animatedLogo"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            app:lottie_fileName="logoAnimation.json"
+            app:lottie_rawRes="@raw/login_animation"
             app:lottie_autoPlay="true" />
 
-         -->
+
     </FrameLayout>
 
 
@@ -36,7 +36,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="35dp"
         android:text="@string/loginHeader"
-        android:textColor="@color/white"
         android:textAllCaps="true"
         android:textSize="17sp"
         android:textStyle="bold"
@@ -61,8 +60,6 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:background="@color/transparent"
-            android:backgroundTint="@android:color/holo_red_light"
-            android:textColor="@color/white"
             tools:text="@string/e_mailHint"/>
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -6,11 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".SplashScreenActivity">
 
-    <TextView
-        android:id="@+id/textViewTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tohle je splash"
-        tools:layout_editor_absoluteX="180dp"
-        tools:layout_editor_absoluteY="350dp" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/ActivityLogin_animatedLogo"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            app:lottie_rawRes="@raw/splash_animation"
+            app:lottie_autoPlay="true" />
+    </FrameLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
