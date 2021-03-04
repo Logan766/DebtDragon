@@ -8,4 +8,9 @@
     <string name="login_button_text">Přihlásit</string>
     <string name="LoginSuccessful">Přihlášení úspěšné</string>
     <string name="terms_and_conditions"><u>Všeobecnými podmínkami</u></string>
+    <string name="password_not_same">Hesla se neshodují</string>
+    <string name="passwor_must_have">"Heslo musí mít alespoň "</string>
+    <string name="number_of_characters">" znaků"</string>
+    <string name="mail_is_not_in_form">E-mail není ve tvaru nazev@domena.cz</string>
+    <string name="type_in_name">Zadejte jméno</string>
 </resources>
