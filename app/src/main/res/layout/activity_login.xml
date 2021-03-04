@@ -30,7 +30,7 @@
 
 
     <TextView
-        android:id="@+id/ActivityLogin_loginLable"
+        android:id="@+id/tv_LoginActivity_RegisterLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -50,17 +50,19 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="16dp"
-        android:textColorHint="@color/white"
+
+
         android:hint="@string/e_mail"
-        app:layout_constraintTop_toBottomOf="@id/ActivityLogin_loginLable"
+        app:layout_constraintTop_toBottomOf="@id/tv_LoginActivity_RegisterLabel"
         >
-        <EditText
-            android:id="@+id/ActivityLogin_emailInput"
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInput_LoginActivity_EmailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
             android:background="@color/transparent"
-            tools:text="@string/e_mailHint"/>
+            android:inputType="textEmailAddress"
+            tools:text="@string/e_mailHint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -70,37 +72,42 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="16dp"
-        android:textColorHint="@color/white"
         android:hint="@string/password_label"
         app:layout_constraintTop_toBottomOf="@id/ActivityLogin_email"
+
+        app:endIconMode="password_toggle"
         >
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ActivityLogin_passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:background="@color/transparent"
-            android:textColor="@color/white"
+            app:helperTextEnabled="true"
             tools:text="@string/password_hint"/>
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/ActivityLogin_loginButton"
         android:layout_width="match_parent"
         android:layout_height="65dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
+
+        android:textColor="@color/white"
         android:text="@string/login_button_text"
-        android:textColor="@color/common_google_signin_btn_text_dark"
         android:textSize="17sp"
         android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:backgroundTint="#120f38"
+
 
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ActivityLogin_password" />
-
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -108,6 +115,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ActivityLogin_loginButton">
@@ -117,17 +125,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:padding="8dp"
-            android:text="Nemáte účet?"
-            android:textColor="@color/white" />
+            android:text="Nemáte účet?" />
 
         <TextView
-            android:id="@+id/ActivityLogin_register"
+            android:id="@+id/btn_LoginActivity_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:padding="8dp"
             android:text="Registrovat"
-            android:textColor="@color/white"
             android:textStyle="bold"
 
             />
@@ -149,8 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:padding="8dp"
-            android:text="Další možnosti přihlášení"
-            android:textColor="#FF555555" />
+            android:text="Další možnosti přihlášení"/>
     </LinearLayout>
 
 

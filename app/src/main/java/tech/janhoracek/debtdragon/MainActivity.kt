@@ -9,14 +9,15 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.logging.Handler
 
+private lateinit var mAuth: FirebaseAuth
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        mAuth = FirebaseAuth.getInstance()
 
         btMainActivityTestovaci.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
+            mAuth.signOut()
             val intentLoginActivity = Intent(this, LoginActivity::class.java)
             startActivity(intentLoginActivity)
             finish()
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
         btMainActivityTestovaciDarkMode.setOnClickListener{
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+
+        var username = mAuth.currentUser?.displayName
+        tv_username.text = username
 
     }
 }

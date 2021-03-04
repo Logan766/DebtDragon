@@ -7,4 +7,5 @@
     <string name="password_hint">123456</string>
     <string name="login_button_text">Přihlásit</string>
     <string name="LoginSuccessful">Přihlášení úspěšné</string>
+    <string name="terms_and_conditions"><u>Všeobecnými podmínkami</u></string>
 </resources>

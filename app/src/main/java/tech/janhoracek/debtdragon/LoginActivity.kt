@@ -1,10 +1,12 @@
 package tech.janhoracek.debtdragon
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -38,6 +40,18 @@ class LoginActivity : AppCompatActivity() {
 
         btn_google_sign_in.setOnClickListener{
             signIn()
+        }
+
+        btn_LoginActivity_register.setOnClickListener {
+
+        }
+
+        btn_LoginActivity_register.setOnClickListener {
+            btn_LoginActivity_register.setTextColor(ContextCompat.getColor(this, R.color.main));
+            val RegisterActivityIntent = Intent(this, RegisterActivity::class.java)
+            startActivity(RegisterActivityIntent)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            finish()
         }
 
     }
