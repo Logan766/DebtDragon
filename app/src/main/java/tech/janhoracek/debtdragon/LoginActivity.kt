@@ -1,7 +1,6 @@
 package tech.janhoracek.debtdragon
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -42,7 +41,29 @@ class LoginActivity : AppCompatActivity() {
             signIn()
         }
 
-        btn_LoginActivity_register.setOnClickListener {
+        btn_LoginActivity_SignIn.setOnClickListener {
+            val emailInput = textInput_LoginActivity_EmailInput.text.toString()
+            val passwordInput = textInput_LoginActivity_password.text.toString()
+
+            textInputLayout_LoginActivity_password.error = null
+            textInputLayout_LoginActivity_EmailInput.error = null
+
+            Log.d("LOGUJ", "email jest: " + emailInput)
+            Log.d("LOGUJ", "password jest: " + passwordInput)
+
+            if(emailInput.isEmpty()) {
+                Log.d("LOGUJ", "prazdny mail")
+                textInputLayout_LoginActivity_EmailInput.error = "Zadejte e-mail"
+            } else if (!isValidEmail(emailInput)){
+                Log.d("LOGUJ", "neni validni mail")
+                textInputLayout_LoginActivity_EmailInput.error = getString(R.string.mail_is_not_in_form)
+            } else if (passwordInput.isEmpty()){
+                Log.d("LOGUJ", "prazdny heslo")
+                textInputLayout_LoginActivity_password.error = "Heslo je prázdné"
+            } else {
+                Log.d("LOGUJ", "je to ok mail")
+                signInWithEmailPassword(emailInput, passwordInput, mAuth)
+            }
 
         }
 
@@ -102,4 +123,31 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
     }
+
+    private fun signInWithEmailPassword(email: String, password: String, mAuth: FirebaseAuth) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) { // Přihlášení pomocí emailu a hesla proběhlo úspěšně
+                val firebaseUser = task.result!!.user!!
+                Toast.makeText(this, getString(R.string.LoginSuccessful), Toast.LENGTH_SHORT)
+                    .show()
+
+                // Odstraní activity běžící na pozadí ve stacku, pomocí extra předá user_id a email, přejde na hlavní aktivitu a ukončí tuto aktivitu
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.putExtra("user_id", mAuth.currentUser!!.uid)
+                intent.putExtra("email_id", mAuth.currentUser!!.email)
+                startActivity(intent)
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
+
+            } else { // Přihlášení pomocí emailu a hesla neproběhlo úspěšně
+                Toast.makeText(this, task.exception!!.message.toString(), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    //Validace e-mailu
+    private fun isValidEmail(email: String): Boolean =
+        android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

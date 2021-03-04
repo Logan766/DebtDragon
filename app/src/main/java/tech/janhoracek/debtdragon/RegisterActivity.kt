@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -13,6 +15,8 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var nameInput: String
     lateinit var password1Input: String
     lateinit var password2Input: String
+
+    private lateinit var mAuth: FirebaseAuth
 
     val passwordLength: Int = 5
 
@@ -50,7 +54,30 @@ class RegisterActivity : AppCompatActivity() {
             textInputLayout_RegisterActivity_Email.error = null
             textInputLayout_RegisterActivity_Name.error = null
 
-            validateAllInputs(emailInput, password1Input, password2Input, nameInput)
+            if(validateAllInputs(emailInput, password1Input, password2Input, nameInput)) {
+                mAuth = FirebaseAuth.getInstance()
+                mAuth.createUserWithEmailAndPassword(emailInput, password1Input)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            val firebaseUser = task.result!!.user!!
+                            val intent = Intent(this@RegisterActivity,MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.putExtra("user_id", firebaseUser.uid)
+                            intent.putExtra("email_id", mAuth.currentUser?.email)
+                            startActivity(intent)
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                            finish()
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(baseContext, "Chyba",
+                                Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+            } else {
+                Toast.makeText(baseContext, "Neznámá chyba",
+                    Toast.LENGTH_SHORT).show()
+            }
 
         }
 
@@ -67,6 +94,7 @@ class RegisterActivity : AppCompatActivity() {
         return password1 == password2
     }
 
+    //overeni delky hesla
     private fun isPasswordLongEnough(password1: String): Boolean {
         return password1.length >= passwordLength
     }
