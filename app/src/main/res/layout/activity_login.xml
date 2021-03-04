@@ -90,17 +90,17 @@
             tools:text="@string/password_hint"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_LoginActivity_ForgotPassword"
-        android:text="Zapomenuté heslo"
-        android:textStyle="bold"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password"
-        app:layout_constraintEnd_toEndOf="parent"
+    <Button
+        android:id="@+id/btn_LoginActivity_ForgotPassword"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="35dp"
+        android:padding="0dp"
+        android:layout_marginEnd="16dp"
+        android:text="Zapomenuté heslo"
+        android:textAllCaps="false"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password" />
 
 
     <Button
@@ -108,7 +108,8 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
 
@@ -122,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_LoginActivity_ForgotPassword" />
+        app:layout_constraintTop_toBottomOf="@id/btn_LoginActivity_ForgotPassword" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

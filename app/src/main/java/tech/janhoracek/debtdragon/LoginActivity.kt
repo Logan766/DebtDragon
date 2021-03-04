@@ -12,6 +12,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -73,6 +75,14 @@ class LoginActivity : AppCompatActivity() {
             startActivity(RegisterActivityIntent)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
+        }
+
+        btn_LoginActivity_ForgotPassword.setOnClickListener {
+            Firebase.auth.sendPasswordResetEmail("ljpfidroehghkosmup@twzhhq.online").addOnCompleteListener { task ->
+                if(task.isSuccessful) {
+                    Log.d("MEJL", "Odeslano")
+                }
+            }
         }
 
     }

@@ -1,12 +1,15 @@
 package tech.janhoracek.debtdragon
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -30,7 +33,8 @@ class RegisterActivity : AppCompatActivity() {
         
         
         btn_RegisterActvitiy_AlreadyAccount.setOnClickListener {
-            btn_RegisterActvitiy_AlreadyAccount.setTextColor(ContextCompat.getColor(this, R.color.main));
+            btn_RegisterActvitiy_AlreadyAccount.setTextColor(ContextCompat.getColor(this,
+                R.color.main));
             val loginActivityIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginActivityIntent)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -47,8 +51,11 @@ class RegisterActivity : AppCompatActivity() {
             Log.d("VALIK", "Name: " + nameInput)
             Log.d("VALIK", "Password1: " + password1Input)
             Log.d("VALIK", "Password2: " + password2Input)
-            Log.d("VALIK", "Validace hesel stejne: " + isPasswordSame(password1Input, password2Input))
-            Log.d("VALIK", "Delka hesla: " + password1Input.length + "Validace delky: " + isPasswordLongEnough(password1Input))
+            Log.d("VALIK", "Validace hesel stejne: " + isPasswordSame(password1Input,
+                password2Input))
+            Log.d("VALIK",
+                "Delka hesla: " + password1Input.length + "Validace delky: " + isPasswordLongEnough(
+                    password1Input))
 
             textInputLayout_RegisterActivity_Password2.error = null
             textInputLayout_RegisterActivity_Email.error = null
@@ -60,12 +67,15 @@ class RegisterActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             val firebaseUser = task.result!!.user!!
-                            val intent = Intent(this@RegisterActivity,MainActivity::class.java)
+                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+
+                            updateProfileName(nameInput)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             intent.putExtra("user_id", firebaseUser.uid)
                             intent.putExtra("email_id", mAuth.currentUser?.email)
                             startActivity(intent)
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                            overridePendingTransition(android.R.anim.fade_in,
+                                android.R.anim.fade_out)
                             finish()
                         } else {
                             // If sign in fails, display a message to the user.
@@ -126,6 +136,20 @@ class RegisterActivity : AppCompatActivity() {
         } else {
             Log.d("VALIK", "je validni!")
             return true
+        }
+    }
+
+    private fun updateProfileName(name: String) {
+        val user = Firebase.auth.currentUser
+
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(name).build()
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("JMENO", "Nove hotovo")
+            }
+
         }
     }
 }

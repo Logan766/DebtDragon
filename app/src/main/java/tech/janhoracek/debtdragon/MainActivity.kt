@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.logging.Handler
 
 private lateinit var mAuth: FirebaseAuth
+private lateinit var username: String
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,11 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
-        var username = mAuth.currentUser?.displayName
-        tv_username.text = username
+
+        btn_namechanger.setOnClickListener {
+            username = mAuth.currentUser?.displayName.toString()
+            tv_username.text = username
+        }
 
     }
 }
