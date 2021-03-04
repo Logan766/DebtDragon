@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btn_LoginActivity_ForgotPassword.setOnClickListener {
-            Firebase.auth.sendPasswordResetEmail("ljpfidroehghkosmup@twzhhq.online").addOnCompleteListener { task ->
+            Firebase.auth.sendPasswordResetEmail("vmjcdzprjudzamdlwr@niwghx.com").addOnCompleteListener { task ->
                 if(task.isSuccessful) {
                     Log.d("MEJL", "Odeslano")
                 }

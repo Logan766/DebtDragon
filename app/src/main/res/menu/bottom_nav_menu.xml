@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/dashboradFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Přehled" />
+
+    <item
+        android:id="@+id/friendsFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Přátelé" />
+
+    <item
+        android:id="@+id/groupsFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Skupiny" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Profil" />
+</menu>

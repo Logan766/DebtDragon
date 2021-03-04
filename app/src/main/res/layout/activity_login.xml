@@ -92,13 +92,14 @@
 
     <Button
         android:id="@+id/btn_LoginActivity_ForgotPassword"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:padding="0dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif"
+        android:padding="0dp"
         android:text="Zapomenuté heslo"
         android:textAllCaps="false"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password" />
 
