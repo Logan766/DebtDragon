@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friends_nav"
+    app:startDestination="@id/friendslistFragment">
+    <fragment
+        android:id="@+id/friendslistFragment"
+        android:name="tech.janhoracek.debtdragon.FriendslistFragment"
+        android:label="fragment_friendslist"
+        tools:layout="@layout/fragment_friendslist" >
+        <action
+            android:id="@+id/action_friendslistFragment_to_pendingFriendRequestsFragment"
+            app:destination="@id/pendingFriendRequestsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pendingFriendRequestsFragment"
+        android:name="tech.janhoracek.debtdragon.PendingFriendRequestsFragment"
+        android:label="fragment_pending_friend_requests"
+        tools:layout="@layout/fragment_pending_friend_requests" >
+        <action
+            android:id="@+id/action_pendingFriendRequestsFragment_to_friendslistFragment"
+            app:destination="@id/friendslistFragment" />
+    </fragment>
+</navigation>

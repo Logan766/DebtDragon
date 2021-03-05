@@ -104,6 +104,7 @@ class LoginActivity : AppCompatActivity() {
                     // Google Sign In was successful, authenticate with Firebase
                     val account = task.getResult(ApiException::class.java)!!
                     Log.d("SignInWithGoogle", "firebaseAuthWithGoogle:" + account.id)
+                    //TODO Loguj uzivatele jmeno
                     firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: ApiException) {
                     // Google Sign In failed, update UI appropriately

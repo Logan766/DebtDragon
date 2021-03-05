@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_dashborad" />
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="tech.janhoracek.debtdragon.FriendsFragment"
+        android:name="tech.janhoracek.debtdragon.FriendsOverViewFragment"
         android:label="fragment_friends"
-        tools:layout="@layout/fragment_friends" />
+        tools:layout="@layout/fragment_friends_overview" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="tech.janhoracek.debtdragon.StatisticsFragment"
