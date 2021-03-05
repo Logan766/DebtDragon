@@ -9,8 +9,12 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlin.collections.hashMapOf as hashMapOf1
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -20,8 +24,9 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var password2Input: String
 
     private lateinit var mAuth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-    val passwordLength: Int = 5
+    private val passwordLength: Int = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +72,18 @@ class RegisterActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             val firebaseUser = task.result!!.user!!
-                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+
 
                             updateProfileName(nameInput)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra("user_id", firebaseUser.uid)
-                            intent.putExtra("email_id", mAuth.currentUser?.email)
+                            db = Firebase.firestore
+                            Log.d("REGINA", "Registruju")
+                            //createUserInDatabase()
+                            Log.d("REGINA", "Uz ne")
+
+                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                            //intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            //intent.putExtra("user_id", firebaseUser.uid)
+                            //intent.putExtra("email_id", mAuth.currentUser?.email)
                             startActivity(intent)
                             overridePendingTransition(android.R.anim.fade_in,
                                 android.R.anim.fade_out)
@@ -148,8 +159,20 @@ class RegisterActivity : AppCompatActivity() {
         user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("JMENO", "Nove hotovo")
+                createUserInDatabase()
             }
 
         }
+    }
+
+    private fun createUserInDatabase() {
+        val firebaseUser = Firebase.auth.currentUser
+        Log.d("REGINA", "Probiha registrace")
+        val user = HashMap<String, String>()
+        user["name"] = firebaseUser.displayName
+        user["email"] = firebaseUser.email
+        db.collection("Users").document(firebaseUser.uid).set(user)
+            .addOnSuccessListener { Log.d("REGINA", "Uspech") }
+            .addOnFailureListener{Log.d("REGINA", "Nasrat")}
     }
 }
