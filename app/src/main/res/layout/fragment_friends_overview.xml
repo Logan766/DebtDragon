@@ -7,28 +7,34 @@
     android:layout_height="match_parent"
     tools:context=".FriendsOverViewFragment">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout_friendsOverview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:clickable="true"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout_friendsOverview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="Jedna" />
+            android:clickable="true">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="Dva" />
-    </com.google.android.material.tabs.TabLayout>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Jedna" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager_friendsOverview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Dva" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager_friendsOverview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

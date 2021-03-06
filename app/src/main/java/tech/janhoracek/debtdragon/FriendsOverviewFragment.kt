@@ -51,6 +51,8 @@ class FriendsOverViewFragment : Fragment() {
                 //}
             }).attach()
 
+        binding.tabLayoutFriendsOverview.getTabAt(1)?.getOrCreateBadge()?.setNumber(3);
+
 
         return binding.root
     }
