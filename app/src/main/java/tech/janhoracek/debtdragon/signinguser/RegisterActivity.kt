@@ -16,12 +16,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var loginRegisterViewModel: LoginRegisterViewModel
+
 
 
     //////////////////
@@ -48,6 +49,14 @@ class RegisterActivity : AppCompatActivity() {
             this.setLifecycleOwner(this@RegisterActivity)
             this.viewmodel = loginRegisterViewModel
         }
+
+
+        loginRegisterViewModel.dalsi.observe(this, Observer {
+            dalsi -> if(dalsi) {
+            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+            startActivity(intent)
+        }
+        })
 
         //////////////////////////////////////////////////////
         /*

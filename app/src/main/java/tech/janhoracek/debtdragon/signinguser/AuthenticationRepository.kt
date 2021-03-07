@@ -12,7 +12,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import tech.janhoracek.debtdragon.MainActivity
 
-class LoginRepository {
+class AuthenticationRepository {
     private val _userMutableLiveData = MutableLiveData<FirebaseUser>()
     private val mAuth: FirebaseAuth
 

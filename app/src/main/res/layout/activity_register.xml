@@ -65,6 +65,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout_RegisterActivity_Name"
                 app:errorEnabled="true"
+                app:errorText="@{`Please provide a username.`}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -73,7 +74,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_RegisterActivity_NameInput"
-                    tools:text="Jan Novák"
+                    android:text="@={viewmodel.nameContent}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
@@ -83,6 +84,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout_RegisterActivity_Email"
                 app:errorEnabled="true"
+                app:errorText="@{`Please provide a username.`}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -92,7 +94,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_RegisterActivity_EmailInput"
-                    tools:text="@string/e_mailHint"
+                    android:text="@={viewmodel.emailContent}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
@@ -115,7 +117,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_RegisterActivity_Password1"
                     app:helperTextEnabled="true"
-                    tools:text="@string/password_hint"
+                    android:text="@={viewmodel.password1Content}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
@@ -127,6 +129,7 @@
                 android:id="@+id/textInputLayout_RegisterActivity_Password2"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
+                app:errorText="@{`Please provide a username.`}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -137,7 +140,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_RegisterActivity_Password2"
                     app:helperTextEnabled="true"
-                    tools:text="Heslo znovu"
+                    android:text="@={viewmodel.password2Content}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"

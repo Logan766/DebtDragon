@@ -1,27 +1,28 @@
 package tech.janhoracek.debtdragon.signinguser
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import tech.janhoracek.debtdragon.R
 
 class LoginRegisterViewModel : ViewModel() {
-    private var loginRepository: LoginRepository = LoginRepository()
+    public val dalsi = MutableLiveData<Boolean>(false)
+
+    private val formModel = FormModel()
+
+    private var authenticationRepository: AuthenticationRepository = AuthenticationRepository()
     private val userMutableLiveData: MutableLiveData<FirebaseUser> =
-        loginRepository.getUserMutableLiveData()
+        authenticationRepository.getUserMutableLiveData()
+
+
 
     fun register(email: String, password: String) {
-        loginRepository.registerUser(email, password)
+        authenticationRepository.registerUser(email, password)
     }
 
-    val userLiveData: LiveData<FirebaseUser> get() = loginRepository.userLiveData
+    val userLiveData: LiveData<FirebaseUser> get() = authenticationRepository.userLiveData
 
     fun getUserMutableLiveData(): MutableLiveData<FirebaseUser> {
         return userMutableLiveData
@@ -31,7 +32,34 @@ class LoginRegisterViewModel : ViewModel() {
 
     }
 
+    //@Bindable
+    val nameContent = formModel.name
+
+    //@Bindable
+    val emailContent = formModel.email
+
+   // @Bindable
+    val password1Content = formModel.password1
+
+   // @Bindable
+    val password2Content = formModel.password2
+
+   // @Bindable
+    val nameError = formModel.nameError
+
+   // @Bindable
+    val emailError = formModel.emailError
+
+    //@Bindable
+    val passwordError = formModel.passwordError
+
     fun onRegisterClick() {
+        //dalsi.value = true
+        formModel.validateForRegistration()
         Log.d("HOVNO", "Klikas na cudlik")
+
+
     }
+
+
 }
