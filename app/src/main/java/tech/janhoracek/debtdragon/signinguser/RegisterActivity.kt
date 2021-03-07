@@ -1,23 +1,30 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.signinguser
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlin.collections.hashMapOf as hashMapOf1
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
 
+    private lateinit var loginRegisterViewModel: LoginRegisterViewModel
+
+
+    //////////////////
     lateinit var emailInput: String
     lateinit var nameInput: String
     lateinit var password1Input: String
@@ -32,11 +39,32 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        val loginRegisterViewModel = ViewModelProviders.of(this)
+            .get(LoginRegisterViewModel::class.java)
+
+        DataBindingUtil.setContentView<ActivityRegisterBinding>(
+            this, R.layout.activity_register
+        ).apply {
+            this.setLifecycleOwner(this@RegisterActivity)
+            this.viewmodel = loginRegisterViewModel
+        }
+
+        //////////////////////////////////////////////////////
+        /*
+        val loginRegisterViewModel: LoginRegisterViewModel by viewModels()
+        loginRegisterViewModel.getUserMutableLiveData().observe(this, Observer<FirebaseUser>{ user ->
+            if (user != null) {
+                Log.d("MVVM", "Vytvarim usera ve View")
+            }
+        })*/
+        ////////////////////////////////////////////////////////
+
+
         checkBox_RegisterActivity_Terms.setOnCheckedChangeListener { buttonView, isChecked ->
             btn_RegisterActivity_Register.isEnabled = isChecked
         }
-        
-        
+
+
         btn_RegisterActvitiy_AlreadyAccount.setOnClickListener {
             btn_RegisterActvitiy_AlreadyAccount.setTextColor(ContextCompat.getColor(this,
                 R.color.main));
@@ -46,7 +74,27 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
+
         btn_RegisterActivity_Register.setOnClickListener {
+            emailInput = textInput_RegisterActivity_EmailInput.text.toString()
+            nameInput = textInput_RegisterActivity_NameInput.text.toString()
+            password1Input = textInput_RegisterActivity_Password1.text.toString()
+            password2Input = textInput_RegisterActivity_Password2.text.toString()
+
+            textInputLayout_RegisterActivity_Password2.error = null
+            textInputLayout_RegisterActivity_Email.error = null
+            textInputLayout_RegisterActivity_Name.error = null
+
+            Log.d("HOVNO", "Mackas cudlik old school")
+
+            /*
+            if(validateAllInputs(emailInput, password1Input, password2Input, nameInput)) {
+                loginRegisterViewModel.register(emailInput, password1Input)
+            }*/
+
+
+
+        /*
             emailInput = textInput_RegisterActivity_EmailInput.text.toString()
             nameInput = textInput_RegisterActivity_NameInput.text.toString()
             password1Input = textInput_RegisterActivity_Password1.text.toString()
@@ -99,21 +147,20 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, "Neznámá chyba",
                     Toast.LENGTH_SHORT).show()
             }
-
+*/
         }
 
 
-
-
-
     }
-
 
 
     //overeni rovnosti hesel
     private fun isPasswordSame(password1: String, password2: String): Boolean {
         return password1 == password2
     }
+
+
+
 
     //overeni delky hesla
     private fun isPasswordLongEnough(password1: String): Boolean {
@@ -125,23 +172,29 @@ class RegisterActivity : AppCompatActivity() {
         android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
     //Validace poli uzivatele
-    private fun validateAllInputs(email: String, password1: String, password2: String, name: String): Boolean {
-        if(name.isEmpty()) {
+    private fun validateAllInputs(
+        email: String,
+        password1: String,
+        password2: String,
+        name: String
+    ): Boolean {
+        if (name.isEmpty()) {
             Log.d("VALIK", "Jmeno je prazdne")
             textInputLayout_RegisterActivity_Name.error = getString(R.string.type_in_name)
             return false
-        }else if (!isValidEmail(email)){
+        } else if (!isValidEmail(email)) {
             Log.d("VALIK", "neni validni mail")
             Log.d("VALIK", "mail jest: $email")
             Log.d("VALIK", "Vraci: " + android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
             textInputLayout_RegisterActivity_Email.error = getString(R.string.mail_is_not_in_form)
             return false
         } else if (!isPasswordLongEnough(password1)) {
-            textInputLayout_RegisterActivity_Password2.error = getString(R.string.passwor_must_have) + passwordLength + getString(
-                R.string.number_of_characters)
+            textInputLayout_RegisterActivity_Password2.error =
+                getString(R.string.passwor_must_have) + passwordLength + getString(
+                    R.string.number_of_characters)
             Log.d("VALIK", "hesla jsou kratky")
             return false
-        } else if (!isPasswordSame(password1, password2)){
+        } else if (!isPasswordSame(password1, password2)) {
             textInputLayout_RegisterActivity_Password2.error = getString(R.string.password_not_same)
             return false
         } else {
@@ -149,6 +202,7 @@ class RegisterActivity : AppCompatActivity() {
             return true
         }
     }
+
 
     private fun updateProfileName(name: String) {
         val user = Firebase.auth.currentUser
@@ -173,6 +227,6 @@ class RegisterActivity : AppCompatActivity() {
         user["email"] = firebaseUser.email
         db.collection("Users").document(firebaseUser.uid).set(user)
             .addOnSuccessListener { Log.d("REGINA", "Uspech") }
-            .addOnFailureListener{Log.d("REGINA", "Nasrat")}
+            .addOnFailureListener { Log.d("REGINA", "Nasrat") }
     }
 }

@@ -1,10 +1,11 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.signinguser
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -15,6 +16,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import tech.janhoracek.debtdragon.MainActivity
+import tech.janhoracek.debtdragon.R
 
 
 class LoginActivity : AppCompatActivity() {

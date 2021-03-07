@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.signinguser
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
+import tech.janhoracek.debtdragon.MainActivity
+import tech.janhoracek.debtdragon.R
 
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
@@ -29,7 +31,6 @@ class SplashScreenActivity : AppCompatActivity() {
      */
     private fun checkIfAlreadyLoggedIn() {
         mAuth = FirebaseAuth.getInstance()
-
         val user = mAuth.currentUser
 
         Handler(Looper.getMainLooper()).postDelayed({
