@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.signinguser
 
 import android.util.Log
 import androidx.databinding.Bindable
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,17 +36,22 @@ class LoginRegisterViewModel : ViewModel() {
     }
 
 
+
     val nameContent = formModel.name
     val emailContent = formModel.email
     val password1Content = formModel.password1
     val password2Content = formModel.password2
-    val nameError = formModel.nameError
-    val emailError = formModel.emailError
-    val passwordError = formModel.passwordError
+    var nameError = formModel.nameError
+    var emailError = formModel.emailError
+    var passwordErrorLength = formModel.passwordErrorLength
+    var passwordErrorSimilarity = formModel.passwordErrorSimilarity
+
 
     fun onRegisterClick() {
         //dalsi.value = true
-        formModel.validForRegistration()
+        if(formModel.validForRegistration()) {
+            Log.d("HOVNO1", "Validni")
+        }
         Log.d("HOVNO", "Klikas na cudlik")
 
     }
