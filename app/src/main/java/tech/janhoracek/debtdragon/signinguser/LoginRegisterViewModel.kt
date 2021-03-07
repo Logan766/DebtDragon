@@ -12,6 +12,8 @@ class LoginRegisterViewModel : ViewModel() {
 
     private val formModel = FormModel()
 
+    val error = "Error"
+
     private var authenticationRepository: AuthenticationRepository = AuthenticationRepository()
     private val userMutableLiveData: MutableLiveData<FirebaseUser> =
         authenticationRepository.getUserMutableLiveData()
@@ -32,32 +34,19 @@ class LoginRegisterViewModel : ViewModel() {
 
     }
 
-    //@Bindable
+
     val nameContent = formModel.name
-
-    //@Bindable
     val emailContent = formModel.email
-
-   // @Bindable
     val password1Content = formModel.password1
-
-   // @Bindable
     val password2Content = formModel.password2
-
-   // @Bindable
     val nameError = formModel.nameError
-
-   // @Bindable
     val emailError = formModel.emailError
-
-    //@Bindable
     val passwordError = formModel.passwordError
 
     fun onRegisterClick() {
         //dalsi.value = true
-        formModel.validateForRegistration()
+        formModel.validForRegistration()
         Log.d("HOVNO", "Klikas na cudlik")
-
 
     }
 
