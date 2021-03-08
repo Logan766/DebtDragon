@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.signinguser
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,10 +23,6 @@ import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
 
-
-
-
-    //////////////////
     lateinit var emailInput: String
     lateinit var nameInput: String
     lateinit var password1Input: String
@@ -58,15 +55,21 @@ class RegisterActivity : AppCompatActivity() {
         }
         })
 
+        loginRegisterViewModel.registerResult.observe(this, Observer {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+        })
+
         //////////////////////////////////////////////////////
         /*
-        val loginRegisterViewModel: LoginRegisterViewModel by viewModels()
+        //val loginRegisterViewModel: LoginRegisterViewModel by viewModels()
         loginRegisterViewModel.getUserMutableLiveData().observe(this, Observer<FirebaseUser>{ user ->
             if (user != null) {
                 Log.d("MVVM", "Vytvarim usera ve View")
             }
-        })*/
+        })
         ////////////////////////////////////////////////////////
+
+         */
 
 
         checkBox_RegisterActivity_Terms.setOnCheckedChangeListener { buttonView, isChecked ->

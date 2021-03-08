@@ -10,10 +10,10 @@ class FormModel {
 
     private val passwordLength = 5
 
-    val name = MutableLiveData<String?>("Jmeno")
-    val email = MutableLiveData<String>("Email")
-    val password1 = MutableLiveData<String>("Heslo1")
-    val password2 = MutableLiveData<String>("Heslo2")
+    val name = MutableLiveData<String?>()
+    val email = MutableLiveData<String>()
+    val password1 = MutableLiveData<String>()
+    val password2 = MutableLiveData<String>()
 
     private val _nameError = MutableLiveData<String>()
     val nameError: LiveData<String> get() = _nameError
@@ -42,7 +42,6 @@ class FormModel {
         val lengthPasswordValidation = validatePasswordLength()
 
         return nameValidation && emailValidation && samePasswordValidation && lengthPasswordValidation
-        //return validateName() && validateEmail() && validateSamePassword() && validatePasswordLength()
     }
 
     private fun validateName(): Boolean {
