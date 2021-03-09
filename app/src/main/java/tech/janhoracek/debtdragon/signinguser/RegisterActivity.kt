@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,28 +33,32 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
-
-        val loginRegisterViewModel = ViewModelProviders.of(this)
-            .get(LoginRegisterViewModel::class.java)
+        //setContentView(R.layout.activity_register
+        val registerViewModel = ViewModelProviders.of(this)
+            .get(RegisterViewModel::class.java)
 
         DataBindingUtil.setContentView<ActivityRegisterBinding>(
             this, R.layout.activity_register
         ).apply {
             this.setLifecycleOwner(this@RegisterActivity)
-            this.viewmodel = loginRegisterViewModel
+            this.viewmodel = registerViewModel
         }
 
-
-        loginRegisterViewModel.dalsi.observe(this, Observer {
+        /*
+        registerViewModel.dalsi.observe(this, Observer {
             dalsi -> if(dalsi) {
             val intent = Intent(this@RegisterActivity, MainActivity::class.java)
             startActivity(intent)
         }
         })
+        */
 
-        loginRegisterViewModel.registerResult.observe(this, Observer {
-            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+        registerViewModel.registerResult.observe(this, Observer { result ->
+            Toast.makeText(this, result, Toast.LENGTH_LONG).show()
+            if (result == "Uspech") {
+                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                startActivity(intent)
+            }
         })
 
         //////////////////////////////////////////////////////
@@ -86,7 +88,7 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
-
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         btn_RegisterActivity_Register.setOnClickListener {
             emailInput = textInput_RegisterActivity_EmailInput.text.toString()
             nameInput = textInput_RegisterActivity_NameInput.text.toString()
@@ -105,61 +107,60 @@ class RegisterActivity : AppCompatActivity() {
             }*/
 
 
+            /*
+                emailInput = textInput_RegisterActivity_EmailInput.text.toString()
+                nameInput = textInput_RegisterActivity_NameInput.text.toString()
+                password1Input = textInput_RegisterActivity_Password1.text.toString()
+                password2Input = textInput_RegisterActivity_Password2.text.toString()
+                Log.d("VALIK", "Klikas na cudlik")
+                Log.d("VALIK", "Email: " + emailInput)
+                Log.d("VALIK", "Name: " + nameInput)
+                Log.d("VALIK", "Password1: " + password1Input)
+                Log.d("VALIK", "Password2: " + password2Input)
+                Log.d("VALIK", "Validace hesel stejne: " + isPasswordSame(password1Input,
+                    password2Input))
+                Log.d("VALIK",
+                    "Delka hesla: " + password1Input.length + "Validace delky: " + isPasswordLongEnough(
+                        password1Input))
 
-        /*
-            emailInput = textInput_RegisterActivity_EmailInput.text.toString()
-            nameInput = textInput_RegisterActivity_NameInput.text.toString()
-            password1Input = textInput_RegisterActivity_Password1.text.toString()
-            password2Input = textInput_RegisterActivity_Password2.text.toString()
-            Log.d("VALIK", "Klikas na cudlik")
-            Log.d("VALIK", "Email: " + emailInput)
-            Log.d("VALIK", "Name: " + nameInput)
-            Log.d("VALIK", "Password1: " + password1Input)
-            Log.d("VALIK", "Password2: " + password2Input)
-            Log.d("VALIK", "Validace hesel stejne: " + isPasswordSame(password1Input,
-                password2Input))
-            Log.d("VALIK",
-                "Delka hesla: " + password1Input.length + "Validace delky: " + isPasswordLongEnough(
-                    password1Input))
+                textInputLayout_RegisterActivity_Password2.error = null
+                textInputLayout_RegisterActivity_Email.error = null
+                textInputLayout_RegisterActivity_Name.error = null
 
-            textInputLayout_RegisterActivity_Password2.error = null
-            textInputLayout_RegisterActivity_Email.error = null
-            textInputLayout_RegisterActivity_Name.error = null
-
-            if(validateAllInputs(emailInput, password1Input, password2Input, nameInput)) {
-                mAuth = FirebaseAuth.getInstance()
-                mAuth.createUserWithEmailAndPassword(emailInput, password1Input)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            val firebaseUser = task.result!!.user!!
+                if(validateAllInputs(emailInput, password1Input, password2Input, nameInput)) {
+                    mAuth = FirebaseAuth.getInstance()
+                    mAuth.createUserWithEmailAndPassword(emailInput, password1Input)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                val firebaseUser = task.result!!.user!!
 
 
-                            updateProfileName(nameInput)
-                            db = Firebase.firestore
-                            Log.d("REGINA", "Registruju")
-                            //createUserInDatabase()
-                            Log.d("REGINA", "Uz ne")
+                                updateProfileName(nameInput)
+                                db = Firebase.firestore
+                                Log.d("REGINA", "Registruju")
+                                //createUserInDatabase()
+                                Log.d("REGINA", "Uz ne")
 
-                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
-                            //intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            //intent.putExtra("user_id", firebaseUser.uid)
-                            //intent.putExtra("email_id", mAuth.currentUser?.email)
-                            startActivity(intent)
-                            overridePendingTransition(android.R.anim.fade_in,
-                                android.R.anim.fade_out)
-                            finish()
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(baseContext, "Chyba",
-                                Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                                //intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                //intent.putExtra("user_id", firebaseUser.uid)
+                                //intent.putExtra("email_id", mAuth.currentUser?.email)
+                                startActivity(intent)
+                                overridePendingTransition(android.R.anim.fade_in,
+                                    android.R.anim.fade_out)
+                                finish()
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(baseContext, "Chyba",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+
                         }
-
-                    }
-            } else {
-                Toast.makeText(baseContext, "Neznámá chyba",
-                    Toast.LENGTH_SHORT).show()
-            }
-*/
+                } else {
+                    Toast.makeText(baseContext, "Neznámá chyba",
+                        Toast.LENGTH_SHORT).show()
+                }
+    */
         }
 
 
@@ -170,8 +171,6 @@ class RegisterActivity : AppCompatActivity() {
     private fun isPasswordSame(password1: String, password2: String): Boolean {
         return password1 == password2
     }
-
-
 
 
     //overeni delky hesla

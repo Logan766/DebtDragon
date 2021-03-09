@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="tech.janhoracek.debtdragon.signinguser.LoginRegisterViewModel" />
+            type="tech.janhoracek.debtdragon.signinguser.RegisterViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
