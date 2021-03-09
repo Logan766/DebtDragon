@@ -15,6 +15,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
@@ -53,13 +55,26 @@ class RegisterActivity : AppCompatActivity() {
         })
         */
 
-        registerViewModel.registerResult.observe(this, Observer { result ->
+        /*registerViewModel.registerResult.observe(this, Observer { result ->
             Toast.makeText(this, result, Toast.LENGTH_LONG).show()
             if (result == "Uspech") {
                 val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                 startActivity(intent)
             }
+        })*/
+
+        registerViewModel.registerResult2.observe(this, Observer { result ->
+
+            if (result == "Registrace úspěšná") {
+                Toast.makeText(this, result, Toast.LENGTH_LONG).show()
+                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, result, Toast.LENGTH_LONG).show()
+            }
         })
+
+
 
         //////////////////////////////////////////////////////
         /*

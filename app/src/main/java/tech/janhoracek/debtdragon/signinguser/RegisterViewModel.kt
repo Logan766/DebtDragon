@@ -1,21 +1,21 @@
 package tech.janhoracek.debtdragon.signinguser
 
-import android.provider.Settings.Global.getString
+import android.R.attr.password
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseUser
-import tech.janhoracek.debtdragon.ApplicationRepository
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthResult
 import tech.janhoracek.debtdragon.AuthRepository
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 
+
 class RegisterViewModel : ViewModel() {
 
-    private val passwordLength = 5
-
-    val authRepository = AuthRepository()
+    private val passwordLength = 6
+    private val authRepository: AuthRepository = AuthRepository
 
     val nameContent = MutableLiveData<String>("")
     val emailContent = MutableLiveData<String>("")
@@ -40,19 +40,12 @@ class RegisterViewModel : ViewModel() {
     val dalsi = MutableLiveData<Boolean>(false)
     ///
 
+    var registerResult2 = authRepository.registerResult
+
 
     fun onRegisterClick() {
-        //dalsi.value = true
         if (validForRegistration()) {
-            authRepository.registerUser(emailContent.value!!,password1Content.value!!).addOnCompleteListener { task ->
-                if(task.isSuccessful) {
-                    Log.d("REBORN", "Povedlo se")
-                    registerResult.value = "Uspech"
-                } else {
-                    Log.d("REBORN", "Oh no")
-                    registerResult.value = "Neuspech"
-                }
-            }
+            authRepository.registerUser(nameContent.value!!,emailContent.value!!,password1Content.value!!)
         }
     }
 
@@ -95,7 +88,9 @@ class RegisterViewModel : ViewModel() {
 
     private fun validatePasswordLength(): Boolean {
         return if (!(password1Content.value?.length!! >= passwordLength)) {
-            _passwordErrorLength.value = localized(R.string.passwor_must_have) + passwordLength + localized(R.string.number_of_characters)
+            _passwordErrorLength.value =
+                localized(R.string.passwor_must_have) + passwordLength + localized(
+                    R.string.number_of_characters)
             false
         } else {
             _passwordErrorLength.value = ""
