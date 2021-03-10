@@ -1,21 +1,22 @@
 package tech.janhoracek.debtdragon.signinguser
 
-import android.R.attr.password
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
-import tech.janhoracek.debtdragon.AuthRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 
 
-class RegisterViewModel : ViewModel() {
+
+class RegisterViewModel() : ViewModel() {
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     private val passwordLength = 6
-    private val authRepository: AuthRepository = AuthRepository
 
     val nameContent = MutableLiveData<String>("")
     val emailContent = MutableLiveData<String>("")
@@ -34,29 +35,29 @@ class RegisterViewModel : ViewModel() {
     private val _passwordErrorSimilarity = MutableLiveData<String>()
     val passwordErrorSimilarity: LiveData<String> get() = _passwordErrorSimilarity
 
-    ////
-    var registerResult = MutableLiveData<String>("")
+    private val _registerResult = MutableLiveData<String>()
+    val registerResult: LiveData<String> get() = _registerResult
 
-    val dalsi = MutableLiveData<Boolean>(false)
-    ///
-
-    var registerResult2 = authRepository.registerResult
+    //var registerResult2 = authRepository.registerResult
 
 
     fun onRegisterClick() {
         if (validForRegistration()) {
-            authRepository.registerUser(nameContent.value!!,emailContent.value!!,password1Content.value!!)
+            //authRepository.registerUser(nameContent.value!!,emailContent.value!!,password1Content.value!!)
+            auth.createUserWithEmailAndPassword(emailContent.value, password1Content.value).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    createUser(auth.currentUser.uid, nameContent.value!!, emailContent.value!!)
+                    Log.d("TIGER", "Success creating user in Auth")
+                } else {
+                    _registerResult.value = task.exception!!.message!!.toString()
+                    Log.d("TIGER", task.exception!!.message.toString())
+                }
+            }
         }
+
     }
 
-    fun validForRegistration(): Boolean {
-        Log.d("HOVNO", "Jmeno: " + nameContent.value)
-        Log.d("HOVNO", "Email: " + emailContent.value)
-        Log.d("HOVNO", "Heslo1: " + password1Content.value)
-        Log.d("HOVNO", "Heslo2: " + password2Content.value)
-        Log.d("HOVNO", "Error name: " + nameError)
-        Log.d("HOVNO", "Error email " + emailError)
-        Log.d("HOVNO", "Error password: " + passwordErrorLength)
+    private fun validForRegistration(): Boolean {
         val nameValidation = validateName()
         val emailValidation = validateEmail()
         val samePasswordValidation = validateSamePassword()
@@ -76,7 +77,6 @@ class RegisterViewModel : ViewModel() {
     }
 
     private fun validateEmail(): Boolean {
-        Log.d("HOVNO1", "Email je " + emailContent.value)
         return if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailContent.value).matches()) {
             _emailError.value = localized(R.string.mail_is_not_in_form)
             false
@@ -107,6 +107,26 @@ class RegisterViewModel : ViewModel() {
             true
         }
     }
+
+    private fun createUser(uid: String, name: String, email: String) {
+        val user = HashMap<String, String>()
+        user["name"] = name
+        user["email"] = email
+        db.collection("Users").document(uid).set(user)
+            .addOnSuccessListener {
+                //_registerResult.value = context.getString(R.string.registration_succesful)
+                _registerResult.value = localized(R.string.registration_succesful)
+                Log.d("TIGER", "Success creating user in database")
+            }
+            .addOnFailureListener {
+                //_registerResult.value = "Registrace neúspěšná"
+                _registerResult.value = localized(R.string.registration_failed)
+                auth.currentUser.delete()
+                Log.d("TIGER", "Failure creating user in database")
+            }
+    }
+
+
 
 
 }

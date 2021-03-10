@@ -87,7 +87,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun signIn() {

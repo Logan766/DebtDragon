@@ -15,4 +15,6 @@
     <string name="type_in_name">Zadejte jméno</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="registration_succesful">Registrace úspěšná</string>
+    <string name="registration_failed">Registrace neúspěšná</string>
 </resources>
