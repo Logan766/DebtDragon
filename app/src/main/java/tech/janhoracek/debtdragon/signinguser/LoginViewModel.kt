@@ -1,16 +1,30 @@
 package tech.janhoracek.debtdragon.signinguser
 
-import android.content.Intent
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
+import java.io.ByteArrayOutputStream
 
 class LoginViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     val emailContent = MutableLiveData<String>("")
     val passwordContent = MutableLiveData<String>("")
@@ -37,11 +51,9 @@ class LoginViewModel : ViewModel() {
     }
 
 
-
     private fun validToLogin() : Boolean {
         val emailValidation = validateEmail()
         val passwordValidation = validatePassword()
-
         return emailValidation && passwordValidation
     }
 
@@ -78,7 +90,62 @@ class LoginViewModel : ViewModel() {
         }
     }*/
 
+    fun firebaseAuthWithGoogle(idToken : String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                auth.signInWithCredential(credential).await()
+            } catch (e: FirebaseAuthException) {
+                _loginResult.value = e.message.toString()
+                return@launch
+            }
 
+            try {
+                saveUserProfilePhotoFromGoogleAuth().await()
+            } catch (e: StorageException) {
+                _loginResult.value = e.message.toString()
+                auth.currentUser.delete()
+                return@launch
+            }
+
+            try {
+                createUserInDatabase().await()
+            } catch (e: FirebaseFirestoreException) {
+                _loginResult.value = e.message.toString()
+                auth.currentUser.delete()
+                return@launch
+            }
+            _loginResult.value = localized(R.string.log_in_successful)
+        }
+
+
+    }
+
+    private fun createUserInDatabase(): Task<Void> {
+        val user = HashMap<String, String>()
+        user["name"] = auth.currentUser.displayName
+        user["email"] = auth.currentUser.email
+        return db.collection("Users").document(auth.currentUser.uid).set(user)
+    }
+
+    private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
+        var userImageURL = auth.currentUser.photoUrl.toString()
+        var storageRef = storage.reference
+        var photoRef = storageRef.child("images/profile.jpg")
+
+        val picture = Picasso.get().load(userImageURL).get()
+        val baos = ByteArrayOutputStream()
+        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        return photoRef.putBytes(data)
+        /*photoRef.putBytes(data).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("OBRAZEK", "Uspesne nahrano")
+            } else {
+                Log.d("OBRAZEK", it.exception!!.message.toString())
+            }
+        }*/
+    }
 
 
 }

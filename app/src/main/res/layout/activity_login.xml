@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.signinguser.LoginViewModel" />
@@ -13,6 +14,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".signinguser.LoginActivity">
+
+        <FrameLayout
+            android:id="@+id/loadingCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/red"
+            android:clickable="false"
+            android:visibility="gone"
+            android:backgroundTintMode="screen"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/ActivityLogin_header_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/LoadingLogo"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="6dp"
+                android:scaleType="fitCenter"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/splash_animation" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/ActivityLogin_header_image"
@@ -124,9 +152,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="#120f38"
-            android:onClick="@{() -> viewmodel.onLoginClick()}"
-
             android:gravity="center"
+
+            android:onClick="@{() -> viewmodel.onLoginClick()}"
             android:text="@string/login_button_text"
             android:textColor="@color/white"
             android:textSize="17sp"
