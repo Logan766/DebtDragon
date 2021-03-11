@@ -17,4 +17,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="registration_succesful">Registrace úspěšná</string>
     <string name="registration_failed">Registrace neúspěšná</string>
+    <string name="mail_cannot_be_empty">E-mail nemůže být prázdný</string>
+    <string name="password_cannot_be_empty">Heslo nemůže být prázdné</string>
+    <string name="log_in_successful">Přihlášení úspěšné</string>
 </resources>

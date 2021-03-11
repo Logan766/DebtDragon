@@ -1,187 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".signinguser.LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
-        android:id="@+id/ActivityLogin_header_image"
+    <data>
+        <variable
+            name="viewmodel"
+            type="tech.janhoracek.debtdragon.signinguser.LoginViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tv_LoginActivity_RegisterLabel"
-        android:background="@color/white">
+        android:layout_height="match_parent"
+        tools:context=".signinguser.LoginActivity">
 
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/ActivityLogin_animatedLogo"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            app:lottie_rawRes="@raw/login_animation"
-            app:lottie_autoPlay="true" />
-
-
-    </FrameLayout>
-
-
-    <TextView
-        android:id="@+id/tv_LoginActivity_RegisterLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:text="@string/loginHeader"
-        android:textAllCaps="true"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ActivityLogin_header_image" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout_LoginActivity_EmailInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="16dp"
-        app:errorEnabled="true"
-
-        android:hint="@string/e_mail"
-        app:layout_constraintTop_toBottomOf="@id/tv_LoginActivity_RegisterLabel"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_LoginActivity_EmailInput"
+        <FrameLayout
+            android:id="@+id/ActivityLogin_header_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:inputType="textEmailAddress"
-            tools:text="@string/e_mailHint" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout_LoginActivity_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/password_label"
-        app:errorEnabled="true"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout_LoginActivity_EmailInput"
-
-        app:endIconMode="password_toggle"
-        >
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_LoginActivity_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:background="@color/transparent"
-            app:helperTextEnabled="true"
-            tools:text="@string/password_hint"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_LoginActivity_ForgotPassword"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif"
-        android:padding="0dp"
-        android:text="Zapomenuté heslo"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password" />
+            android:layout_height="200dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/tv_LoginActivity_RegisterLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-    <Button
-        android:id="@+id/btn_LoginActivity_SignIn"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginStart="16dp"
-
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-
-        android:textColor="@color/white"
-        android:text="@string/login_button_text"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:backgroundTint="#120f38"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ActivityLogin_animatedLogo"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/login_animation" />
 
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_LoginActivity_ForgotPassword" />
+        </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_LoginActivity_SignIn">
 
         <TextView
+            android:id="@+id/tv_LoginActivity_RegisterLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="8dp"
-            android:text="Nemáte účet?" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:text="@string/loginHeader"
+            android:textAllCaps="true"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ActivityLogin_header_image" />
 
-        <TextView
-            android:id="@+id/btn_LoginActivity_register"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_LoginActivity_EmailInput"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="8dp"
-            android:text="Registrovat"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/e_mail"
+
+            app:errorEnabled="true"
+            app:errorText="@{viewmodel.emailError}"
+            app:layout_constraintTop_toBottomOf="@id/tv_LoginActivity_RegisterLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_LoginActivity_EmailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:inputType="textEmailAddress"
+                android:text="@={viewmodel.emailContent}"
+                tools:text="@string/e_mailHint" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_LoginActivity_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/password_label"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            app:errorText="@{viewmodel.passwordError}"
+
+            app:layout_constraintTop_toBottomOf="@id/textInputLayout_LoginActivity_EmailInput">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_LoginActivity_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:inputType="textPassword"
+                android:text="@={viewmodel.passwordContent}"
+                app:helperTextEnabled="true"
+                tools:text="@string/password_hint" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_LoginActivity_ForgotPassword"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif"
+            android:padding="0dp"
+            android:text="Zapomenuté heslo"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password" />
+
+
+        <Button
+            android:id="@+id/btn_LoginActivity_SignIn"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginStart="16dp"
+
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#120f38"
+            android:onClick="@{() -> viewmodel.onLoginClick()}"
+
+            android:gravity="center"
+            android:text="@string/login_button_text"
+            android:textColor="@color/white"
+            android:textSize="17sp"
             android:textStyle="bold"
 
-            />
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearLayoutSocials"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_LoginActivity_ForgotPassword" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_LoginActivity_SignIn">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Nemáte účet?" />
+
+            <TextView
+                android:id="@+id/btn_LoginActivity_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Registrovat"
+                android:textStyle="bold"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutSocials"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout">
 
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Další možnosti přihlášení" />
+        </LinearLayout>
+
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_google_sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:padding="8dp"
-            android:text="Další možnosti přihlášení"/>
-    </LinearLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutSocials" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_google_sign_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSocials" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

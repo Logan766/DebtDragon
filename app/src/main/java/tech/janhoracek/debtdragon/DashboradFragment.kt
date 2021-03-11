@@ -55,7 +55,9 @@ class DashboradFragment : Fragment() {
             mAuth.signOut()
             val intentLoginActivity = Intent(activity, LoginActivity::class.java)
             startActivity(intentLoginActivity)
-
+            if(activity != null) {
+               requireActivity().finish()
+            }
         }
     }
 
