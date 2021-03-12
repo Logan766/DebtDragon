@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_friends_overview" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="tech.janhoracek.debtdragon.StatisticsFragment"
+        android:name="tech.janhoracek.debtdragon.profile.ProfileFragment"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_profile" />
     <fragment

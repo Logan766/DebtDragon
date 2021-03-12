@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon.signinguser
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -17,6 +18,7 @@ import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 import java.io.ByteArrayOutputStream
@@ -37,6 +39,9 @@ class LoginViewModel : ViewModel() {
 
     private val _loginResult = MutableLiveData<String>()
     val loginResult: LiveData<String> get() = _loginResult
+
+    private val _status = MutableLiveData<String>()
+    val status: LiveData<String> get() = _status
 
     fun onLoginClick() {
         if(validToLogin()) {
@@ -80,74 +85,74 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    /*private fun signInWithEmailPassword() {
-        auth.signInWithEmailAndPassword(emailContent.value, passwordContent.value).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                _loginResult.value = localized(R.string.log_in_successful)
-            } else {
-                _loginResult.value = task.exception!!.message!!.toString()
-            }
-        }
-    }*/
-
-    fun firebaseAuthWithGoogle(idToken : String) {
+    fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        GlobalScope.launch(Dispatchers.IO) {
+        Log.d("LADIME", "Jdeme prihlasovat")
+        val job = GlobalScope.launch(Dispatchers.IO) {
             try {
+                Log.d("LADIME", "Ted se prihlasuju pres google")
                 auth.signInWithCredential(credential).await()
             } catch (e: FirebaseAuthException) {
-                _loginResult.value = e.message.toString()
+                Log.d("LADIME", "Google spadnul")
+                _loginResult.postValue(e.message)
+                return@launch
+            }
+
+            var docRef = db.collection("Users").document(auth.currentUser.uid)
+            val doesExists = docRef.get().await()
+            if (doesExists.exists()) {
+                Log.d("LADIME", "Skipuj vsechno")
+                _loginResult.postValue(localized(R.string.log_in_successful))
                 return@launch
             }
 
             try {
                 saveUserProfilePhotoFromGoogleAuth().await()
+                Log.d("LADIME", "Ted nahravam obrazek")
             } catch (e: StorageException) {
-                _loginResult.value = e.message.toString()
+                Log.d("LADIME", "Obrazek spadnul")
+                //Toast.makeText(applicationContext, e.message.toString(), Toast.LENGTH_LONG).show()
                 auth.currentUser.delete()
+                _loginResult.postValue(e.message)
                 return@launch
             }
 
             try {
                 createUserInDatabase().await()
+                Log.d("LADIME", "Ted se vyvarim zaznam v databazi")
             } catch (e: FirebaseFirestoreException) {
-                _loginResult.value = e.message.toString()
+                Log.d("LADIME", "Databaze spadla")
+                _loginResult.postValue(e.message)
                 auth.currentUser.delete()
                 return@launch
             }
-            _loginResult.value = localized(R.string.log_in_successful)
+            Log.d("LADIME", "Probehlo to")
+            _loginResult.postValue(localized(R.string.log_in_successful))
         }
 
+        GlobalScope.launch(Dispatchers.Main) {
+            job.join()
+            Log.d("LADIME", "jobDone")
+        }
 
     }
 
-    private fun createUserInDatabase(): Task<Void> {
+    suspend private fun createUserInDatabase(): Task<Void> {
         val user = HashMap<String, String>()
         user["name"] = auth.currentUser.displayName
         user["email"] = auth.currentUser.email
         return db.collection("Users").document(auth.currentUser.uid).set(user)
     }
 
-    private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
+    suspend private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
         var userImageURL = auth.currentUser.photoUrl.toString()
         var storageRef = storage.reference
-        Log.d("LADIME", "UID k obrazku jest: " + auth.currentUser.uid)
-        var photoRef = storageRef.child("images").child(auth.currentUser.uid).child("profile.jpg")
-        Log.d("LADIME", "Cesta teda jest: " + photoRef)
-        //var photoRef = storageRef.child("images/" + auth.currentUser.uid + "/profile.jpg")
-
+        var photoRef = storageRef.child("images/" + auth.currentUser.uid + "/profile.jpg")
         val picture = Picasso.get().load(userImageURL).get()
         val baos = ByteArrayOutputStream()
         picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
         return photoRef.putBytes(data)
-        /*photoRef.putBytes(data).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Log.d("OBRAZEK", "Uspesne nahrano")
-            } else {
-                Log.d("OBRAZEK", it.exception!!.message.toString())
-            }
-        }*/
     }
 
 

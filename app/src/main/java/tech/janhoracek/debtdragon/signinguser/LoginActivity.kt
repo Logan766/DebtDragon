@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
@@ -48,6 +49,7 @@ import tech.janhoracek.debtdragon.databinding.ActivityLoginBinding
 import tech.janhoracek.debtdragon.localized
 import java.io.ByteArrayOutputStream
 import java.lang.Error
+import java.lang.Exception
 
 
 class LoginActivity : AppCompatActivity() {
@@ -63,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-    private var loading = MutableLiveData<String>("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,9 +91,9 @@ class LoginActivity : AppCompatActivity() {
 
         btn_google_sign_in.setOnClickListener {
             showLoading()
-            Toast.makeText(this, "COVER JE TU", Toast.LENGTH_LONG).show()
+            ///Toast.makeText(this, "COVER JE TU", Toast.LENGTH_LONG).show()
             signIn()
-            Toast.makeText(this, "COVER JE PRYC", Toast.LENGTH_LONG).show()
+            ///Toast.makeText(this, "COVER JE PRYC", Toast.LENGTH_LONG).show()
         }
 
         loginViewModel.loginResult.observe(this, Observer { result ->
@@ -107,10 +108,6 @@ class LoginActivity : AppCompatActivity() {
             }
             hideLoading()
         })
-
-        /*loading.observe(this, Observer { error ->
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show()
-        })*/
 
         val callback = onBackPressedDispatcher.addCallback(this) {
             Toast.makeText(applicationContext, "Mackas back", Toast.LENGTH_LONG).show()
@@ -151,11 +148,9 @@ class LoginActivity : AppCompatActivity() {
                     // Google Sign In was successful, authenticate with Firebase
                     val account = task.getResult(ApiException::class.java)!!
                     //TODO Loguj uzivatele jmeno
-                    firebaseAuthWithGoogle(account.idToken!!)
+                    loginViewModel.firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
                     Log.w("SignInWithGoogle", "Google sign in failed", e)
-                    // ...
                 }
             } else {
                 Log.w("SignInWithGoogle", exception.toString())
@@ -230,19 +225,16 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("TIGER", "Failure creating user in database")
             }
     }*/
-
+    /*
     private fun firebaseAuthWithGoogle(idToken: String) {
-        //showLoading()
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         Log.d("LADIME", "Jdeme prihlasovat")
         val job = GlobalScope.launch(IO) {
             try {
-                auth.signInWithCredential(credential).await()
                 Log.d("LADIME", "Ted se prihlasuju pres google")
+                val neco = auth.signInWithCredential(credential).await()
             } catch (e: FirebaseAuthException) {
                 Log.d("LADIME", "Google spadnul")
-                withContext(Main) {
-                }
                 return@launch
             }
 
@@ -287,14 +279,14 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun createUserInDatabase(): Task<Void> {
+   suspend private fun createUserInDatabase(): Task<Void> {
         val user = HashMap<String, String>()
         user["name"] = auth.currentUser.displayName
         user["email"] = auth.currentUser.email
         return db.collection("Users").document(auth.currentUser.uid).set(user)
     }
 
-    private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
+   suspend private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
         var userImageURL = auth.currentUser.photoUrl.toString()
         var storageRef = storage.reference
         var photoRef = storageRef.child("images/" + auth.currentUser.uid + "/profile.jpg")
@@ -304,7 +296,7 @@ class LoginActivity : AppCompatActivity() {
         val data = baos.toByteArray()
         return photoRef.putBytes(data)
     }
-
+    */
     private fun showLoading() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCover.visibility = VISIBLE
@@ -314,11 +306,11 @@ class LoginActivity : AppCompatActivity() {
         loadingCover.visibility = GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
-
+    /*
     fun next() {
         Log.d("LADIME", "Jdeme dal")
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
         startActivity(intent)
         this@LoginActivity.finish()
-    }
+    }*/
 }
