@@ -19,7 +19,7 @@
             android:id="@+id/loadingCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/red"
+            android:background="#80FFFFFF"
             android:clickable="false"
             android:visibility="gone"
             android:backgroundTintMode="screen"

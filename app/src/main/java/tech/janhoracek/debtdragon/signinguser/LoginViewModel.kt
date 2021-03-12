@@ -131,7 +131,10 @@ class LoginViewModel : ViewModel() {
     private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
         var userImageURL = auth.currentUser.photoUrl.toString()
         var storageRef = storage.reference
-        var photoRef = storageRef.child("images/profile.jpg")
+        Log.d("LADIME", "UID k obrazku jest: " + auth.currentUser.uid)
+        var photoRef = storageRef.child("images").child(auth.currentUser.uid).child("profile.jpg")
+        Log.d("LADIME", "Cesta teda jest: " + photoRef)
+        //var photoRef = storageRef.child("images/" + auth.currentUser.uid + "/profile.jpg")
 
         val picture = Picasso.get().load(userImageURL).get()
         val baos = ByteArrayOutputStream()

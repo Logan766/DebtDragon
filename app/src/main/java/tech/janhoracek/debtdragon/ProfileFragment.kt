@@ -1,10 +1,17 @@
 package tech.janhoracek.debtdragon
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_dashborad.*
+import tech.janhoracek.debtdragon.signinguser.LoginActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +41,12 @@ class StatisticsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_statistics, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().window.statusBarColor = Color.parseColor("#120f38");
     }
 
     companion object {

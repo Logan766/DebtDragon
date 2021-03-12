@@ -96,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginViewModel.loginResult.observe(this, Observer { result ->
+            showLoading()
             if (result == getString(R.string.log_in_successful)) {
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -104,6 +105,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show()
             }
+            hideLoading()
         })
 
         /*loading.observe(this, Observer { error ->
@@ -240,9 +242,15 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: FirebaseAuthException) {
                 Log.d("LADIME", "Google spadnul")
                 withContext(Main) {
-                    //Toast.makeText(applicationContext, e.message.toString(), Toast.LENGTH_LONG).show()
-                    //loading.value = e.message.toString()
                 }
+                return@launch
+            }
+
+            var docRef = db.collection("Users").document(auth.currentUser.uid)
+            val doesExists = docRef.get().await()
+            if (doesExists.exists()) {
+                Log.d("LADIME", "Skipuj vsechno")
+                next()
                 return@launch
             }
 
@@ -289,8 +297,7 @@ class LoginActivity : AppCompatActivity() {
     private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
         var userImageURL = auth.currentUser.photoUrl.toString()
         var storageRef = storage.reference
-        var photoRef = storageRef.child("images/profile.jpg")
-
+        var photoRef = storageRef.child("images/" + auth.currentUser.uid + "/profile.jpg")
         val picture = Picasso.get().load(userImageURL).get()
         val baos = ByteArrayOutputStream()
         picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -303,8 +310,15 @@ class LoginActivity : AppCompatActivity() {
         loadingCover.visibility = VISIBLE
     }
 
-    private suspend fun hideLoading() {
+    private fun hideLoading() {
         loadingCover.visibility = GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    fun next() {
+        Log.d("LADIME", "Jdeme dal")
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        startActivity(intent)
+        this@LoginActivity.finish()
     }
 }

@@ -19,7 +19,7 @@
         android:id="@+id/profileFragment"
         android:name="tech.janhoracek.debtdragon.StatisticsFragment"
         android:label="fragment_statistics"
-        tools:layout="@layout/fragment_statistics" />
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/groupsFragment"
         android:name="tech.janhoracek.debtdragon.GroupsFragment"
