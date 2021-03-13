@@ -5,12 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_friends_overview.*
 import tech.janhoracek.debtdragon.databinding.FragmentFriendsOverviewBinding
+import tech.janhoracek.debtdragon.friends.FriendslistFragment
 
 private var _binding: FragmentFriendsOverviewBinding? = null
 private val binding get() = _binding!!

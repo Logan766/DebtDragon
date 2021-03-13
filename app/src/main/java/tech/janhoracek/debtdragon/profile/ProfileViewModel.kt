@@ -1,11 +1,13 @@
 package tech.janhoracek.debtdragon.profile
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.core.snap
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -19,7 +21,7 @@ class ProfileViewModel : ViewModel() {
     private val _userName = MutableLiveData<String>("Loading")
     val userName: LiveData<String> get() = _userName
 
-    private val _userImage = MutableLiveData<String>("")
+    private val _userImage = MutableLiveData<String>()
     val userImage: LiveData<String> get() = _userImage
 
     init {
@@ -36,8 +38,15 @@ class ProfileViewModel : ViewModel() {
             }
 
             viewModelScope.launch(IO) {
-                val url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
-                _userImage.postValue(url.toString())
+                var url : Uri? = null
+                try {
+                    url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+                    _userImage.postValue(url.toString())
+                } catch (e: StorageException) {
+                    Log.d("OHEN", "Nemame obrazek")
+                }
+                Log.d("OHEN", "Posilam do userImage: " + url.toString().isBlank())
+                //_userImage.postValue(url.toString())
             }
 
         }

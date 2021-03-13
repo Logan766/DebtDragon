@@ -6,7 +6,7 @@
     app:startDestination="@id/friendslistFragment">
     <fragment
         android:id="@+id/friendslistFragment"
-        android:name="tech.janhoracek.debtdragon.FriendslistFragment"
+        android:name="tech.janhoracek.debtdragon.friends.FriendslistFragment"
         android:label="fragment_friendslist"
         tools:layout="@layout/fragment_friendslist" >
         <action
