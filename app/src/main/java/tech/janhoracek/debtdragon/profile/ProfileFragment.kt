@@ -56,7 +56,7 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroy() {
         Log.d("PIRAT", "FRAGMENT JE ZNICENEJ!")
-        viewModel.mujClear()
+        viewModel.onCleared()
         super.onDestroy()
     }
 

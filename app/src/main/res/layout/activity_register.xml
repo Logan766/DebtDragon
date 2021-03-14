@@ -94,11 +94,11 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_RegisterActivity_EmailInput"
-                    android:text="@={viewmodel.emailContent}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewmodel.emailContent}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

@@ -45,7 +45,7 @@ class FriendslistFragment : BaseFragment() {
 
 
     fun loadFriends() {
-        db.collection("Users").get().addOnCompleteListener { task ->
+        /*db.collection("Users").get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 friendsList = task.result!!.toObjects(FriendModel::class.java)
                 friendslistAdapter.friendsListItems = friendsList
@@ -53,6 +53,21 @@ class FriendslistFragment : BaseFragment() {
             } else {
                 Log.d("KIWITKO", "Chyba nacitani useru")
             }
+        }*/
+
+        db.collection("Users").addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.w("FRRRR", "Listening failed: " + error)
+            }
+
+            if (snapshot != null) {
+                friendsList = snapshot.toObjects(FriendModel::class.java)
+                friendslistAdapter.friendsListItems = friendsList
+                friendslistAdapter.notifyDataSetChanged()
+            } else {
+                Log.w("FRRRR", "Current data null")
+            }
+
         }
     }
 }

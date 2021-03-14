@@ -48,6 +48,7 @@ class ProfileViewModel : BaseViewModel() {
                     var url: Uri? = null
                     try {
                         url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+                        Log.d("OHEN", "URL obrazku je: " + url.toString())
                         _userImage.postValue(url.toString())
                     } catch (e: StorageException) {
                         Log.d("OHEN", "Nemame obrazek")
@@ -66,15 +67,11 @@ class ProfileViewModel : BaseViewModel() {
         _logOutStatus.value = true
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         Log.d("PIRAT", "JSEM ZNICENEJ!")
         docRef.remove()
         super.onCleared()
     }
 
-    fun mujClear() {
-        docRef.remove()
-        onCleared()
-    }
 }
 

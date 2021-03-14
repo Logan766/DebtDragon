@@ -8,13 +8,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
+import tech.janhoracek.debtdragon.utility.BaseViewModel
 
 
-
-class RegisterViewModel() : ViewModel() {
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+class RegisterViewModel() : BaseViewModel() {
 
     private val passwordLength = 6
 
@@ -110,6 +107,7 @@ class RegisterViewModel() : ViewModel() {
 
     private fun createUser(uid: String, name: String, email: String) {
         val user = HashMap<String, String>()
+        user["uid"] = auth.currentUser.uid
         user["name"] = name
         user["email"] = email
         db.collection("Users").document(uid).set(user)

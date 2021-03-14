@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.signinguser
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,12 +22,10 @@ import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
+import tech.janhoracek.debtdragon.utility.BaseViewModel
 import java.io.ByteArrayOutputStream
 
-class   LoginViewModel : ViewModel() {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+class   LoginViewModel : BaseViewModel() {
 
     val emailContent = MutableLiveData<String>("")
     val passwordContent = MutableLiveData<String>("")
@@ -108,7 +107,7 @@ class   LoginViewModel : ViewModel() {
 
             try {
                 saveUserProfilePhotoFromGoogleAuth().await()
-                Log.d("LADIME", "Ted nahravam obrazek")
+                Log.d("LADIME", "Ted nahravam obrazek s vysledkem: ")
             } catch (e: StorageException) {
                 Log.d("LADIME", "Obrazek spadnul")
                 //Toast.makeText(applicationContext, e.message.toString(), Toast.LENGTH_LONG).show()
@@ -139,6 +138,18 @@ class   LoginViewModel : ViewModel() {
 
     suspend private fun createUserInDatabase(): Task<Void> {
         val user = HashMap<String, String>()
+        storage.reference
+
+        var url: Uri? = null
+        try {
+            url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+            user["url"] = url.toString()
+            Log.d("LADIME", "Url obrazku je: " + url.toString())
+        } catch (e: StorageException) {
+            Log.d("LADIME", "Nemame obrazek")
+        }
+
+        user["uid"] = auth.currentUser.uid
         user["name"] = auth.currentUser.displayName
         user["email"] = auth.currentUser.email
         return db.collection("Users").document(auth.currentUser.uid).set(user)
