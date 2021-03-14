@@ -23,7 +23,7 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 import java.io.ByteArrayOutputStream
 
-class LoginViewModel : ViewModel() {
+class   LoginViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()

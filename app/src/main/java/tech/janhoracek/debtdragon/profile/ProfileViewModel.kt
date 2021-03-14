@@ -6,17 +6,17 @@ import androidx.compose.animation.core.snap
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.Repository
+import tech.janhoracek.debtdragon.utility.BaseViewModel
 
-class ProfileViewModel : ViewModel() {
-
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+class ProfileViewModel : BaseViewModel() {
 
     private val _userName = MutableLiveData<String>("Loading")
     val userName: LiveData<String> get() = _userName
@@ -24,36 +24,57 @@ class ProfileViewModel : ViewModel() {
     private val _userImage = MutableLiveData<String>()
     val userImage: LiveData<String> get() = _userImage
 
+    private val _logOutStatus = MutableLiveData<Boolean>(false)
+    val logOutStatus: LiveData<Boolean> get() = _logOutStatus
+
+    private var docRef: ListenerRegistration
+
     init {
-        val docRef = db.collection("Users").document(auth.currentUser.uid).addSnapshotListener{snapshot, e ->
-            if(e != null) {
-                Log.w("OHEN", "Listening failed: " + e)
-            }
-
-            if(snapshot != null && snapshot.exists()) {
-                Log.w("OHEN", "Current data: ${snapshot.data}")
-                _userName.value = snapshot.data?.get("name").toString()
-            } else {
-                Log.w("OHEN", "Current data null")
-            }
-
-            viewModelScope.launch(IO) {
-                var url : Uri? = null
-                try {
-                    url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
-                    _userImage.postValue(url.toString())
-                } catch (e: StorageException) {
-                    Log.d("OHEN", "Nemame obrazek")
+        docRef = db.collection("Users").document(auth.currentUser.uid)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("OHEN", "Listening failed: " + e)
                 }
-                Log.d("OHEN", "Posilam do userImage: " + url.toString().isBlank())
-                //_userImage.postValue(url.toString())
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.w("OHEN", "Current data: ${snapshot.data}")
+                    _userName.value = snapshot.data?.get("name").toString()
+                } else {
+                    Log.w("OHEN", "Current data null")
+                }
+
+
+                GlobalScope.launch(IO) {
+                    var url: Uri? = null
+                    try {
+                        url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+                        _userImage.postValue(url.toString())
+                    } catch (e: StorageException) {
+                        Log.d("OHEN", "Nemame obrazek")
+                    }
+                    Log.d("OHEN", "Posilam do userImage: " + url.toString().isBlank())
+                    //_userImage.postValue(url.toString())
+                }
+
+
             }
-
-        }
-
-
-
     }
 
+    fun clickLogout() {
+        onCleared()
+        auth.signOut()
+        _logOutStatus.value = true
+    }
 
+    override fun onCleared() {
+        Log.d("PIRAT", "JSEM ZNICENEJ!")
+        docRef.remove()
+        super.onCleared()
+    }
+
+    fun mujClear() {
+        docRef.remove()
+        onCleared()
+    }
 }
+

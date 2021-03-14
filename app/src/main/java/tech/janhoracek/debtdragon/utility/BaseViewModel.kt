@@ -7,8 +7,8 @@ import com.google.firebase.storage.FirebaseStorage
 
 abstract class BaseViewModel : ViewModel() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
 
 

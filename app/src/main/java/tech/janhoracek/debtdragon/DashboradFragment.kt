@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -56,10 +57,12 @@ class DashboradFragment : Fragment() {
         btn_DashBoardFragment_SignOut.setOnClickListener {
             mAuth.signOut()
             val intentLoginActivity = Intent(activity, LoginActivity::class.java)
+            (activity as MainActivity).finish()
             startActivity(intentLoginActivity)
-            if(activity != null) {
+            //requireActivity().finishAffinity()
+        /*if(activity != null) {
                requireActivity().finish()
-            }
+            }*/
         }
     }
 

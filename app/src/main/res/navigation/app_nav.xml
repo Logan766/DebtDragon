@@ -14,15 +14,33 @@
         android:id="@+id/friendsFragment"
         android:name="tech.janhoracek.debtdragon.FriendsOverViewFragment"
         android:label="fragment_friends"
-        tools:layout="@layout/fragment_friends_overview" />
+        tools:layout="@layout/fragment_friends_overview" >
+        <action
+            android:id="@+id/action_friendsFragment_to_friendDetailFragment"
+            app:destination="@id/friendDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="tech.janhoracek.debtdragon.profile.ProfileFragment"
         android:label="fragment_statistics"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_groupsFragment"
+            app:destination="@id/groupsFragment"
+            app:popUpTo="@id/app_nav" />
+    </fragment>
     <fragment
         android:id="@+id/groupsFragment"
         android:name="tech.janhoracek.debtdragon.GroupsFragment"
         android:label="fragment_groups"
         tools:layout="@layout/fragment_groups" />
+    <fragment
+        android:id="@+id/friendDetailFragment"
+        android:name="tech.janhoracek.debtdragon.friends.FriendDetailFragment"
+        android:label="fragment_friend_detail"
+        tools:layout="@layout/fragment_friend_detail" >
+        <action
+            android:id="@+id/action_friendDetailFragment_to_friendsFragment"
+            app:destination="@id/friendsFragment" />
+    </fragment>
 </navigation>
