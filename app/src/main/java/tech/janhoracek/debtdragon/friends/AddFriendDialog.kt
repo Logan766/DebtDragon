@@ -29,7 +29,7 @@ class AddFriendDialog: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addFriendDialogFragment_cancel.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsFragment)
+            //Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsFragment)
         }
 
         btn_addFriendDialogFragment_add.setOnClickListener {
@@ -40,7 +40,7 @@ class AddFriendDialog: BaseFragment() {
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsFragment)
+                    Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {

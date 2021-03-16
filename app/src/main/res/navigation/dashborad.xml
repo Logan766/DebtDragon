@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashborad"
+    app:startDestination="@id/dashboradFragment">
+
+    <fragment
+        android:id="@+id/dashboradFragment"
+        android:name="tech.janhoracek.debtdragon.DashboradFragment"
+        android:label="fragment_dashborad"
+        tools:layout="@layout/fragment_dashborad" />
+</navigation>

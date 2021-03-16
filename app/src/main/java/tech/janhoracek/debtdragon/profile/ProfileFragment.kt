@@ -22,18 +22,13 @@ import tech.janhoracek.debtdragon.signinguser.LoginActivity
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
-    private val viewModel: ProfileViewModel by navGraphViewModels(R.id.app_nav)
+    //private val viewModel: ProfileViewModel by navGraphViewModels(R.id.profile)
+    //private lateinit var viewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        viewModel.logOutStatus.observe(this, Observer { status ->
-            if (status == true) {
-                val intentLoginActivity = Intent(activity, LoginActivity::class.java)
-                requireActivity().finish()
-                startActivity(intentLoginActivity)
-            }
-        })
+
     }
 
     override fun onCreateView(
@@ -41,10 +36,19 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
-        //viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val viewModel = ViewModelProvider(requireActivity()).get(ProfileViewModel::class.java)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel.logOutStatus.observe(viewLifecycleOwner, Observer { status ->
+            if (status == true) {
+                val intentLoginActivity = Intent(activity, LoginActivity::class.java)
+                requireActivity().viewModelStore.clear()
+                requireActivity().finish()
+                startActivity(intentLoginActivity)
+            }
+        })
 
         return binding.root
     }
@@ -56,7 +60,7 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroy() {
         Log.d("PIRAT", "FRAGMENT JE ZNICENEJ!")
-        viewModel.onCleared()
+        //viewModel.onCleared()
         super.onDestroy()
     }
 

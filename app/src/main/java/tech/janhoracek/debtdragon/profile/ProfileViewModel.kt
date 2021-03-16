@@ -44,7 +44,7 @@ class ProfileViewModel : BaseViewModel() {
                 }
 
 
-                GlobalScope.launch(IO) {
+                viewModelScope.launch(IO) {
                     var url: Uri? = null
                     try {
                         url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
@@ -62,14 +62,14 @@ class ProfileViewModel : BaseViewModel() {
     }
 
     fun clickLogout() {
-        onCleared()
+        //onCleared()
         auth.signOut()
         _logOutStatus.value = true
     }
 
     public override fun onCleared() {
         Log.d("PIRAT", "JSEM ZNICENEJ!")
-        docRef.remove()
+        //docRef.remove()
         super.onCleared()
     }
 

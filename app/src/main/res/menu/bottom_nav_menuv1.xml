@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/dashboradFragment"
+        android:id="@+id/dashborad"
         android:icon="@drawable/ic_home"
         android:title="Přehled" />
 
     <item
-        android:id="@+id/friendsFragment"
+        android:id="@+id/friends"
         android:icon="@drawable/ic_home"
         android:title="Přátelé" />
 
     <item
-        android:id="@+id/groupsFragment"
+        android:id="@+id/groups"
         android:icon="@drawable/ic_home"
         android:title="Skupiny" />
 
     <item
-        android:id="@+id/profileFragment"
+        android:id="@+id/profile"
         android:icon="@drawable/ic_home"
         android:title="Profil" />
 </menu>

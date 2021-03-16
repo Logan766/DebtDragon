@@ -40,7 +40,7 @@ class FriendDetailFragment : Fragment() {
         //tv_MyGreetings.text = myGreetings
 
         btn_FriendDetailFragment_back.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_friendsFragment)
+            //Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_friendsFragment)
         }
     }
 

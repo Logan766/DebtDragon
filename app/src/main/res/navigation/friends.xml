@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friends"
+    app:startDestination="@id/friendsOverViewFragment">
+
+    <fragment
+        android:id="@+id/friendsOverViewFragment"
+        android:name="tech.janhoracek.debtdragon.FriendsOverViewFragment"
+        android:label="fragment_friends_overview"
+        tools:layout="@layout/fragment_friends_overview" >
+        <action
+            android:id="@+id/action_friendsOverViewFragment_to_friendDetailFragment2"
+            app:destination="@id/friendDetailFragment" />
+        <action
+            android:id="@+id/action_friendsOverViewFragment_to_addFriendDialog"
+            app:destination="@id/addFriendDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendDetailFragment"
+        android:name="tech.janhoracek.debtdragon.friends.FriendDetailFragment"
+        android:label="fragment_friend_detail"
+        tools:layout="@layout/fragment_friend_detail" />
+    <fragment
+        android:id="@+id/addFriendDialog"
+        android:name="tech.janhoracek.debtdragon.friends.AddFriendDialog"
+        android:label="AddFriendDialog" >
+        <action
+            android:id="@+id/action_addFriendDialog_to_friendsOverViewFragment"
+            app:destination="@id/friendsOverViewFragment" />
+    </fragment>
+</navigation>

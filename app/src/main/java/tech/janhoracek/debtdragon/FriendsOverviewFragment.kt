@@ -28,7 +28,7 @@ class FriendsOverViewFragment : Fragment() {
             PendingFriendRequestsFragment()
         )
 
-        val adapter = ViewPagerAdapter(fragmentList, requireActivity().supportFragmentManager, lifecycle)
+        val adapter = ViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         binding.viewpagerFriendsOverview.adapter = adapter
 
 
@@ -49,7 +49,8 @@ class FriendsOverViewFragment : Fragment() {
                 //}
             }).attach()
 
-        binding.tabLayoutFriendsOverview.getTabAt(1)?.getOrCreateBadge()?.setNumber(3);
+        binding.tabLayoutFriendsOverview.getTabAt(1)?.orCreateBadge?.number = 5;
+
 
 
         return binding.root
