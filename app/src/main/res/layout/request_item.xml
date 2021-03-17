@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingVertical="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ImageView_request_avatar"
@@ -52,9 +52,9 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
         android:text="Přijmout"
         android:textAllCaps="true"
-        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_requestItem_decline"
         app:layout_constraintStart_toStartOf="@+id/linearLayout_RequestItem_nameMessage"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout_RequestItem_nameMessage" />
@@ -64,12 +64,16 @@
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="8dp"
 
+        android:layout_marginTop="6dp"
         android:text="Odebrat"
         android:textAllCaps="true"
-        android:layout_marginStart="8dp"
         android:textColor="@color/second"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_requestItem_accept" />
+        app:layout_constraintStart_toEndOf="@+id/btn_requestItem_accept"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_RequestItem_nameMessage" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

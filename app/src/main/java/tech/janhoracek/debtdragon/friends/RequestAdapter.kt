@@ -11,8 +11,8 @@ import tech.janhoracek.debtdragon.R
 private const val REQUEST_TYPE_SENT: Int = 0
 private const val REQUEST_TYPE_RECIEVED: Int = 1
 
-class RequestAdapter(var requestsListItems: List<RequestModel>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class RequestAdapter(var requestsListItems: List<RequestModel>)/*: RecyclerView.Adapter<RecyclerView.ViewHolder>()*/ {
+/*
 
     class sentRequestViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bindTo(requestModel: RequestModel) {
@@ -58,5 +58,5 @@ class RequestAdapter(var requestsListItems: List<RequestModel>): RecyclerView.Ad
     override fun getItemCount(): Int {
         return requestsListItems.size
     }
-
+*/
 }
