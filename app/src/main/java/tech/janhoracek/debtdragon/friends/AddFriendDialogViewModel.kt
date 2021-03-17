@@ -10,6 +10,8 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.R
@@ -25,6 +27,14 @@ class AddFriendDialogViewModel: BaseViewModel() {
     val friendNameContent = MutableLiveData<String>("")
 
     private var friendId: String? = ""
+
+    sealed class Event {
+        object NavigateBack: Event()
+        data class ShowToast(val text: String): Event()
+    }
+
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
 
     fun onAddFriendClick() {
         if(validateFriendName()) {
@@ -51,12 +61,13 @@ class AddFriendDialogViewModel: BaseViewModel() {
                 } else {
                     Log.d("PUVA", "Uzivatel je ready na pridani")
                     //val requestCurrentUser = RequestModel(auth.currentUser.uid, "sent")
-                    val CurrentUserRequestRef = db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(friendId!!).set(createCurrentUserRequest())
-                    val FriendRequestRef = db.collection("Users").document(friendId!!).collection("Requests").document(auth.currentUser.uid).set(createFriendRequest())
-                    Log.d("PUVA", "ID dokumentu jest: " + CurrentUserRequestRef)
+                    db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(friendId!!).set(createRequest("sent", auth.currentUser.uid))
+                    db.collection("Users").document(friendId!!).collection("Requests").document(auth.currentUser.uid).set(createRequest("request", auth.currentUser.uid))
+                    Log.d("PUVA", "Vse proslo, odesilam te zpet")
+                    eventChannel.send(Event.NavigateBack)
                 }
-            }
 
+            }
 
         } else {
             Log.d("PUVA", "ses laska")
@@ -77,18 +88,8 @@ class AddFriendDialogViewModel: BaseViewModel() {
         }
     }
 
-    private suspend fun loadFriendId(): Task<QuerySnapshot> {
-        return db.collection("Users").whereEqualTo("email", friendNameContent.value.toString()).get()
-    }
-
-    private suspend fun createCurrentUserRequest(): RequestModel {
-        val requestType = "sent"
-        return RequestModel(requestType)
-    }
-
-    private suspend fun createFriendRequest(): RequestModel {
-        val requestType = "request"
-        return RequestModel(requestType)
+    private suspend fun createRequest(requestType: String, authorId: String): RequestModel {
+        return RequestModel(requestType, authorId)
     }
 
 

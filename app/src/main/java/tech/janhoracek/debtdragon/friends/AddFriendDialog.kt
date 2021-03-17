@@ -12,9 +12,11 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.dialog_add_friend.*
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
+import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.DialogAddFriendBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 class AddFriendDialog: BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
@@ -43,6 +45,14 @@ class AddFriendDialog: BaseFragment() {
             binding.viewmodel!!.friendError.value = ""
             Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)
         }
+
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when (it) {
+                    AddFriendDialogViewModel.Event.NavigateBack -> {Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)}
+                }
+            }
+            .observeInLifecycle(viewLifecycleOwner)
 
         btn_addFriendDialogFragment_add.setOnClickListener {
             lottie_addFriendDialog.playAnimation()
