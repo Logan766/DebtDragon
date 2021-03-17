@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.friends
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.firebase.ui.auth.data.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -12,6 +13,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.UserObject
 import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import java.lang.Exception
@@ -48,6 +50,10 @@ class AddFriendDialogViewModel: BaseViewModel() {
                     friendError.value = "Nelze přidat sám sebe"
                 } else {
                     Log.d("PUVA", "Uzivatel je ready na pridani")
+                    //val requestCurrentUser = RequestModel(auth.currentUser.uid, "sent")
+                    val CurrentUserRequestRef = db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(friendId!!).set(createCurrentUserRequest())
+                    val FriendRequestRef = db.collection("Users").document(friendId!!).collection("Requests").document(auth.currentUser.uid).set(createFriendRequest())
+                    Log.d("PUVA", "ID dokumentu jest: " + CurrentUserRequestRef)
                 }
             }
 
@@ -73,6 +79,16 @@ class AddFriendDialogViewModel: BaseViewModel() {
 
     private suspend fun loadFriendId(): Task<QuerySnapshot> {
         return db.collection("Users").whereEqualTo("email", friendNameContent.value.toString()).get()
+    }
+
+    private suspend fun createCurrentUserRequest(): RequestModel {
+        val requestType = "sent"
+        return RequestModel(requestType)
+    }
+
+    private suspend fun createFriendRequest(): RequestModel {
+        val requestType = "request"
+        return RequestModel(requestType)
     }
 
 
