@@ -78,13 +78,15 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3"
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.6.0') ///
+    implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-auth-ktx:20.0.3'
-    implementation 'com.google.firebase:firebase-firestore-ktx' ///
-    //
+    implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
+    ///
+    implementation "com.firebaseui:firebase-ui-firestore:7.1.1"
+    implementation "com.firebaseui:firebase-ui-auth:7.1.1"
 
     //Lottie
     implementation 'com.airbnb.android:lottie:3.6.1'

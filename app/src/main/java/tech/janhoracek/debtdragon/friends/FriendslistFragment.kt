@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon.friends
 
+import android.content.ContentResolver
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
