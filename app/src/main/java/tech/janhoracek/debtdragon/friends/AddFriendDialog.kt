@@ -6,14 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.dialog_add_friend.*
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
 import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.databinding.DialogAddFriendBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 class AddFriendDialog: BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
+    private lateinit var binding: DialogAddFriendBinding
     //private lateinit var binding: FragmentProfileBinding
     //private lateinit var viewModel: ProfileViewModel
 
@@ -22,14 +27,21 @@ class AddFriendDialog: BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.dialog_add_friend, container, false)
-        return view
+        binding = DialogAddFriendBinding.inflate(inflater, container, false)
+        val viewModel = ViewModelProvider(requireActivity()).get(AddFriendDialogViewModel::class.java)
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        //val view =  inflater.inflate(R.layout.dialog_add_friend, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addFriendDialogFragment_cancel.setOnClickListener {
-            //Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsFragment)
+            //findNavController().navigateUp()
+            binding.viewmodel!!.friendNameContent.value = ""
+            binding.viewmodel!!.friendError.value = ""
+            Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)
         }
 
         btn_addFriendDialogFragment_add.setOnClickListener {

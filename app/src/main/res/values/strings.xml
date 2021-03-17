@@ -20,4 +20,5 @@
     <string name="mail_cannot_be_empty">E-mail nemůže být prázdný</string>
     <string name="password_cannot_be_empty">Heslo nemůže být prázdné</string>
     <string name="log_in_successful">Přihlášení úspěšné</string>
+    <string name="addFriend_name_cant_be_empty">E-mail přítele nemůže být prázdný</string>
 </resources>
