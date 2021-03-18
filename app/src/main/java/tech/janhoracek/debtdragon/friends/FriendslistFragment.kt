@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_friendslist.*
 import tech.janhoracek.debtdragon.R
@@ -18,6 +19,7 @@ import tech.janhoracek.debtdragon.utility.BaseFragment
 class FriendslistFragment : BaseFragment() {
 
     private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private var friendsList: List<FriendModel> = ArrayList()
     private val friendslistAdapter: FriendslistAdapter = FriendslistAdapter(friendsList)
 

@@ -59,7 +59,26 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
                 Glide.with(itemView).load(imgUrl).into(imageView)
             }
             declineButton.setOnClickListener {
+                db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(id).delete()
+                db.collection("Users").document(id).collection("Requests").document(auth.currentUser.uid).delete()
+
                 Log.d("MAK", "Mackas decline na userovi " + id + " a ty jsi: " + auth.currentUser.uid)
+            }
+            acceptButton.setOnClickListener {
+                db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(id).delete()
+                db.collection("Users").document(id).collection("Requests").document(auth.currentUser.uid).delete()
+
+                val friendshipID = db.collection("Friendships").document()
+                val friendship: MutableMap<String, Any> = HashMap()
+
+                friendship["uid"] = friendshipID.id
+                friendship["member1"] = auth.currentUser.uid
+                friendship["member2"] = id
+
+                friendshipID.set(friendship)
+
+                db.collection("Users").document(auth.currentUser.uid).collection("Friendships").document(id).set(friendship)
+                db.collection("Users").document(id).collection("Friendships").document(auth.currentUser.uid).set(friendship)
             }
             Log.d("MAK", "Vykresluju")
         }
