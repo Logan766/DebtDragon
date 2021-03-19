@@ -31,6 +31,8 @@ class AddFriendDialogViewModel : BaseViewModel() {
     private var friendId: String? = ""
     private var currentFriennId: String? = ""
     private lateinit var currentFriendRef: DocumentReference
+    private var alreadyFriends = false
+    private var alreadyRequested = false
 
     sealed class Event {
         object NavigateBack : Event()
@@ -45,12 +47,7 @@ class AddFriendDialogViewModel : BaseViewModel() {
             Log.d("PUVA", friendNameContent.value.toString())
             val friendIdGeting = GlobalScope.launch(IO) {
                 try {
-                    val friendIdQuery = db.collection("Users").whereEqualTo("email", friendNameContent.value).get().await()
-                    friendId = friendIdQuery.documents[0].data!!["uid"].toString()
-                    db.collection("Users").document(auth.currentUser.uid).collection("Friendships").document(friendId!!).get().addOnCompleteListener {
-                        //if(it.result.exists())
-                    }
-                    Log.d("PUVA", "User id jest: " + friendId)
+                    getFriendId()
                 } catch (e: Exception) {
                     Log.d("PUVA", "Error: " + e.message.toString())
                     friendId = null
@@ -60,25 +57,20 @@ class AddFriendDialogViewModel : BaseViewModel() {
             GlobalScope.launch(Main) {
                 friendIdGeting.join()
                 Log.d("PUVA", "current user id jest: " + auth.currentUser.uid)
+                Log.d("BURAK", "pred validaci jsou pratele: " + alreadyFriends)
+                Log.d("BURAK", "pred validaci jiz pozadano pratele: " + alreadyRequested)
 
-                if (friendId == null) {
-                    friendError.value = "Uživatel nenalezen"
-                } else if (friendId == auth.currentUser.uid) {
-                    friendError.value = "Nelze přidat sám sebe"
-                } else if (false) {
-                    friendError.value = "Tento uživatel již v přátelích je"
-                } else {
+                if (validateRequest()) {
                     Log.d("PUVA", "Uzivatel je ready na pridani")
-                    //val requestCurrentUser = RequestModel(auth.currentUser.uid, "sent")
                     db.collection("Users").document(auth.currentUser.uid).collection("Requests")
                         .document(friendId!!).set(createRequest("sent", auth.currentUser.uid))
                     db.collection("Users").document(friendId!!).collection("Requests")
                         .document(auth.currentUser.uid)
                         .set(createRequest("request", auth.currentUser.uid))
                     Log.d("PUVA", "Vse proslo, odesilam te zpet")
+                    friendNameContent.value = ""
                     eventChannel.send(Event.NavigateBack)
                 }
-
             }
 
         } else {
@@ -104,6 +96,42 @@ class AddFriendDialogViewModel : BaseViewModel() {
 
     private suspend fun createRequest(requestType: String, authorId: String): RequestModel {
         return RequestModel(requestType, authorId)
+    }
+
+    private suspend fun validateRequest() : Boolean {
+        return when {
+            friendId == null -> {
+                friendError.value = "Uživatel nenalezen"
+                false
+            }
+            friendId == auth.currentUser.uid -> {
+                friendError.value = "Nelze přidat sám sebe"
+                false
+            }
+            alreadyFriends -> {
+                friendError.value = "Tento uživatel již v přátelích je"
+                false
+            }
+            alreadyRequested -> {
+                friendError.value = "Tohoto přitele jste již požádali"
+                false
+            }
+            else -> {
+                true
+            }
+        }
+    }
+
+    private suspend fun getFriendId() {
+        val friendIdQuery = db.collection("Users").whereEqualTo("email", friendNameContent.value).get().await()
+        friendId = friendIdQuery.documents[0].data!!["uid"].toString()
+        val friendCheck = db.collection("Users").document(auth.currentUser.uid).collection("Friendships").document(friendId!!).get().await()
+        alreadyFriends = friendCheck.exists()
+        Log.d("BURAK", "jsou pratele jest: " + alreadyFriends)
+        val requestCheck = db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(friendId!!).get().await()
+        alreadyRequested = requestCheck.exists()
+        Log.d("BURAK", "Jiz vyzadano jest: " + alreadyRequested)
+        Log.d("PUVA", "User id jest: " + friendId)
     }
 
 

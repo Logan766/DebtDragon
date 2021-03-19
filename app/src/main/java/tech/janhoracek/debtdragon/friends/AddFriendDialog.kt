@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.Navigation
@@ -49,12 +50,33 @@ class AddFriendDialog: BaseFragment() {
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
-                    AddFriendDialogViewModel.Event.NavigateBack -> {Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)}
+                    AddFriendDialogViewModel.Event.NavigateBack -> {
+                        binding.textInputLayoutAddFriendFragment.clearFocus()
+                        Toast.makeText(requireContext(), "Odesláno", Toast.LENGTH_LONG).show()
+                        lottie_addFriendDialog.playAnimation()
+                        lottie_addFriendDialog.addAnimatorListener(object: Animator.AnimatorListener{
+                            override fun onAnimationStart(animation: Animator?) {
+
+                            }
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                Navigation.findNavController(view).navigate(R.id.action_addFriendDialog_to_friendsOverViewFragment)
+                            }
+
+                            override fun onAnimationCancel(animation: Animator?) {
+                                //
+                            }
+
+                            override fun onAnimationRepeat(animation: Animator?) {
+                                //
+                            }
+
+                        })}
                 }
             }
             .observeInLifecycle(viewLifecycleOwner)
 
-        btn_addFriendDialogFragment_add.setOnClickListener {
+        /*btn_addFriendDialogFragment_add.setOnClickListener {
             lottie_addFriendDialog.playAnimation()
             lottie_addFriendDialog.addAnimatorListener(object: Animator.AnimatorListener{
                 override fun onAnimationStart(animation: Animator?) {
@@ -74,7 +96,7 @@ class AddFriendDialog: BaseFragment() {
                 }
 
             })
-        }
+        }*/
 
     }
 
