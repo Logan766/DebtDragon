@@ -1,12 +1,10 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.utility
 
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.google.android.material.textfield.TextInputLayout
 
 
@@ -30,6 +28,7 @@ object BindingAdapters {
             Glide.with(image.context).load(placeHolder).into(image)
         }
     }
+
 
 
 }

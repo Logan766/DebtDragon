@@ -1,11 +1,9 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.friends.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,9 +12,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_friendslist.*
 import kotlinx.android.synthetic.main.fragment_pending_friend_requests.*
-import tech.janhoracek.debtdragon.friends.FirebaseRequestAdapter
-import tech.janhoracek.debtdragon.friends.RequestAdapter
-import tech.janhoracek.debtdragon.friends.RequestModel
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.friends.models.RequestModel
+import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseRequestAdapter
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 

@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.friends.ui.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

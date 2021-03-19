@@ -2,18 +2,12 @@ package tech.janhoracek.debtdragon.profile
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.animation.core.snap
 import androidx.lifecycle.*
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import tech.janhoracek.debtdragon.Repository
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 
 class ProfileViewModel : BaseViewModel() {

@@ -1,7 +1,7 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import tech.janhoracek.debtdragon.friends.models.FriendModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 
 class FriendslistViewModel : BaseViewModel() {

@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

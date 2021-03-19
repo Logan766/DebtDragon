@@ -1,14 +1,8 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.firebase.ui.auth.data.model.User
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.R
-import tech.janhoracek.debtdragon.UserObject
+import tech.janhoracek.debtdragon.friends.models.RequestModel
 import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import java.lang.Exception

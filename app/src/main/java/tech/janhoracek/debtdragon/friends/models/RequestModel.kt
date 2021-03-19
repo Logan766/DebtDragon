@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.models
 
 data class RequestModel (
     //val author: String = "",

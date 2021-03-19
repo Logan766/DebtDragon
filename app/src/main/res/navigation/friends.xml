@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/friendsOverViewFragment"
-        android:name="tech.janhoracek.debtdragon.FriendsOverViewFragment"
+        android:name="tech.janhoracek.debtdragon.friends.ui.FriendsOverViewFragment"
         android:label="fragment_friends_overview"
         tools:layout="@layout/fragment_friends_overview" >
         <action
@@ -19,12 +19,12 @@
     </fragment>
     <fragment
         android:id="@+id/friendDetailFragment"
-        android:name="tech.janhoracek.debtdragon.friends.FriendDetailFragment"
+        android:name="tech.janhoracek.debtdragon.friends.ui.FriendDetailFragment"
         android:label="fragment_friend_detail"
         tools:layout="@layout/fragment_friend_detail" />
     <fragment
         android:id="@+id/addFriendDialog"
-        android:name="tech.janhoracek.debtdragon.friends.AddFriendDialog"
+        android:name="tech.janhoracek.debtdragon.friends.ui.AddFriendDialog"
         android:label="AddFriendDialog" >
         <action
             android:id="@+id/action_addFriendDialog_to_friendsOverViewFragment"

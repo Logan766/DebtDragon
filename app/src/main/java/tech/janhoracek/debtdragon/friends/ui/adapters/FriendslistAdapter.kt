@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.friend_item.view.*
 import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.friends.models.FriendModel
 
 class FriendslistAdapter(var friendsListItems: List<FriendModel>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

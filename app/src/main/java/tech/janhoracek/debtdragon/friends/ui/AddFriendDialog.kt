@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon.friends
+package tech.janhoracek.debtdragon.friends.ui
 
 import android.animation.Animator
 import android.os.Bundle
@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.dialog_add_friend.*
-import kotlinx.android.synthetic.main.fragment_friend_detail.*
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.DialogAddFriendBinding
+import tech.janhoracek.debtdragon.friends.viewmodels.AddFriendDialogViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
