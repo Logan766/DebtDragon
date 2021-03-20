@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.core.snap
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.friend_item_v2.view.*
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.FriendModel
 import tech.janhoracek.debtdragon.friends.models.RequestModel
+import tech.janhoracek.debtdragon.friends.ui.FriendsOverViewFragmentDirections
 import tech.janhoracek.debtdragon.utility.Constants
 
 class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>): FirestoreRecyclerAdapter<FriendModel, FirebaseFriendlistAdapter.FriendAdapterViewHolder>(options) {
@@ -42,6 +44,8 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>):
         fun bindOnClick(friendshipID: String) {
             itemView.setOnClickListener {
                 Log.d("AJDY", "ID kamosu jest: " + friendshipID)
+                val action = FriendsOverViewFragmentDirections.actionFriendsOverViewFragmentToFriendDetailFragment2(friendshipID)
+                itemView.findNavController().navigate(action)
             }
         }
 

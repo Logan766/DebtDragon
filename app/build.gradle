@@ -6,6 +6,7 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     //////
     id 'kotlin-kapt'
+    ////
 }
 
 android {
@@ -106,6 +107,8 @@ dependencies {
 
     //ImagePicker
     implementation 'com.github.dhaval2404:imagepicker:1.8'
+
+
 
     
 }

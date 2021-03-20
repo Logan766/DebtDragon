@@ -34,6 +34,8 @@ class FriendsOverViewFragment : Fragment() {
             PendingFriendRequestsFragment()
         )
 
+
+
         val adapter = ViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         binding.viewpagerFriendsOverview.adapter = adapter
 
