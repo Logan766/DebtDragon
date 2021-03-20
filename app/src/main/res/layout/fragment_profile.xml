@@ -54,13 +54,13 @@
             app:layout_constraintTop_toBottomOf="@id/tv_ProfiileFragment_username" />
 
         <Button
-            android:id="@+id/Test2"
+            android:id="@+id/btn_TBM_changeprofilepic"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:padding="15dp"
-            android:text="Text button"
+            android:text="TBM Vyber obrazek"
             android:textColor="@color/white"
 
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,14 +75,14 @@
             android:gravity="start"
             android:padding="15dp"
             android:onClick="@{() -> viewmodel.clickLogout()}"
-            android:text="Text button"
+            android:text="Odhlasit"
             android:textColor="@color/white"
 
 
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Test2"
+            app:layout_constraintTop_toBottomOf="@id/btn_TBM_changeprofilepic"
             app:rippleColor="@color/ic_launcher_background" />
 
 

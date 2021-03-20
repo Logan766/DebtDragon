@@ -11,7 +11,7 @@
         android:id="@+id/tv_MyGreetings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Friend Detail"
         app:layout_constraintBottom_toTopOf="@+id/btn_FriendDetailFragment_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -45,7 +48,12 @@ class DashboradFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-         return inflater.inflate(R.layout.fragment_dashborad, container, false)
+         val view = inflater.inflate(R.layout.fragment_dashborad, container, false)
+
+
+
+
+        return view
 
     }
 
@@ -55,34 +63,9 @@ class DashboradFragment : Fragment() {
 
         mAuth = Firebase.auth
         btn_DashBoardFragment_SignOut.setOnClickListener {
-            mAuth.signOut()
-            val intentLoginActivity = Intent(activity, LoginActivity::class.java)
-            (activity as MainActivity).finish()
-            startActivity(intentLoginActivity)
-            //requireActivity().finishAffinity()
-        /*if(activity != null) {
-               requireActivity().finish()
-            }*/
+
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DashboradFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DashboradFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }

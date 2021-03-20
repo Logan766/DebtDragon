@@ -9,6 +9,8 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.utility.BaseViewModel
+import tech.janhoracek.debtdragon.utility.Constants
+import java.lang.Exception
 
 class ProfileViewModel : BaseViewModel() {
 
@@ -41,7 +43,8 @@ class ProfileViewModel : BaseViewModel() {
                 viewModelScope.launch(IO) {
                     var url: Uri? = null
                     try {
-                        url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+                        url =
+                            storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
                         Log.d("OHEN", "URL obrazku je: " + url.toString())
                         _userImage.postValue(url.toString())
                     } catch (e: StorageException) {
@@ -65,6 +68,23 @@ class ProfileViewModel : BaseViewModel() {
         Log.d("PIRAT", "JSEM ZNICENEJ!")
         //docRef.remove()
         super.onCleared()
+    }
+
+    fun saveProfileImage(image: ByteArray) {
+        Log.d("DOMBY", "Zkusim nahrat obrzek")
+        viewModelScope.launch(IO) {
+            try {
+                storage.reference.child("/images/${auth.currentUser.uid}/profile.jpg").putBytes(image).await()
+                Log.d("DOMBY", "Po nahrani")
+                val url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+                Log.d("DOMBY", "Stahuju URL ktery je: " + url)
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("url", url.toString())
+                Log.d("DOMBY", "Update URL")
+            } catch (e: Exception) {
+                Log.d("STRG", "Picture upload error: " + e.message.toString())
+            }
+        }
+
     }
 
 }
