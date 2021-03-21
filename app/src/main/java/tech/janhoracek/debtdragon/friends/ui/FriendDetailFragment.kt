@@ -1,16 +1,16 @@
 package tech.janhoracek.debtdragon.friends.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
-import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
@@ -43,7 +43,7 @@ class FriendDetailFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val args: FriendDetailFragmentArgs by navArgs()
-        binding.tvMyGreetings.text = args.userId
+        //binding.tvMyGreetings.text = args.userId
 
         return binding.root
     }
@@ -51,10 +51,25 @@ class FriendDetailFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val myView = binding.mainCollapsing
+        val appbar = binding.materialupAppbar
 
-        btn_FriendDetailFragment_back.setOnClickListener {
+
+        /*
+        myView.setTag(myView.getVisibility())
+        myView.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
+            if (myView.getTag() == View.INVISIBLE) {
+                Log.d("TRPOS", "Jsem neviditelnej!")
+            } else if(myView.getTag() == View.GONE) {
+                Log.d("TRPOS", "Jsem fuc")
+            } else {
+                Log.d("TRPOS", "Jsem tadyyyy!")
+            }
+        })*/
+
+        /*btn_FriendDetailFragment_back.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_friendsOverViewFragment)
-        }
+        }*/
     }
 
 }
