@@ -22,3 +22,4 @@ class DebtDragonApplication : Application() {
 fun localized(resource: Int): String {
     return DebtDragonApplication.applicationContext().getString(resource)
 }
+
