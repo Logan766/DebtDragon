@@ -19,8 +19,11 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("app:imageUrl", "app:placeholder")
     fun setImage(image: ImageView, url: String?, placeHolder: Drawable) {
-        if (url != null) {
-            Log.d("OHEN", "nastavuji obrazek, protoze url jest: " + url + " a kontrola je " + !url.isNullOrEmpty())
+        if (url == "") {
+            Glide.with(image.context).load(placeHolder).into(image)
+        } else if (url != null) {
+            Log.d("OHEN",
+                "nastavuji obrazek, protoze url jest: " + url + " a kontrola je " + !url.isNullOrEmpty())
             Glide.with(image.context).load(url).into(image)
         } else {
             Log.d("OHEN", "nastavuji placeholder")
@@ -28,7 +31,6 @@ object BindingAdapters {
             Glide.with(image.context).load(placeHolder).into(image)
         }
     }
-
 
 
 }

@@ -13,16 +13,13 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        ​
+        android:layout_height="match_parent">
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/materialup.appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            >
-            ​
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <FrameLayout
                 android:id="@+id/main.collapsing"
@@ -31,11 +28,18 @@
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|snap">
-                ​
+
+                <com.google.android.material.appbar.MaterialToolbar
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:menu="@menu/friend_detail_menu"
+                    android:outlineProvider="none"
+                    app:navigationIcon="?attr/homeAsUpIndicator"
+                    android:elevation="1dp"/>
 
                 <ImageView
                     android:id="@+id/materialup.profile_backdrop"
-
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -46,43 +50,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal"
-                    android:paddingTop="150dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingTop="150dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                        android:text="Jméno Příjmení"
-                        />
-                    ​
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="4dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
-                        android:text="random@email.cz"
-                        android:textColor="@android:color/white"
-                        />
+                        android:text="@{viewmodel.friendData.name}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:text="@{viewmodel.friendData.email}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:text="Přítel vám dluží 500 Kč"
-                        android:textColor="@android:color/white"
-                        />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textColor="@android:color/white" />
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
                 </LinearLayout>
-
 
 
             </FrameLayout>
@@ -127,40 +128,44 @@
                 ​
             </LinearLayout>-->
             ​
+
             <FrameLayout
                 android:id="@+id/materialup.tabs"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
                 <ImageView
-                    android:layout_marginStart="16dp"
-                    android:layout_width="30dp"
+                    android:id="@+id/btn_back_bottom_FriendDetail"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_height="30dp"
+                    android:layout_marginStart="16dp"
                     android:background="@drawable/ic_baseline_arrow_back_24" />
+
                 <ImageView
-                    android:layout_marginEnd="16dp"
-                    android:layout_width="30dp"
+                    android:id="@+id/qr_bottom_FriendDetail"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_height="30dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/ic_baseline_qr_code_24" />
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/lottie_arrow_up_FriendDetail"
                     android:layout_width="30dp"
-                    android:layout_gravity="center"
                     android:layout_height="30dp"
-                    app:lottie_speed="0.5"
+                    android:layout_gravity="center"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
                     app:lottie_rawRes="@raw/lottie_up_arrow"
-                     />
+                    app:lottie_speed="0.5" />
 
             </FrameLayout>
 
 
         </com.google.android.material.appbar.AppBarLayout>
         ​
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested"
             android:layout_width="match_parent"
@@ -174,28 +179,29 @@
 
         </androidx.core.widget.NestedScrollView>
         ​
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:elevation="8dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_baseline_add_24"
             android:layout_margin="16dp"
             android:clickable="true"
-            />
+            android:elevation="8dp"
+            android:src="@drawable/ic_baseline_add_24" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/materialup.profile_image"
-            android:layout_marginTop="16dp"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            app:civ_border_width="3dp"
-            app:civ_border_color="@color/white"
-            android:src="@drawable/avatar_profileavatar"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
             android:elevation="8dp"
-            app:layout_scrollFlags="scroll"
+            app:imageUrl="@{viewmodel.friendData.url}"
+            app:placeholder="@{@drawable/avatar_profileavatar}"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="3dp"
             app:layout_anchorGravity="top|center_horizontal"
+            app:layout_scrollFlags="scroll"
 
             />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
