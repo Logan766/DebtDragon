@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
@@ -19,8 +22,14 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _friendData = MutableLiveData<FriendDetailModel>()
     val friendData: LiveData<FriendDetailModel> get() = _friendData
 
-    /*private val _userName = MutableLiveData<String>("Nazdar")
-    val userName: LiveData<String> get() = _userId*/
+    sealed class Event {
+        object NavigateBack : Event()
+        object GenerateQR: Event()
+        data class ShowToast(val text: String) : Event()
+    }
+
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
 
     fun setData(friendshipID: String) {
         lateinit var friendID: String
@@ -45,20 +54,15 @@ class FriendDetailViewModel : BaseViewModel() {
                     } else {
                         Log.w("DATA", "Current data null")
                     }
-
-                    /*db.collection(Constants.DATABASE_USERS).document(friendID).get()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        _friendData.value = task.result!!.toObject(FriendDetailModel::class.java)
-                    } else {
-                        Log.d("KIWITKO", "Chyba nacitani useru")
-                    }
-                }*/
                 }
 
 
         }
+    }
 
+    fun onBackPressed() {
+        Log.d("RANO", "Posilam signal zpet")
+        GlobalScope.launch(Main) { eventChannel.send(Event.NavigateBack) }
 
     }
 

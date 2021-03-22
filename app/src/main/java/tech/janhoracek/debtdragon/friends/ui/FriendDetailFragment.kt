@@ -10,14 +10,17 @@ import android.widget.ImageView
 import androidx.core.view.marginTop
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
+import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
 
@@ -76,16 +79,26 @@ class FriendDetailFragment : BaseFragment() {
         viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
             if (data.account == "") {
                 qr_bottom_FriendDetail.isClickable = false
-                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                qr_bottom_FriendDetail.background =
+                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).icon =
+                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
             } else {
                 qr_bottom_FriendDetail.isClickable = true
-                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                qr_bottom_FriendDetail.background =
+                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).icon =
+                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
             }
         })
+
+
+
+        binding.toolbarFriendDetail.setNavigationOnClickListener {
+            Log.d("RANO", "Klikas na horni back")
+        }
 
 
 
@@ -94,8 +107,32 @@ class FriendDetailFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val myView = binding.mainCollapsing
-        val appbar = binding.materialupAppbar
+
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when (it) {
+                    FriendDetailViewModel.Event.NavigateBack -> {
+                        Log.d("RANO", "Jdeme zpet")
+                        goBack(view)
+                    }
+                    FriendDetailViewModel.Event.GenerateQR -> {
+                    }
+                }
+            }.observeInLifecycle(viewLifecycleOwner)
+
+        binding.toolbarFriendDetail.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.delete_friend -> {
+                    Log.d("RANO", "Klikas na delete friend")
+                }
+                R.id.generateQR -> {
+                    navigateToQR(view)
+                    Log.d("RANO", "Klikas na generate QR")
+                }
+            }
+            true
+        }
+
 
     }
 
@@ -103,16 +140,13 @@ class FriendDetailFragment : BaseFragment() {
         Log.d("TRPOS", "Tady je offset pro obrazek " + offset)
         ivUserAvatar.apply {
             this.layoutParams.also {
-                it.height = (avatar_normalHeight-(offset*110)).toInt()
-                Log.d("TRPOS", "height y mel bejt " + (avatar_normalHeight - (offset * 50)).toInt())
-                it.width = (avatar_normalwidth-(offset*110)).toInt()
-                Log.d("TRPOS", "width y mel bejt " + (avatar_normalHeight - (offset * 50)).toInt())
-
+                it.height = (avatar_normalHeight - (offset * 150)).toInt()
+                it.width = (avatar_normalwidth - (offset * 150)).toInt()
                 this.layoutParams = it
             }
         }
 
-        if(offset > 0.5) {
+        if (offset > 0.5) {
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpFriendDetail.visibility = View.INVISIBLE
             binding.btnBackBottomFriendDetail.visibility = View.VISIBLE
@@ -126,6 +160,14 @@ class FriendDetailFragment : BaseFragment() {
     }
 
 
+    private fun goBack(view: View) {
+        Navigation.findNavController(view)
+            .navigate(R.id.action_friendDetailFragment_to_friendsOverViewFragment)
+    }
 
+    private fun navigateToQR(view: View) {
+        Navigation.findNavController(view)
+            .navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
+    }
 
 }

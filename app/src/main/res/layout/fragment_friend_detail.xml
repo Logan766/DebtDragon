@@ -12,6 +12,7 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -132,18 +133,18 @@
             <FrameLayout
                 android:id="@+id/materialup.tabs"
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_height="90dp">
 
-                <com.google.android.material.textview.MaterialTextView
+                <ImageButton
                     android:id="@+id/btn_back_bottom_FriendDetail"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
+                    android:onClick="@{()-> viewmodel.onBackPressed()}"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="ahoj ahoj"
-                    android:drawableStart="@drawable/ic_baseline_arrow_back_24"
+                    android:src="@drawable/ic_baseline_arrow_back_24"
                     android:background="?attr/selectableItemBackgroundBorderless"
                      />
 
