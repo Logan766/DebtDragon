@@ -1,18 +1,22 @@
 package tech.janhoracek.debtdragon.friends.ui
 
+import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import androidx.core.view.marginTop
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.android.synthetic.main.fragment_friend_detail.*
+import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
+import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import kotlin.math.abs
 
@@ -69,6 +73,22 @@ class FriendDetailFragment : BaseFragment() {
             binding.materialupAppbar.setExpanded(false, true)
         }
 
+        viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
+            if (data.account == "") {
+                qr_bottom_FriendDetail.isClickable = false
+                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
+            } else {
+                qr_bottom_FriendDetail.isClickable = true
+                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
+            }
+        })
+
+
+
         return binding.root
     }
 
@@ -104,6 +124,7 @@ class FriendDetailFragment : BaseFragment() {
             binding.qrBottomFriendDetail.visibility = View.GONE
         }
     }
+
 
 
 

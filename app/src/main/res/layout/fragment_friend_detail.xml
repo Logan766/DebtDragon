@@ -30,7 +30,7 @@
                 app:layout_scrollFlags="scroll|snap">
 
                 <com.google.android.material.appbar.MaterialToolbar
-
+                    android:id="@+id/toolbar_FriendDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:menu="@menu/friend_detail_menu"
@@ -134,13 +134,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
-                <ImageView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_back_bottom_FriendDetail"
-                    android:layout_width="25dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
-                    android:background="@drawable/ic_baseline_arrow_back_24" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="ahoj ahoj"
+                    android:drawableStart="@drawable/ic_baseline_arrow_back_24"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                     />
 
                 <ImageView
                     android:id="@+id/qr_bottom_FriendDetail"
