@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.compose.ui.node.getOrAddAdapter
+import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -49,16 +51,15 @@ class AddEditDebtFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val args: AddEditDebtFragmentArgs by navArgs()
+
         binding = FragmentAddEditDebtBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
-        val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-
-        /*val adapteros = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        binding.dropdownMenuTextPayerAddEditTask.setAdapter(adapteros)*/
-
+        binding.toolbarDebtDetail.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         binding.btnSaveAddEditDebtFragment.setOnClickListener {
             Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
@@ -66,11 +67,32 @@ class AddEditDebtFragment : BaseFragment() {
             //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)
         }
 
+        setTitle(args.debtId)
+        setIcons(args.debtId)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setTitle(debtId: String?) {
+        if(debtId == null) {
+            binding.toolbarDebtDetail.title = "Založit dluh"
+        } else {
+            binding.toolbarDebtDetail.title = "Detail dluhu"
+        }
+    }
+
+    private fun setIcons(debtId: String?) {
+        if(debtId == null) {
+            for (item in 0 until binding.toolbarDebtDetail.menu.size) {
+                binding.toolbarDebtDetail.menu.getItem(item).isVisible = false
+            }
+        } else {
+
+        }
     }
 
 }

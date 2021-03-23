@@ -25,13 +25,19 @@ class AddEditDebtViewModel: BaseViewModel() {
     private lateinit var friendshipData: FriendshipModel
     private lateinit var friendName: String
 
-    val debtData = MutableLiveData<DebtModel>()
+    var debtData = MutableLiveData<DebtModel>()
 
     val categoryList = MutableLiveData<List<String>>()
+    val payerList = MutableLiveData<List<String>>()
 
-    val dropDownList = MutableLiveData<List<String>>()
+    val debtId = MutableLiveData<String>()
+    val debtName = MutableLiveData<String>()
+    val debtValue = MutableLiveData<String>()
+    val debtDescription = MutableLiveData<String>()
+    val debtImage = MutableLiveData<String>()
+    val debtPayer = MutableLiveData<String>()
+    val category = MutableLiveData<String>()
 
-    val payerList = MutableLiveData<ArrayList<String>>()
 
 
 
@@ -54,6 +60,7 @@ class AddEditDebtViewModel: BaseViewModel() {
         categoryList.value = categoryItems
 
         val payerNames = listOf("Já", friendName)
+        payerList.value = payerNames
 
         if (debtId == null) {
             Log.d("VALECEK", "Je to novej task")
@@ -63,15 +70,6 @@ class AddEditDebtViewModel: BaseViewModel() {
             //edit debt
             //test.value = "STARY"
         }
-
-
-
-
-        val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-        dropDownList.value = items
-
-
-
     }
 
     fun onSaveClick() {

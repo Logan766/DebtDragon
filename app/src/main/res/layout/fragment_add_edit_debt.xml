@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
+                android:id="@+id/toolbar_DebtDetail"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 app:menu="@menu/debt_friend_addedit_menu"
                 app:navigationIcon="?attr/homeAsUpIndicator"
@@ -61,7 +61,8 @@
                         />
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:src="@drawable/avatar_profileavatar"
+                        app:imageUrl="@{viewmodel.debtImage}"
+                        app:placeholder="@{@drawable/avatar_profileavatar}"
                         android:layout_width="140dp"
                         app:civ_border_width="3dp"
                         app:civ_border_color="@color/main"
@@ -84,7 +85,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pivo"
+                        android:text="@={viewmodel.debtName}"
                         app:helperTextEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,14 +97,13 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Částka"
-                    app:errorText="@{viewmodel.test}"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:text="500"
+                        android:text="@={viewmodel.debtValue}"
                         app:helperTextEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,11 +116,12 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Plátce"
+                    app:errorText="@{viewmodel.test}"
                     app:errorEnabled="true">
 
                     <AutoCompleteTextView
                         android:id="@+id/dropdown_menu_text_payer_AddEditTask"
-                        app:entries="@{viewmodel.dropDownList}"
+                        app:entries="@{viewmodel.payerList}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -135,6 +136,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Kategorie"
+
                     app:errorEnabled="true">
 
                     <AutoCompleteTextView
@@ -153,12 +155,13 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Popis"
+
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Ahoj"
+                        android:text="@={viewmodel.debtDescription}"
                         app:helperTextEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 

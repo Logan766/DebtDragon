@@ -11,6 +11,7 @@ import androidx.core.view.marginTop
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
@@ -95,7 +96,7 @@ class FriendDetailFragment : BaseFragment() {
 
 
         binding.toolbarFriendDetail.setNavigationOnClickListener {
-            Log.d("RANO", "Klikas na horni back")
+            findNavController().navigateUp()
         }
 
 

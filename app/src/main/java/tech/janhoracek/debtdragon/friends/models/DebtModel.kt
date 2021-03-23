@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.friends.models
 
 data class DebtModel(
     val id: String = "",
+    val value: Int = 0,
     val name: String = "",
     val description: String = "",
     val img: String = "",
