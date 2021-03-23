@@ -79,10 +79,8 @@ class FriendDetailFragment : BaseFragment() {
         viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
             if (data.account == "") {
                 qr_bottom_FriendDetail.isClickable = false
-                qr_bottom_FriendDetail.background =
-                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-                binding.toolbarFriendDetail.menu.getItem(1).icon =
-                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
             } else {
                 qr_bottom_FriendDetail.isClickable = true
@@ -111,11 +109,11 @@ class FriendDetailFragment : BaseFragment() {
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
-                    FriendDetailViewModel.Event.NavigateBack -> {
-                        Log.d("RANO", "Jdeme zpet")
-                        goBack(view)
-                    }
-                    FriendDetailViewModel.Event.GenerateQR -> {
+                    FriendDetailViewModel.Event.NavigateBack -> { goBack(view) }
+                    FriendDetailViewModel.Event.GenerateQR -> { }
+                    is FriendDetailViewModel.Event.CreateEditDebt -> {
+                        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID, viewModel.friendshipData.value!!)
+                        Navigation.findNavController(view).navigate(action)
                     }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
@@ -161,13 +159,11 @@ class FriendDetailFragment : BaseFragment() {
 
 
     private fun goBack(view: View) {
-        Navigation.findNavController(view)
-            .navigate(R.id.action_friendDetailFragment_to_friendsOverViewFragment)
+        Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_friendsOverViewFragment)
     }
 
     private fun navigateToQR(view: View) {
-        Navigation.findNavController(view)
-            .navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
+        Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
     }
 
 }

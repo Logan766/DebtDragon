@@ -193,6 +193,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:elevation="8dp"
+            android:onClick="@{() -> viewmodel.onAddDebtPressed()}"
             android:src="@drawable/ic_baseline_add_24" />
 
         <de.hdodenhof.circleimageview.CircleImageView

@@ -72,11 +72,18 @@
     </fragment>
     <fragment
         android:id="@+id/addEditDebtFragment"
-        android:name="tech.janhoracek.debtdragon.AddEditDebtFragment"
+        android:name="tech.janhoracek.debtdragon.friends.ui.AddEditDebtFragment"
         android:label="fragment_add_edit_debt"
         tools:layout="@layout/fragment_add_edit_debt" >
         <action
             android:id="@+id/action_addEditDebtFragment_to_friendDetailFragment"
             app:destination="@id/friendDetailFragment" />
+        <argument
+            android:name="debtId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="friendshipData"
+            app:argType="tech.janhoracek.debtdragon.friends.models.FriendshipModel" />
     </fragment>
 </navigation>
