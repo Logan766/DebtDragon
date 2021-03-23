@@ -57,18 +57,26 @@ class AddEditDebtFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setTitle(args.debtId)
+        setIcons(args.debtId)
+
         binding.toolbarDebtDetail.setNavigationOnClickListener {
+            viewModel.onCleared()
+            onDestroy()
             findNavController().navigateUp()
         }
 
         binding.btnSaveAddEditDebtFragment.setOnClickListener {
-            Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
+            viewModel.saveToDatabase("Tohle je URL", binding.dropdownMenuTextPayerAddEditTask.text.toString(), binding.dropdownMenuTextCategoryAddEditTask.text.toString())
+
+        /*Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
             binding.dropdownMenuTextPayerAddEditTask.setText("AHOJ", false)
-            //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)
+            //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)*/
         }
 
-        setTitle(args.debtId)
-        setIcons(args.debtId)
+
+
+
 
         return binding.root
     }

@@ -79,7 +79,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Název"
-                    app:errorText="@{viewmodel.test}"
+                    app:errorText="@{viewmodel.nameError}"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -97,6 +97,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Částka"
+                    app:errorText="@{viewmodel.valueError}"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -116,7 +117,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Plátce"
-                    app:errorText="@{viewmodel.test}"
+                    app:errorText="@{viewmodel.payerError}"
                     app:errorEnabled="true">
 
                     <AutoCompleteTextView
@@ -136,10 +137,11 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Kategorie"
-
+                    app:errorText="@{viewmodel.categoryError}"
                     app:errorEnabled="true">
 
                     <AutoCompleteTextView
+                        android:id="@+id/dropdown_menu_text_category_AddEditTask"
                         app:entries="@{viewmodel.categoryList}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
