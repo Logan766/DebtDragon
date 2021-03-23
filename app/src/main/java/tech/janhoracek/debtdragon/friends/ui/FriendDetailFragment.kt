@@ -91,10 +91,8 @@ class FriendDetailFragment : BaseFragment() {
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
             } else {
                 qr_bottom_FriendDetail.isClickable = true
-                qr_bottom_FriendDetail.background =
-                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-                binding.toolbarFriendDetail.menu.getItem(1).icon =
-                    resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
             }
         })

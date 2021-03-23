@@ -14,11 +14,14 @@ import android.widget.Toast
 import androidx.compose.ui.node.getOrAddAdapter
 import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.DialogAddFriendBinding
 import tech.janhoracek.debtdragon.databinding.FragmentAddEditDebtBinding
@@ -26,6 +29,7 @@ import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
 import tech.janhoracek.debtdragon.friends.viewmodels.AddFriendDialogViewModel
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 
 class AddEditDebtFragment : BaseFragment() {
@@ -77,6 +81,7 @@ class AddEditDebtFragment : BaseFragment() {
         }
 
         binding.btnSaveAddEditDebtFragment.setOnClickListener {
+            (activity as MainActivity).showLoading()
             viewModel.saveToDatabase("Tohle je URL", binding.dropdownMenuTextPayerAddEditTask.text.toString(), binding.dropdownMenuTextCategoryAddEditTask.text.toString())
 
         /*Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
@@ -100,6 +105,17 @@ class AddEditDebtFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when (it) {
+                    AddEditDebtViewModel.Event.NavigateBack -> {
+                        (activity as MainActivity).hideLoading()
+                        findNavController().navigateUp()
+                    }
+                    AddEditDebtViewModel.Event.SaveDebt -> {}
+                    //is FriendDetailViewModel.Event.CreateEditDebt -> {}
+                }
+            }.observeInLifecycle(viewLifecycleOwner)
     }
 
     private fun setTitle(debtId: String?) {
@@ -136,7 +152,7 @@ class AddEditDebtFragment : BaseFragment() {
 
             var inputstream = requireContext().contentResolver.openInputStream(fileUri!!)
             var byteArray = inputstream!!.readBytes()
-            //viewModel.warehouseProfilePhoto.value = byteArray
+            viewModel.debtProfilePhoto.value = byteArray
 
 //            You can get File object from intent
 //            val file:File = ImagePicker.getFile(data)!!
@@ -151,6 +167,11 @@ class AddEditDebtFragment : BaseFragment() {
 
         //skryje loading overlay
         //(activity as MainActivity).hideLoading()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (activity as MainActivity).hideLoading()
     }
 
 

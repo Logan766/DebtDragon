@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon.friends.viewmodels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +21,7 @@ import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformCategoryToDatabaseString
+import java.lang.Exception
 
 class AddEditDebtViewModel : BaseViewModel() {
 
@@ -27,7 +29,7 @@ class AddEditDebtViewModel : BaseViewModel() {
     private lateinit var friendName: String
     private lateinit var friendId: String
 
-    var debtData = MutableLiveData<DebtModel>()
+    private lateinit var debtData: DebtModel
 
     val categoryList = MutableLiveData<List<String>>()
     val payerList = MutableLiveData<List<String>>()
@@ -53,7 +55,7 @@ class AddEditDebtViewModel : BaseViewModel() {
     val categoryError: LiveData<String> get() = _categoryError
 
 
-    val test = MutableLiveData<String>("")
+    var debtProfilePhoto = MutableLiveData<ByteArray>()
 
     sealed class Event {
         object NavigateBack : Event()
@@ -104,6 +106,30 @@ class AddEditDebtViewModel : BaseViewModel() {
             Log.d("RANO", "Platce jest: " + payerId)
             Log.d("RANO", "Kategorie jest: " + transformCategoryToDatabaseString(category))
             Log.d("RANO", "Popis jest: " + debtDescription.value)
+
+            GlobalScope.launch(IO) {
+
+                try {
+                    var profileImageURL: Uri? = null
+                    val debtRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document()
+                    if(debtProfilePhoto.value != null) {
+                        try {
+                            storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").putBytes(debtProfilePhoto.value!!).await()
+                            profileImageURL = storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").downloadUrl.await()
+                        } catch (e: Exception) {
+                            Log.d("STRG", e.message.toString())
+                        }
+
+                    }
+                    val debtDetails = DebtModel(debtRef.id, debtValue.value!!.toInt(), debtName.value!!, debtDescription.value!!, profileImageURL?.toString() ?: "", payerId, transformCategoryToDatabaseString(category), Timestamp.now())
+                    debtRef.set(debtDetails).await()
+                    eventChannel.send(Event.NavigateBack)
+
+                } catch (e: Exception) {
+                    Log.d("DTBS", e.message.toString() )
+                }
+
+            }
         }
     }
 
