@@ -112,7 +112,7 @@ class FriendDetailFragment : BaseFragment() {
                     FriendDetailViewModel.Event.NavigateBack -> { goBack(view) }
                     FriendDetailViewModel.Event.GenerateQR -> { }
                     is FriendDetailViewModel.Event.CreateEditDebt -> {
-                        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID, viewModel.friendshipData.value!!)
+                        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID, viewModel.friendshipData.value!!, viewModel.friendData.value!!.name)
                         Navigation.findNavController(view).navigate(action)
                     }
                 }

@@ -85,5 +85,8 @@
         <argument
             android:name="friendshipData"
             app:argType="tech.janhoracek.debtdragon.friends.models.FriendshipModel" />
+        <argument
+            android:name="friendName"
+            app:argType="string" />
     </fragment>
 </navigation>

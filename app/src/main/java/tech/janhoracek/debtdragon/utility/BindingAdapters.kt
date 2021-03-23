@@ -2,10 +2,17 @@ package tech.janhoracek.debtdragon.utility
 
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
+import tech.janhoracek.debtdragon.R
 
 
 object BindingAdapters {
@@ -31,6 +38,15 @@ object BindingAdapters {
             Glide.with(image.context).load(placeHolder).into(image)
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("app:entries")
+    fun setAdapter(view: AutoCompleteTextView, entries: List<String>?) {
+        view.setAdapter(ArrayAdapter(view.context, R.layout.list_item, entries!!))
+    }
+
+
+
 
 
 }

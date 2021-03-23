@@ -3,19 +3,37 @@ package tech.janhoracek.debtdragon.friends.viewmodels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.DebtModel
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
+import tech.janhoracek.debtdragon.friends.models.FriendshipModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
+import tech.janhoracek.debtdragon.utility.Constants
 
 class AddEditDebtViewModel: BaseViewModel() {
 
-    private val _debtData = MutableLiveData<FriendDetailModel>()
-    val debtData: LiveData<FriendDetailModel> get() = _debtData
+    private lateinit var friendshipData: FriendshipModel
+    private lateinit var friendName: String
 
-    private val _payerList = MutableLiveData<ArrayList<String>>()
-    val payerList: LiveData<ArrayList<String>> get() = _payerList
+    val debtData = MutableLiveData<DebtModel>()
+
+    val categoryList = MutableLiveData<List<String>>()
+
+    val dropDownList = MutableLiveData<List<String>>()
+
+    val payerList = MutableLiveData<ArrayList<String>>()
+
+
 
     val test = MutableLiveData<String>("")
 
@@ -28,7 +46,15 @@ class AddEditDebtViewModel: BaseViewModel() {
     val eventsFlow = eventChannel.receiveAsFlow()
 
 
-    fun setData(debtId: String?) {
+    fun setData(debtId: String?, friendshipData: FriendshipModel, friendName: String) {
+        this.friendshipData = friendshipData
+        this.friendName = friendName
+        val categoryItems = listOf(localized(R.string.category_food), localized(R.string.category_entertainment), localized(R.string.categroy_finance), localized(
+                    R.string.category_clothing_access),localized(R.string.category_electronics), localized(R.string.category_other))
+        categoryList.value = categoryItems
+
+        val payerNames = listOf("Já", friendName)
+
         if (debtId == null) {
             Log.d("VALECEK", "Je to novej task")
 
@@ -37,11 +63,23 @@ class AddEditDebtViewModel: BaseViewModel() {
             //edit debt
             //test.value = "STARY"
         }
+
+
+
+
+        val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
+        dropDownList.value = items
+
+
+
     }
 
-    fun createArrayList() {
-        //payerList.value!!.add("Já")
-        //payerList.value!!.add("Nějakej user")
+    fun onSaveClick() {
+        /*
+        val neco = Timestamp.now()
+        val neco2 = FieldValue.serverTimestamp()
+       Log.d("NOC", "Cas jest" + Timestamp.now().toString())*/
+
     }
 
 

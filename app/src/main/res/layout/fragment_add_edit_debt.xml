@@ -120,6 +120,7 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/dropdown_menu_text_payer_AddEditTask"
+                        app:entries="@{viewmodel.dropDownList}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -137,6 +138,7 @@
                     app:errorEnabled="true">
 
                     <AutoCompleteTextView
+                        app:entries="@{viewmodel.categoryList}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -151,7 +153,6 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     android:hint="Popis"
-                    app:errorText="@{viewmodel.test}"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -162,6 +163,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save_addEditDebtFragment"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_margin="16dp"

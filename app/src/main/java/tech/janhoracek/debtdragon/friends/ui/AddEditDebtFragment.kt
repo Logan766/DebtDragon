@@ -1,6 +1,7 @@
 package tech.janhoracek.debtdragon.friends.ui
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -37,7 +38,8 @@ class AddEditDebtFragment : BaseFragment() {
             Log.d("NOC", "Member 1:" + args.friendshipData.member1)
             Log.d("NOC", "Member 2:" + args.friendshipData.member2)
             Log.d("NOC", "Friendship UID:" + args.friendshipData.uid)
-            viewModel.setData(args.debtId)
+            Log.d("NOC", "Jmeno kamosa je: " + args.friendName)
+            viewModel.setData(args.debtId, args.friendshipData, args.friendName)
         }
 
 
@@ -51,13 +53,18 @@ class AddEditDebtFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.createArrayList()
 
         val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
 
-        val adapteros = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        binding.dropdownMenuTextPayerAddEditTask.setAdapter(adapteros)
+        /*val adapteros = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        binding.dropdownMenuTextPayerAddEditTask.setAdapter(adapteros)*/
 
+
+        binding.btnSaveAddEditDebtFragment.setOnClickListener {
+            Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
+            binding.dropdownMenuTextPayerAddEditTask.setText("AHOJ", false)
+            //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)
+        }
 
         return binding.root
     }
