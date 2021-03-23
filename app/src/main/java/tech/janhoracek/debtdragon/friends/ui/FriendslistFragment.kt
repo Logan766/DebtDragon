@@ -95,7 +95,7 @@ class FriendslistFragment : BaseFragment() {
     }
 
     override fun onDestroy() {
-        friendslistAdapter!!.stopListening()
+        //friendslistAdapter!!.stopListening()
         super.onDestroy()
     }
 }

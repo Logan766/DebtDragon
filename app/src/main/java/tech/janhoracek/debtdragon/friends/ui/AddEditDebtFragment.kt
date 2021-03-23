@@ -1,5 +1,7 @@
 package tech.janhoracek.debtdragon.friends.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -8,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.compose.ui.node.getOrAddAdapter
 import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import tech.janhoracek.debtdragon.R
@@ -35,13 +39,13 @@ class AddEditDebtFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             val args: AddEditDebtFragmentArgs by navArgs()
-            viewModel = ViewModelProvider(requireActivity()).get(AddEditDebtViewModel::class.java)
+            /*viewModel = ViewModelProvider(this).get(AddEditDebtViewModel::class.java)
             Log.d("NOC", "Priletel mi model a data jsou:")
             Log.d("NOC", "Member 1:" + args.friendshipData.member1)
             Log.d("NOC", "Member 2:" + args.friendshipData.member2)
             Log.d("NOC", "Friendship UID:" + args.friendshipData.uid)
             Log.d("NOC", "Jmeno kamosa je: " + args.friendName)
-            viewModel.setData(args.debtId, args.friendshipData, args.friendName)
+            viewModel.setData(args.debtId, args.friendshipData, args.friendName)*/
         }
 
 
@@ -53,6 +57,14 @@ class AddEditDebtFragment : BaseFragment() {
     ): View? {
         val args: AddEditDebtFragmentArgs by navArgs()
 
+        viewModel = ViewModelProvider(this).get(AddEditDebtViewModel::class.java)
+        Log.d("NOC", "Priletel mi model a data jsou:")
+        Log.d("NOC", "Member 1:" + args.friendshipData.member1)
+        Log.d("NOC", "Member 2:" + args.friendshipData.member2)
+        Log.d("NOC", "Friendship UID:" + args.friendshipData.uid)
+        Log.d("NOC", "Jmeno kamosa je: " + args.friendName)
+        viewModel.setData(args.debtId, args.friendshipData, args.friendName)
+
         binding = FragmentAddEditDebtBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -61,8 +73,6 @@ class AddEditDebtFragment : BaseFragment() {
         setIcons(args.debtId)
 
         binding.toolbarDebtDetail.setNavigationOnClickListener {
-            viewModel.onCleared()
-            onDestroy()
             findNavController().navigateUp()
         }
 
@@ -74,6 +84,13 @@ class AddEditDebtFragment : BaseFragment() {
             //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)*/
         }
 
+        binding.FABTakePhotoAddEditDebt.setOnClickListener {
+            ImagePicker.with(this)
+                .cropSquare() //Crop image(Optional), Check Customization for more option
+                .compress(1024)	//Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080) //Final image resolution will be less than 1080 x 1080(Optional)
+                .start()
+        }
 
 
 
@@ -102,5 +119,39 @@ class AddEditDebtFragment : BaseFragment() {
 
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //zobrazí loading overlay
+        //(activity as MainActivity).showLoading()
+
+        if (resultCode == Activity.RESULT_OK && requestCode == ImagePicker.REQUEST_CODE) {
+
+            //Image Uri will not be null for RESULT_OK
+            val fileUri = data?.data
+
+            //nastaví obrá
+           binding.debtImageAddEditDebt.setImageURI(fileUri)
+
+            var inputstream = requireContext().contentResolver.openInputStream(fileUri!!)
+            var byteArray = inputstream!!.readBytes()
+            //viewModel.warehouseProfilePhoto.value = byteArray
+
+//            You can get File object from intent
+//            val file:File = ImagePicker.getFile(data)!!
+//
+//            You can also get File Path from intent
+//            val filePath:String = ImagePicker.getFilePath(data)!!
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(requireContext(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.Canceled), Toast.LENGTH_SHORT).show()
+        }
+
+        //skryje loading overlay
+        //(activity as MainActivity).hideLoading()
+    }
+
 
 }

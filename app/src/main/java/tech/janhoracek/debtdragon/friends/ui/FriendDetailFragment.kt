@@ -39,11 +39,11 @@ class FriendDetailFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             val args: FriendDetailFragmentArgs by navArgs()
             viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
             viewModel.setData(args.userId)
-        }
+        }*/
     }
 
     override fun onCreateView(
@@ -53,11 +53,17 @@ class FriendDetailFragment : BaseFragment() {
         binding = FragmentFriendDetailBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         //val view =  inflater.inflate(R.layout.fragment_friend_detail, container, false)
+        val args: FriendDetailFragmentArgs by navArgs()
+        viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
+        if (savedInstanceState == null) {
+            viewModel.setData(args.userId)
+        }
+
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val args: FriendDetailFragmentArgs by navArgs()
+
 
         appBarLayout = binding.materialupAppbar
         ivUserAvatar = binding.materialupProfileImage

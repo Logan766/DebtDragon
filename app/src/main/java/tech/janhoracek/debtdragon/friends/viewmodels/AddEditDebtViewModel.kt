@@ -82,8 +82,6 @@ class AddEditDebtViewModel : BaseViewModel() {
 
         if (debtId == null) {
             Log.d("VALECEK", "Je to novej task")
-
-
         } else {
             //edit debt
             //test.value = "STARY"
@@ -167,6 +165,12 @@ class AddEditDebtViewModel : BaseViewModel() {
 
     public override fun onCleared() {
         super.onCleared()
+       /* debtId = MutableLiveData<String>("")
+        debtName = MutableLiveData<String>("")
+        debtValue = MutableLiveData<String>("")
+        debtDescription = MutableLiveData<String>("")
+        debtPayer = MutableLiveData<String>("")
+        category = MutableLiveData<String>("")*/
         Log.d("RANO", "Mazu data")
     }
 
