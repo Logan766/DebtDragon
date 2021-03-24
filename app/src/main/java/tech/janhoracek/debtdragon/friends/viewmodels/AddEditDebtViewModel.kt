@@ -161,14 +161,6 @@ class AddEditDebtViewModel : BaseViewModel() {
                         }
                     }
 
-                    /*val debtDetails = DebtModel(debtRef.id,
-                        debtValue.value!!.toInt(),
-                        debtName.value!!,
-                        debtDescription.value!!,
-                        profileImageURL?.toString() ?: "",
-                        payerId,
-                        transformCategoryToDatabaseString(category),
-                        Timestamp.now())*/
 
                     val debtDetails = DebtModel()
                     debtDetails.id = debtRef.id
