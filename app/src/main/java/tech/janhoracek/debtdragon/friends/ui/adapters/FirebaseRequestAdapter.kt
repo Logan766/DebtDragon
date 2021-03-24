@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -23,6 +24,8 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
     class RequestAdapterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+        val view = itemView
 
         var userName = itemView.tv_RequestItem_name
         var userImage = itemView.ImageView_request_avatar
@@ -128,6 +131,8 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
                 Log.w("MAK", "Current data null")
             }
         }
+
+        holder.view.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
         /*
         if(getItemViewType(position) == REQUEST_TYPE_SENT) {
             holder.bindToSent(name, image)

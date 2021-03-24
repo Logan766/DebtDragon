@@ -1,14 +1,15 @@
 package tech.janhoracek.debtdragon.friends.models
 
 import com.google.firebase.Timestamp
+import java.io.Serializable
 
 data class DebtModel(
-    val id: String = "",
-    val value: Int = 0,
-    val name: String = "",
-    val description: String = "",
-    val img: String = "",
-    val payer: String = "",
-    val category: String = "",
-    val timestamp: Timestamp
-)
+    var id: String = "",
+    var value: Int = 0,
+    var name: String = "",
+    var description: String = "",
+    var img: String = "",
+    var payer: String = "",
+    var category: String = "",
+    var timestamp: Timestamp = Timestamp.now()
+) : Serializable

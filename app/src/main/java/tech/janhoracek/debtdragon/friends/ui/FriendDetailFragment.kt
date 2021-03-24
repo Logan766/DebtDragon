@@ -13,22 +13,36 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
+import kotlinx.android.synthetic.main.fragment_pending_friend_requests.*
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
+import tech.janhoracek.debtdragon.friends.models.DebtModel
+import tech.janhoracek.debtdragon.friends.models.RequestModel
+import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseDebtAdapter
+import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseRequestAdapter
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
 
 class FriendDetailFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
+
     private lateinit var binding: FragmentFriendDetailBinding
     private lateinit var viewModel: FriendDetailViewModel
+    private var debtAdapter: FirebaseDebtAdapter? = null
 
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var ivUserAvatar: ImageView
@@ -110,6 +124,10 @@ class FriendDetailFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val args: FriendDetailFragmentArgs by navArgs()
+
+        setUpRecyclerView(args.userId)
+        debtAdapter!!.startListening()
 
         binding.viewmodel!!.eventsFlow
             .onEach {
@@ -169,6 +187,18 @@ class FriendDetailFragment : BaseFragment() {
 
     private fun navigateToQR(view: View) {
         Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
+    }
+
+    private fun setUpRecyclerView(friendshipID: String) {
+        val query = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS)
+        val firestoreRecyclerOptions: FirestoreRecyclerOptions<DebtModel> = FirestoreRecyclerOptions.Builder<DebtModel>()
+            .setQuery(query, DebtModel::class.java)
+            .build()
+
+        debtAdapter = FirebaseDebtAdapter(firestoreRecyclerOptions)
+
+        binding.recyclerViewFragmentFriendDetail.layoutManager = LinearLayoutManager(activity)
+        binding.recyclerViewFragmentFriendDetail.adapter = debtAdapter
     }
 
 }

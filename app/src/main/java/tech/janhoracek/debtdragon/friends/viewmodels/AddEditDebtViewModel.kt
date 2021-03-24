@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -60,6 +61,7 @@ class AddEditDebtViewModel : BaseViewModel() {
     sealed class Event {
         object NavigateBack : Event()
         object SaveDebt : Event()
+        object HideLoading: Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -130,6 +132,8 @@ class AddEditDebtViewModel : BaseViewModel() {
                 }
 
             }
+        } else {
+            GlobalScope.launch { eventChannel.send(Event.HideLoading) }
         }
     }
 

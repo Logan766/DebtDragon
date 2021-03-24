@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingVertical="18dp"
+    android:paddingVertical="16dp"
     android:paddingHorizontal="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -19,34 +20,37 @@
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_value_debtFriendItem"
         style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="500 Kč"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name_debtFriendItem"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_debtFriendItem" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_payer_debtFriendItem"
+        style="@style/TextAppearance.MaterialComponents.Subtitle2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="500 Kč"/>
+        android:text="Jmeno Příjmení"
+        android:textColor="@color/pajova"
+        app:layout_constraintBottom_toTopOf="@+id/tv_name_debtFriendItem"
+        app:layout_constraintStart_toStartOf="@+id/tv_name_debtFriendItem" />
 
-    <LinearLayout
-        app:layout_constraintStart_toEndOf="@id/image_View_DebtFriendDetail"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="20dp"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_name_debtFriendItem"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="16dp"
+        android:text="Předmět"
+        app:layout_constraintBottom_toBottomOf="@+id/image_View_DebtFriendDetail"
+        app:layout_constraintStart_toEndOf="@+id/image_View_DebtFriendDetail"
+        app:layout_constraintTop_toTopOf="@+id/image_View_DebtFriendDetail"
+        app:layout_constraintVertical_bias="0.61" />
 
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jmeno Příjmení"/>
-
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Předmět"/>
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

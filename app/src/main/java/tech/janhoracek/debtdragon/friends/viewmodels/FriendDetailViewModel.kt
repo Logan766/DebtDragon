@@ -46,7 +46,6 @@ class FriendDetailViewModel : BaseViewModel() {
                 friendshipDocument.get("member1").toString()
             }
 
-
             db.collection(Constants.DATABASE_USERS).document(friendID)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {

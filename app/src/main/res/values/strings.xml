@@ -37,4 +37,5 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="category_clothing_access">Oblečení a doplňky</string>
     <string name="category_electronics">Elektronika</string>
     <string name="category_other">Ostatní</string>
+    <string name="payer_me">Já</string>
 </resources>

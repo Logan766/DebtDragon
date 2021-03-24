@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.compose.animation.core.snap
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>):
         val friendName = itemView.tv_FriendItem2_Name
         val friendImage = itemView.CircImageView_FriendItem2
         val debtSum = itemView.tv_FriendItem2_Sum
+        val view = itemView
 
         fun bindVisibleInfo(name: String, image: String, sum: Int) {
             friendName.text = name
@@ -97,5 +99,6 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>):
                 Log.w("DATA", "Current data null")
             }
         }
+        holder.view.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 }

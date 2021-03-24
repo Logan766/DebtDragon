@@ -113,6 +113,7 @@ class AddEditDebtFragment : BaseFragment() {
                         findNavController().navigateUp()
                     }
                     AddEditDebtViewModel.Event.SaveDebt -> {}
+                    AddEditDebtViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
                     //is FriendDetailViewModel.Event.CreateEditDebt -> {}
                 }
             }.observeInLifecycle(viewLifecycleOwner)

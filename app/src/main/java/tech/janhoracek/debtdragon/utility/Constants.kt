@@ -9,6 +9,7 @@ object Constants {
     const val DATABASE_USER_IMG_URL = "url"
     const val DATABASE_USER_EMAIL = "email"
     const val DATABASE_USER_UID = "uid"
+    const val DATABASE_DEBT_PAYER = "payer"
     const val DATABASE_DEBT_CATEGORY_FOOD = "food"
     const val DATABASE_DEBT_CATEGORY_ENTERTAINMENT = "entertainment"
     const val DATABASE_DEBT_CATEGORY_FINANCE= "finance"
