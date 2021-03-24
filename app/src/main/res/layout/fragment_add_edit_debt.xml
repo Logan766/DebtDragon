@@ -58,7 +58,7 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/debt_image_AddEditDebt"
-                        app:imageUrl="@{viewmodel.debtImage}"
+                        app:imageUrl="@{viewmodel.debtImageURL}"
                         app:placeholder="@{@drawable/avatar_profileavatar}"
                         android:layout_width="140dp"
                         app:civ_border_width="3dp"

@@ -120,6 +120,10 @@ class AddEditDebtFragment : BaseFragment() {
                     AddEditDebtViewModel.Event.HideLoading -> {
                         (activity as MainActivity).hideLoading()
                     }
+                    is AddEditDebtViewModel.Event.SetDropDowns -> {
+                        binding.dropdownMenuTextPayerAddEditTask.setText(it.payer, false)
+                        binding.dropdownMenuTextCategoryAddEditTask.setText(it.category, false)
+                    }
                     //is FriendDetailViewModel.Event.CreateEditDebt -> {}
                 }
             }.observeInLifecycle(viewLifecycleOwner)

@@ -5,10 +5,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -16,12 +14,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.DebtModel
-import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
 import tech.janhoracek.debtdragon.friends.models.FriendshipModel
 import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformCategoryToDatabaseString
+import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 import java.lang.Exception
 
 class AddEditDebtViewModel : BaseViewModel() {
@@ -29,8 +27,10 @@ class AddEditDebtViewModel : BaseViewModel() {
     private lateinit var friendshipData: FriendshipModel
     private lateinit var friendName: String
     private lateinit var friendId: String
+    private var timestamp: Timestamp? = null
 
     private lateinit var debtData: DebtModel
+    private var debtID: String? = null
 
     val categoryList = MutableLiveData<List<String>>()
     val payerList = MutableLiveData<List<String>>()
@@ -39,7 +39,7 @@ class AddEditDebtViewModel : BaseViewModel() {
     val debtName = MutableLiveData<String>("")
     val debtValue = MutableLiveData<String>("")
     val debtDescription = MutableLiveData<String>("")
-    val debtImage = MutableLiveData<String>("")
+    val debtImageURL = MutableLiveData<String>("")
     val debtPayer = MutableLiveData<String>("")
     val category = MutableLiveData<String>("")
 
@@ -61,7 +61,8 @@ class AddEditDebtViewModel : BaseViewModel() {
     sealed class Event {
         object NavigateBack : Event()
         object SaveDebt : Event()
-        object HideLoading: Event()
+        object HideLoading : Event()
+        data class SetDropDowns(val payer: String, val category: String) : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -69,6 +70,7 @@ class AddEditDebtViewModel : BaseViewModel() {
 
 
     fun setData(debtId: String?, friendshipData: FriendshipModel, friendName: String) {
+        debtID = debtId
         this.friendshipData = friendshipData
         this.friendName = friendName
         if (friendshipData.member1 == auth.currentUser.uid) {
@@ -87,7 +89,36 @@ class AddEditDebtViewModel : BaseViewModel() {
         if (debtId == null) {
             Log.d("VALECEK", "Je to novej task")
         } else {
+            var debtDetails: DebtModel
+            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document(debtId)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.w("LSTNR", error.message.toString())
+                    }
+                    if (snapshot != null && snapshot.exists()) {
+                        debtDetails = snapshot.toObject(DebtModel::class.java)!!
+                        debtName.value = debtDetails.name
+                        debtDescription.value = debtDetails.description
+                        debtValue.value = debtDetails.value.toString()
+                        if (debtDetails.img.isNotEmpty()) {
+                            debtImageURL.value = debtDetails.img
+                        }
+                        val payerName = if (debtDetails.payer == auth.currentUser.uid) {
+                            "Já"
+                        } else {
+                            friendName
+                        }
 
+
+                        GlobalScope.launch {
+                            eventChannel.send(Event.SetDropDowns(payerName,
+                                transformDatabaseStringToCategory(debtDetails.category)))
+                        }
+
+                    } else {
+                        Log.w("DATA", "Current data null")
+                    }
+                }
             //test.value = "STARY"
         }
     }
@@ -113,22 +144,49 @@ class AddEditDebtViewModel : BaseViewModel() {
 
                 try {
                     var profileImageURL: Uri? = null
-                    val debtRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document()
-                    if(debtProfilePhoto.value != null) {
+                    var debtRef: DocumentReference = if(debtID == null) {
+                        db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document()
+                    } else {
+                        db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document(debtID.toString())
+                    }
+
+                    if (debtProfilePhoto.value != null) {
                         try {
-                            storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").putBytes(debtProfilePhoto.value!!).await()
-                            profileImageURL = storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").downloadUrl.await()
+                            storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}")
+                                .putBytes(debtProfilePhoto.value!!).await()
+                            profileImageURL =
+                                storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").downloadUrl.await()
                         } catch (e: Exception) {
                             Log.d("STRG", e.message.toString())
                         }
-
                     }
-                    val debtDetails = DebtModel(debtRef.id, debtValue.value!!.toInt(), debtName.value!!, debtDescription.value!!, profileImageURL?.toString() ?: "", payerId, transformCategoryToDatabaseString(category), Timestamp.now())
+
+                    /*val debtDetails = DebtModel(debtRef.id,
+                        debtValue.value!!.toInt(),
+                        debtName.value!!,
+                        debtDescription.value!!,
+                        profileImageURL?.toString() ?: "",
+                        payerId,
+                        transformCategoryToDatabaseString(category),
+                        Timestamp.now())*/
+
+                    val debtDetails = DebtModel()
+                    debtDetails.id = debtRef.id
+                    debtDetails.name = debtName.value!!
+                    debtDetails.value = debtValue.value!!.toInt()
+                    debtDetails.description = debtDescription.value!!
+                    debtDetails.payer = payerId
+                    debtDetails.category = transformCategoryToDatabaseString(category)
+                    debtDetails.img = profileImageURL?.toString() ?: debtImageURL.value!!
+                    debtDetails.timestamp = timestamp ?: Timestamp.now()
+
+
                     debtRef.set(debtDetails).await()
+
                     eventChannel.send(Event.NavigateBack)
 
                 } catch (e: Exception) {
-                    Log.d("DTBS", e.message.toString() )
+                    Log.d("DTBS", e.message.toString())
                 }
 
             }
@@ -195,12 +253,12 @@ class AddEditDebtViewModel : BaseViewModel() {
 
     public override fun onCleared() {
         super.onCleared()
-       /* debtId = MutableLiveData<String>("")
-        debtName = MutableLiveData<String>("")
-        debtValue = MutableLiveData<String>("")
-        debtDescription = MutableLiveData<String>("")
-        debtPayer = MutableLiveData<String>("")
-        category = MutableLiveData<String>("")*/
+        /* debtId = MutableLiveData<String>("")
+         debtName = MutableLiveData<String>("")
+         debtValue = MutableLiveData<String>("")
+         debtDescription = MutableLiveData<String>("")
+         debtPayer = MutableLiveData<String>("")
+         category = MutableLiveData<String>("")*/
         Log.d("RANO", "Mazu data")
     }
 
