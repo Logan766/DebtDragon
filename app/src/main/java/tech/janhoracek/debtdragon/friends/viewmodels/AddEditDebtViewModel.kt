@@ -87,7 +87,7 @@ class AddEditDebtViewModel : BaseViewModel() {
         if (debtId == null) {
             Log.d("VALECEK", "Je to novej task")
         } else {
-            //edit debt
+
             //test.value = "STARY"
         }
     }

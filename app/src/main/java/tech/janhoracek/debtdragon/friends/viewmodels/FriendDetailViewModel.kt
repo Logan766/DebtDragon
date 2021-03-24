@@ -69,7 +69,6 @@ class FriendDetailViewModel : BaseViewModel() {
                     Log.w("DATA", "Current data null")
                 }
             }
-
         }
     }
 

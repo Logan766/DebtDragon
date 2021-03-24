@@ -15,19 +15,22 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.debt_friend_item.view.*
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.DebtModel
+import tech.janhoracek.debtdragon.friends.models.FriendshipModel
+import tech.janhoracek.debtdragon.friends.ui.FriendDetailFragmentDirections
 import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.Constants
 
-class FirebaseDebtAdapter(options: FirestoreRecyclerOptions<DebtModel>) :
+class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtModel>, val mDebtListener: OnDebtClickListener):
     FirestoreRecyclerAdapter<DebtModel,FirebaseDebtAdapter.DebtViewHolder>(options){
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    class DebtViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class DebtViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
         val view = itemView
 
-        fun bindToVH(debt: DebtModel, payerName: String) {
+
+        fun bindToVH(debt: DebtModel, payerName: String, debtID: String) {
             if(debt.payer == auth.currentUser.uid) {
                 //itemView.tv_payer_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.main))
                 itemView.tv_value_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.main))
@@ -48,6 +51,10 @@ class FirebaseDebtAdapter(options: FirestoreRecyclerOptions<DebtModel>) :
 
             itemView.tv_name_debtFriendItem.text = debt.name
             itemView.tv_value_debtFriendItem.text = debt.value.toString()
+
+            itemView.setOnClickListener {
+                mDebtListener.onDebtClick(debt.id)
+            }
         }
     }
 
@@ -64,13 +71,18 @@ class FirebaseDebtAdapter(options: FirestoreRecyclerOptions<DebtModel>) :
 
             if (snapshot != null && snapshot.exists()) {
                 val payerName = snapshot.data?.get(Constants.DATABASE_USER_NAME).toString()
-                holder.bindToVH(model, payerName)
+                holder.bindToVH(model, payerName, model.id)
                 holder.view.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
             } else {
                 Log.w("MAK", "Current data null")
             }
         }
     }
+
+    interface OnDebtClickListener {
+        fun onDebtClick(debtID: String)
+    }
+
 
 
 

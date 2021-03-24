@@ -25,6 +25,7 @@ import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.DialogAddFriendBinding
 import tech.janhoracek.debtdragon.databinding.FragmentAddEditDebtBinding
+import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseDebtAdapter
 import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
 import tech.janhoracek.debtdragon.friends.viewmodels.AddFriendDialogViewModel
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
@@ -82,17 +83,19 @@ class AddEditDebtFragment : BaseFragment() {
 
         binding.btnSaveAddEditDebtFragment.setOnClickListener {
             (activity as MainActivity).showLoading()
-            viewModel.saveToDatabase("Tohle je URL", binding.dropdownMenuTextPayerAddEditTask.text.toString(), binding.dropdownMenuTextCategoryAddEditTask.text.toString())
+            viewModel.saveToDatabase("Tohle je URL",
+                binding.dropdownMenuTextPayerAddEditTask.text.toString(),
+                binding.dropdownMenuTextCategoryAddEditTask.text.toString())
 
-        /*Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
-            binding.dropdownMenuTextPayerAddEditTask.setText("AHOJ", false)
-            //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)*/
+            /*Log.d("NOC", "Text je: " + binding.dropdownMenuTextPayerAddEditTask.text.toString().isNullOrEmpty())
+                binding.dropdownMenuTextPayerAddEditTask.setText("AHOJ", false)
+                //binding.dropdownMenuTextPayerAddEditTask.setSelection(2)*/
         }
 
         binding.FABTakePhotoAddEditDebt.setOnClickListener {
             ImagePicker.with(this)
                 .cropSquare() //Crop image(Optional), Check Customization for more option
-                .compress(1024)	//Final image size will be less than 1 MB(Optional)
+                .compress(1024)    //Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080) //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
         }
@@ -112,15 +115,18 @@ class AddEditDebtFragment : BaseFragment() {
                         (activity as MainActivity).hideLoading()
                         findNavController().navigateUp()
                     }
-                    AddEditDebtViewModel.Event.SaveDebt -> {}
-                    AddEditDebtViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
+                    AddEditDebtViewModel.Event.SaveDebt -> {
+                    }
+                    AddEditDebtViewModel.Event.HideLoading -> {
+                        (activity as MainActivity).hideLoading()
+                    }
                     //is FriendDetailViewModel.Event.CreateEditDebt -> {}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
     }
 
     private fun setTitle(debtId: String?) {
-        if(debtId == null) {
+        if (debtId == null) {
             binding.toolbarDebtDetail.title = "Založit dluh"
         } else {
             binding.toolbarDebtDetail.title = "Detail dluhu"
@@ -128,7 +134,7 @@ class AddEditDebtFragment : BaseFragment() {
     }
 
     private fun setIcons(debtId: String?) {
-        if(debtId == null) {
+        if (debtId == null) {
             for (item in 0 until binding.toolbarDebtDetail.menu.size) {
                 binding.toolbarDebtDetail.menu.getItem(item).isVisible = false
             }
@@ -149,7 +155,7 @@ class AddEditDebtFragment : BaseFragment() {
             val fileUri = data?.data
 
             //nastaví obrá
-           binding.debtImageAddEditDebt.setImageURI(fileUri)
+            binding.debtImageAddEditDebt.setImageURI(fileUri)
 
             var inputstream = requireContext().contentResolver.openInputStream(fileUri!!)
             var byteArray = inputstream!!.readBytes()
@@ -174,6 +180,7 @@ class AddEditDebtFragment : BaseFragment() {
         super.onDestroy()
         (activity as MainActivity).hideLoading()
     }
+
 
 
 }

@@ -35,7 +35,7 @@ import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
 
-class FriendDetailFragment : BaseFragment() {
+class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -72,12 +72,8 @@ class FriendDetailFragment : BaseFragment() {
         if (savedInstanceState == null) {
             viewModel.setData(args.userId)
         }
-
-
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
-
 
         appBarLayout = binding.materialupAppbar
         ivUserAvatar = binding.materialupProfileImage
@@ -195,10 +191,16 @@ class FriendDetailFragment : BaseFragment() {
             .setQuery(query, DebtModel::class.java)
             .build()
 
-        debtAdapter = FirebaseDebtAdapter(firestoreRecyclerOptions)
+        debtAdapter = FirebaseDebtAdapter(firestoreRecyclerOptions, this)
+
 
         binding.recyclerViewFragmentFriendDetail.layoutManager = LinearLayoutManager(activity)
         binding.recyclerViewFragmentFriendDetail.adapter = debtAdapter
+    }
+
+    override fun onDebtClick(debtID: String) {
+        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(debtID, viewModel.friendshipData.value!!, viewModel.friendData.value!!.name)
+        findNavController().navigate(action)
     }
 
 }
