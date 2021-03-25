@@ -5,12 +5,12 @@
         android:id="@+id/edit_debt"
         android:icon="@drawable/ic_baseline_edit_24"
         android:orderInCategory="100"
-        android:title="Generovat QR"
+        android:title="Editovat dluh"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/delete_debt"
         android:icon="@drawable/ic_baseline_delete_24"
         android:orderInCategory="100"
-        android:title="Vymazat přítele"
+        android:title="Odstranit dluh"
         app:showAsAction="always" />
 </menu>

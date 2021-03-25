@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.friends.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -38,6 +39,7 @@ class AddEditDebtFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentAddEditDebtBinding
     private lateinit var viewModel: AddEditDebtViewModel
+    private var editStatus = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,7 @@ class AddEditDebtFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().window.statusBarColor = Color.parseColor("#120f38")
         val args: AddEditDebtFragmentArgs by navArgs()
 
         viewModel = ViewModelProvider(this).get(AddEditDebtViewModel::class.java)
@@ -108,6 +111,7 @@ class AddEditDebtFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setEditableFields(editStatus)
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
@@ -127,6 +131,20 @@ class AddEditDebtFragment : BaseFragment() {
                     //is FriendDetailViewModel.Event.CreateEditDebt -> {}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
+
+        binding.toolbarDebtDetail.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.edit_debt -> {
+                    Log.d("RANO", "Klikas na edit debt")
+                    manageEditButton()
+                }
+                R.id.delete_debt -> {
+                    //navigateToQR(view)
+                    Log.d("RANO", "Klikas na delete debt")
+                }
+            }
+            true
+        }
     }
 
     private fun setTitle(debtId: String?) {
@@ -183,6 +201,27 @@ class AddEditDebtFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         (activity as MainActivity).hideLoading()
+    }
+
+    private fun manageEditButton() {
+        editStatus = if(editStatus) {
+            binding.toolbarDebtDetail.menu.getItem(0).setIcon(R.drawable.ic_baseline_edit_24)
+            setEditableFields(!editStatus)
+            false
+        } else {
+            binding.toolbarDebtDetail.menu.getItem(0).setIcon(R.drawable.ic_baseline_check_24)
+            setEditableFields(!editStatus)
+            true
+
+        }
+    }
+
+    private fun setEditableFields(status: Boolean) {
+        binding.textInputNameAddEditDebt.isEnabled = status
+        binding.textInputValueAddEditDebt.isEnabled = status
+        binding.dropdownMenuTextCategoryAddEditTask.isEnabled = status
+        binding.dropdownMenuTextPayerAddEditTask.isEnabled = status
+        binding.textInputDescriptionAddEditDebt.isEnabled = status
     }
 
 

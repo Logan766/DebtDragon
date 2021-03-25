@@ -30,6 +30,7 @@ class FriendDetailViewModel : BaseViewModel() {
     sealed class Event {
         object NavigateBack : Event()
         object GenerateQR: Event()
+        object CreatePayment: Event()
         data class CreateEditDebt(val debtID: String?): Event()
     }
 
@@ -81,6 +82,14 @@ class FriendDetailViewModel : BaseViewModel() {
     fun onAddDebtPressed() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.CreateEditDebt(null))}
+    }
+
+    fun onGenerateQRPressed() {
+        GlobalScope.launch(Main) { eventChannel.send(Event.GenerateQR) }
+    }
+
+    fun onCreatePaymentPressed() {
+
     }
 
 }

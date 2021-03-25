@@ -16,11 +16,13 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_DebtDetail"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                android:outlineProvider="none"
+                android:elevation="1dp"
                 app:menu="@menu/debt_friend_addedit_menu"
                 app:navigationIcon="?attr/homeAsUpIndicator"
                 android:layout_width="match_parent"
@@ -80,6 +82,7 @@
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_name_AddEditDebt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@={viewmodel.debtName}"
@@ -98,6 +101,7 @@
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_value_AddEditDebt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
@@ -158,6 +162,7 @@
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_description_AddEditDebt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@={viewmodel.debtDescription}"

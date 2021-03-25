@@ -13,4 +13,10 @@
         android:orderInCategory="100"
         android:title="Generovat QR"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/createPayment"
+        android:icon="@drawable/ic_baseline_payments_24"
+        android:orderInCategory="100"
+        android:title="Vytvořit splátku"
+        app:showAsAction="ifRoom" />
 </menu>

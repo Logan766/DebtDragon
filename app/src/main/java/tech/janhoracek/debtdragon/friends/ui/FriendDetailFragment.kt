@@ -96,7 +96,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
             if (data.account == "") {
                 qr_bottom_FriendDetail.isClickable = false
-                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
+                //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
             } else {
@@ -129,11 +130,12 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             .onEach {
                 when (it) {
                     FriendDetailViewModel.Event.NavigateBack -> { goBack(view) }
-                    FriendDetailViewModel.Event.GenerateQR -> { }
+                    FriendDetailViewModel.Event.GenerateQR -> { navigateToQR(view) }
                     is FriendDetailViewModel.Event.CreateEditDebt -> {
                         val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID, viewModel.friendshipData.value!!, viewModel.friendData.value!!.name)
                         Navigation.findNavController(view).navigate(action)
                     }
+                    FriendDetailViewModel.Event.CreatePayment -> {}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
@@ -145,6 +147,9 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                 R.id.generateQR -> {
                     navigateToQR(view)
                     Log.d("RANO", "Klikas na generate QR")
+                }
+                R.id.createPayment -> {
+                    navigateToCreatePayment(view)
                 }
             }
             true
@@ -168,11 +173,13 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             binding.lottieArrowUpFriendDetail.visibility = View.INVISIBLE
             binding.btnBackBottomFriendDetail.visibility = View.VISIBLE
             binding.qrBottomFriendDetail.visibility = View.VISIBLE
+            binding.paymentBottomFriendDetail.visibility = View.VISIBLE
         } else {
             requireActivity().window.statusBarColor = Color.parseColor("#83173d")
             binding.lottieArrowUpFriendDetail.visibility = View.VISIBLE
             binding.btnBackBottomFriendDetail.visibility = View.GONE
             binding.qrBottomFriendDetail.visibility = View.GONE
+            binding.paymentBottomFriendDetail.visibility = View.GONE
         }
     }
 
@@ -183,6 +190,10 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
     private fun navigateToQR(view: View) {
         Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
+    }
+
+    private fun navigateToCreatePayment(view: View) {
+        Log.d("LETY", "Klikas na create payment")
     }
 
     private fun setUpRecyclerView(friendshipID: String) {
