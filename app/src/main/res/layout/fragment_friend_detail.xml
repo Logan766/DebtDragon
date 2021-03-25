@@ -72,11 +72,12 @@
                         android:textColor="@android:color/white" />
 
                     <TextView
+                        android:id="@+id/tv_debt_summary_FriendDetailFragment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
-                        android:text="Přítel vám dluží 500 Kč"
+                        android:text="@{viewmodel.debtSummary}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textColor="@android:color/white" />
 

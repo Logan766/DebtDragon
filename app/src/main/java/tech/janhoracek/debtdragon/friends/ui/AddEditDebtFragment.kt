@@ -103,15 +103,12 @@ class AddEditDebtFragment : BaseFragment() {
                 .start()
         }
 
-
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setEditableFields(editStatus)
+        //setEditableFields(editStatus)
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
@@ -161,7 +158,7 @@ class AddEditDebtFragment : BaseFragment() {
                 binding.toolbarDebtDetail.menu.getItem(item).isVisible = false
             }
         } else {
-
+            setEditableFields(false)
         }
     }
 
