@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.navGraphViewModels
+import com.github.mikephil.charting.data.PieData
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailSummaryGraphBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
@@ -35,10 +36,25 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
         viewModel.debtSummary.observe(viewLifecycleOwner, Observer {
             binding.tvGrafTest.text = it
         })
+
+        viewModel.pieData.observe(viewLifecycleOwner, Observer { pieData ->
+            setupPie(pieData)
+        })
+
         //viewModel = ViewModelProvider(requireParentFragment()).get(FriendDetailViewModel::class.java)
         Log.d("SUTR", "Vracim tady promenou: " + viewModel.debtSummary.value)
         Log.d("SUTR", "Vracim tady rodice: " + requireParentFragment())
         return binding.root
+    }
+
+    private fun setupPie(pieData: PieData) {
+        Log.d("KOLAC", "Sypu data do kolace")
+        binding.pieChartFriendDetailChildFragment.setUsePercentValues(true)
+        binding.pieChartFriendDetailChildFragment.animateY(500)
+        binding.pieChartFriendDetailChildFragment.legend.isEnabled = false
+        binding.pieChartFriendDetailChildFragment.data = pieData
+        binding.pieChartFriendDetailChildFragment.notifyDataSetChanged()
+        binding.pieChartFriendDetailChildFragment.invalidate()
     }
 
 }
