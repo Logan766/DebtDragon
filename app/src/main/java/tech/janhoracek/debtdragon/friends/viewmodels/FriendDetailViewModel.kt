@@ -3,12 +3,14 @@ package tech.janhoracek.debtdragon.friends.viewmodels
 import android.graphics.Color.rgb
 import android.util.Log
 import androidx.compose.animation.core.snap
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -185,6 +187,8 @@ class FriendDetailViewModel : BaseViewModel() {
 
         val pieDataSet = PieDataSet(listPie, "")
         pieDataSet.colors = listColors
+        pieDataSet.valueTextSize = 11F
+        pieDataSet.valueTextColor = rgb(255, 255, 255)
 
         _pieData.value = PieData(pieDataSet)
 

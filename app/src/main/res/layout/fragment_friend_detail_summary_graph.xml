@@ -12,6 +12,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="20dp"
         >
 
         <com.github.mikephil.charting.charts.PieChart
@@ -21,10 +22,12 @@
 
         <TextView
             android:id="@+id/tv_graf_test"
+            android:layout_marginBottom="35dp"
+            android:text="Poměr vašich dluhů"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="24sp" />
+            android:layout_gravity="center|bottom"
+            android:textSize="12sp" />
 
     </FrameLayout>
 </layout>

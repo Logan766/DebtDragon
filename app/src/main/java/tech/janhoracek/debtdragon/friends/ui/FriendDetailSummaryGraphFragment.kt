@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.res.colorResource
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,9 +34,9 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendDetailSummaryGraphBinding.inflate(inflater, container, false)
-        viewModel.debtSummary.observe(viewLifecycleOwner, Observer {
+        /*viewModel.debtSummary.observe(viewLifecycleOwner, Observer {
             binding.tvGrafTest.text = it
-        })
+        })*/
 
         viewModel.pieData.observe(viewLifecycleOwner, Observer { pieData ->
             setupPie(pieData)
@@ -49,10 +50,16 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
 
     private fun setupPie(pieData: PieData) {
         Log.d("KOLAC", "Sypu data do kolace")
+        binding.pieChartFriendDetailChildFragment.description.isEnabled = false
+        binding.pieChartFriendDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))
+        binding.pieChartFriendDetailChildFragment.transparentCircleRadius = 0F
         binding.pieChartFriendDetailChildFragment.setUsePercentValues(true)
         binding.pieChartFriendDetailChildFragment.animateY(500)
         binding.pieChartFriendDetailChildFragment.legend.isEnabled = false
         binding.pieChartFriendDetailChildFragment.data = pieData
+        binding.pieChartFriendDetailChildFragment.maxAngle = 270F
+        binding.pieChartFriendDetailChildFragment.rotationAngle = 135F
+        binding.pieChartFriendDetailChildFragment.isRotationEnabled = false
         binding.pieChartFriendDetailChildFragment.notifyDataSetChanged()
         binding.pieChartFriendDetailChildFragment.invalidate()
     }
