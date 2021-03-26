@@ -1,0 +1,44 @@
+package tech.janhoracek.debtdragon.friends.ui
+
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.navGraphViewModels
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailSummaryGraphBinding
+import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
+import tech.janhoracek.debtdragon.utility.BaseFragment
+
+
+class FriendDetailSummaryGraphFragment : BaseFragment() {
+
+    override var bottomNavigationViewVisibility = View.GONE
+    private lateinit var binding: FragmentFriendDetailSummaryGraphBinding
+    //private lateinit var viewModel: FriendDetailViewModel
+    val viewModel by viewModels<FriendDetailViewModel>({requireParentFragment()})
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentFriendDetailSummaryGraphBinding.inflate(inflater, container, false)
+        viewModel.debtSummary.observe(viewLifecycleOwner, Observer {
+            binding.tvGrafTest.text = it
+        })
+        //viewModel = ViewModelProvider(requireParentFragment()).get(FriendDetailViewModel::class.java)
+        Log.d("SUTR", "Vracim tady promenou: " + viewModel.debtSummary.value)
+        Log.d("SUTR", "Vracim tady rodice: " + requireParentFragment())
+        return binding.root
+    }
+
+}

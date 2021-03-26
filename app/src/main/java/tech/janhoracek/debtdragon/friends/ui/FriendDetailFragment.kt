@@ -8,11 +8,14 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.core.view.marginTop
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
@@ -27,6 +30,7 @@ import tech.janhoracek.debtdragon.friends.models.DebtModel
 import tech.janhoracek.debtdragon.friends.models.RequestModel
 import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseDebtAdapter
 import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseRequestAdapter
+import tech.janhoracek.debtdragon.friends.ui.adapters.ViewPagerAdapter
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
@@ -41,7 +45,9 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private lateinit var binding: FragmentFriendDetailBinding
-    private lateinit var viewModel: FriendDetailViewModel
+    //private lateinit var viewModel: FriendDetailViewModel
+    //val viewModel: FriendDetailViewModel by viewModels<FriendDetailViewModel>({requireParentFragment().requireParentFragment()})
+    val viewModel by viewModels<FriendDetailViewModel>()
     private var debtAdapter: FirebaseDebtAdapter? = null
 
     private lateinit var appBarLayout: AppBarLayout
@@ -58,6 +64,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
             viewModel.setData(args.userId)
         }*/
+        Log.d("SUTR", "Vracim tady sebe: " + this)
     }
 
     override fun onCreateView(
@@ -68,7 +75,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         // Inflate the layout for this fragment
         //val view =  inflater.inflate(R.layout.fragment_friend_detail, container, false)
         val args: FriendDetailFragmentArgs by navArgs()
-        viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
+        //viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
         if (savedInstanceState == null) {
             viewModel.setData(args.userId)
         }
@@ -81,6 +88,14 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         avatar_normalwidth = ivUserAvatar.layoutParams.width
         avatar_normalHeight = ivUserAvatar.layoutParams.height
         avatar_normalTopMargin = ivUserAvatar.marginTop
+
+        val graphList = arrayListOf<Fragment>(
+            FriendDetailSummaryGraphFragment(),
+            FriendDetailCategoryGraphFragment()
+        )
+
+        val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
+        binding.viewPagerGraphFriendDetailFragment.adapter = graphAdapter
 
         appBarLayout.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, icko ->
