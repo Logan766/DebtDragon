@@ -43,6 +43,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    var offsetStatus = true
 
     private lateinit var binding: FragmentFriendDetailBinding
     //private lateinit var viewModel: FriendDetailViewModel
@@ -89,6 +90,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         avatar_normalHeight = ivUserAvatar.layoutParams.height
         avatar_normalTopMargin = ivUserAvatar.marginTop
 
+        binding.materialupAppbar.setExpanded(offsetStatus, false)
+
         val graphList = arrayListOf<Fragment>(
             FriendDetailSummaryGraphFragment(),
             FriendDetailCategoryGraphFragment()
@@ -96,6 +99,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
         val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
         binding.viewPagerGraphFriendDetailFragment.adapter = graphAdapter
+        binding.springDotsIndicator.setViewPager2(binding.viewPagerGraphFriendDetailFragment)
 
         appBarLayout.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, icko ->
@@ -186,15 +190,19 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         if (offset > 0.5) {
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpFriendDetail.visibility = View.INVISIBLE
+            binding.springDotsIndicator.visibility = View.INVISIBLE
             binding.btnBackBottomFriendDetail.visibility = View.VISIBLE
             binding.qrBottomFriendDetail.visibility = View.VISIBLE
             binding.paymentBottomFriendDetail.visibility = View.VISIBLE
+            offsetStatus = false
         } else {
             requireActivity().window.statusBarColor = Color.parseColor("#83173d")
             binding.lottieArrowUpFriendDetail.visibility = View.VISIBLE
+            binding.springDotsIndicator.visibility = View.VISIBLE
             binding.btnBackBottomFriendDetail.visibility = View.GONE
             binding.qrBottomFriendDetail.visibility = View.GONE
             binding.paymentBottomFriendDetail.visibility = View.GONE
+            offsetStatus = true
         }
     }
 

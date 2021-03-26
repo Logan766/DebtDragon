@@ -18,4 +18,6 @@ object Constants {
     const val DATABASE_DEBT_CATEGORY_OTHER = "other"
     const val DATABASE_DEBT_CATEGORY_PAYMENT = "payment"
     const val DATABASE_NAMES_DEBT_PROFILE_IMAGE = "debtImage.jpg"
+    const val DATABASE_DEBTS_VALUE = "value"
+    const val DATABASE_DEBTS_CATEGORY = "category"
 }

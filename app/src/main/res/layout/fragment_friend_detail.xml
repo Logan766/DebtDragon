@@ -12,9 +12,9 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/materialup.appbar"
@@ -34,10 +34,10 @@
                     android:id="@+id/toolbar_FriendDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:menu="@menu/friend_detail_menu"
+                    android:elevation="1dp"
                     android:outlineProvider="none"
-                    app:navigationIcon="?attr/homeAsUpIndicator"
-                    android:elevation="1dp"/>
+                    app:menu="@menu/friend_detail_menu"
+                    app:navigationIcon="?attr/homeAsUpIndicator" />
 
                 <ImageView
                     android:id="@+id/materialup.profile_backdrop"
@@ -83,12 +83,25 @@
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/view_pager_graph_FriendDetailFragment"
-                        android:layout_marginTop="20dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp" />
 
                 </LinearLayout>
 
+                <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+                    android:id="@+id/spring_dots_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    app:dampingRatio="0.5"
+                    app:dotsColor="@color/white"
+                    app:dotsCornerRadius="6dp"
+                    app:dotsSize="12dp"
+                    app:dotsSpacing="6dp"
+                    app:dotsStrokeColor="@color/white"
+                    app:dotsStrokeWidth="2dp"
+                    app:stiffness="300" />
 
             </FrameLayout>
 
@@ -144,36 +157,35 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
-                    android:onClick="@{()-> viewmodel.onBackPressed()}"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_baseline_arrow_back_24"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                     />
+                    android:onClick="@{()-> viewmodel.onBackPressed()}"
+                    android:src="@drawable/ic_baseline_arrow_back_24" />
 
                 <ImageButton
                     android:id="@+id/qr_bottom_FriendDetail"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical|end"
-                    android:onClick="@{()-> viewmodel.onGenerateQRPressed()}"
                     android:layout_marginEnd="66dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_baseline_qr_code_24"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:onClick="@{()-> viewmodel.onGenerateQRPressed()}"
+                    android:src="@drawable/ic_baseline_qr_code_24" />
 
                 <ImageButton
                     android:id="@+id/payment_bottom_FriendDetail"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical|end"
-                    android:onClick="@{()-> viewmodel.onCreatePaymentPressed()}"
                     android:layout_marginEnd="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_baseline_payments_24"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:onClick="@{()-> viewmodel.onCreatePaymentPressed()}"
+                    android:src="@drawable/ic_baseline_payments_24" />
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/lottie_arrow_up_FriendDetail"
@@ -218,12 +230,12 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:elevation="8dp"
-            app:imageUrl="@{viewmodel.friendData.url}"
-            app:placeholder="@{@drawable/avatar_profileavatar}"
             app:civ_border_color="@color/white"
             app:civ_border_width="3dp"
+            app:imageUrl="@{viewmodel.friendData.url}"
             app:layout_anchorGravity="top|center_horizontal"
             app:layout_scrollFlags="scroll"
+            app:placeholder="@{@drawable/avatar_profileavatar}"
 
             />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

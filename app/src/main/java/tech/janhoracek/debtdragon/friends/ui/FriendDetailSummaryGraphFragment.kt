@@ -2,15 +2,11 @@ package tech.janhoracek.debtdragon.friends.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.res.colorResource
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.navGraphViewModels
 import com.github.mikephil.charting.data.PieData
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailSummaryGraphBinding
@@ -39,7 +35,7 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
         })*/
 
         viewModel.pieData.observe(viewLifecycleOwner, Observer { pieData ->
-            setupPie(pieData)
+            setupSummaryPie(pieData)
         })
 
         //viewModel = ViewModelProvider(requireParentFragment()).get(FriendDetailViewModel::class.java)
@@ -48,7 +44,7 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
         return binding.root
     }
 
-    private fun setupPie(pieData: PieData) {
+    private fun setupSummaryPie(pieData: PieData) {
         Log.d("KOLAC", "Sypu data do kolace")
         binding.pieChartFriendDetailChildFragment.description.isEnabled = false
         binding.pieChartFriendDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))

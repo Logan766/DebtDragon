@@ -2,15 +2,13 @@ package tech.janhoracek.debtdragon.friends.viewmodels
 
 import android.graphics.Color.rgb
 import android.util.Log
-import androidx.compose.animation.core.snap
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -18,12 +16,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
-import tech.janhoracek.debtdragon.friends.models.FriendModel
 import tech.janhoracek.debtdragon.friends.models.FriendshipModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
+import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 
 
 class FriendDetailViewModel : BaseViewModel() {
@@ -37,14 +34,13 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _debtSummary = MutableLiveData<String>("Načítám")
     val debtSummary: LiveData<String> get() = _debtSummary
 
-    /*private val _debtFriendPie = MutableLiveData<Int>(0)
-    val debtFriendPie: LiveData<Int> get() = _debtFriendPie
-
-    private val _debtMyPie = MutableLiveData<Int>(0)
-    val debtMyPie: LiveData<Int> get() = _debtMyPie*/
-
     private val _pieData = MutableLiveData<PieData>()
     val pieData: LiveData<PieData> get() = _pieData
+
+    private val _pieCategoryFriendData = MutableLiveData<PieData>()
+    val pieCategoryFriendData: LiveData<PieData> get() = _pieCategoryFriendData
+
+    private val categorySummaryFriend = HashMap<String, Int>()
 
 
     sealed class Event {
@@ -101,11 +97,15 @@ class FriendDetailViewModel : BaseViewModel() {
                         var summary_net = 0
                         var myPie = 0
                         var friendPie = 0
+                        categorySummaryFriend.clear()
                         snapshot.forEach { document ->
                             if (document["payer"] == auth.currentUser.uid) {
                                 myPie += (document["value"]).toString().toInt()
+
                             } else {
+                                val categoryAndValue = retrieveValueAndCategory(document)
                                 friendPie += (document["value"]).toString().toInt()
+                                categorySummaryFriend.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
                             }
                         }
                         summary_net = myPie - friendPie
@@ -116,7 +116,8 @@ class FriendDetailViewModel : BaseViewModel() {
                         } else {
                             _debtSummary.value = "Vaše dluhy jsou vyrovnány"
                         }
-                        setupDataForPie(myPie, friendPie)
+                        setupDataForSummaryPie(myPie, friendPie)
+                        setupDataForFriendCategoryPie(categorySummaryFriend)
                     } else {
                         Log.w("DATA", "Current data null")
                     }
@@ -144,7 +145,7 @@ class FriendDetailViewModel : BaseViewModel() {
 
     }
 
-    fun setupDataForPie(myPie: Int, friendPie: Int) {
+    fun setupDataForSummaryPie(myPie: Int, friendPie: Int) {
         /*db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).addSnapshotListener { snapshot, error ->
             if (error != null) {
                 Log.w("LSTNR", "Listening failed: " + error)
@@ -192,7 +193,53 @@ class FriendDetailViewModel : BaseViewModel() {
 
         _pieData.value = PieData(pieDataSet)
 
+    }
 
+    private fun retrieveValueAndCategory(document: DocumentSnapshot): Pair<String, Int> {
+        val category = transformDatabaseStringToCategory(document[Constants.DATABASE_DEBTS_CATEGORY].toString())
+        val value = document[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
+        return Pair(category, value)
+    }
+
+    private fun setupDataForFriendCategoryPie(data: HashMap<String, Int>) {
+        val listPieFriend = ArrayList<PieEntry>()
+        val listColors = ArrayList<Int>()
+
+        for (item in data) {
+            Log.d("VALHALA", "Kategorie jsou: " + item.key + " = " + item.value)
+            listPieFriend.add(PieEntry(item.value.toFloat(), item.key))
+        }
+
+        /*listColors.add(rgb(27, 16, 56))
+        listColors.add(rgb(41, 17, 57))
+        listColors.add(rgb(58, 18, 58))
+        listColors.add(rgb(72, 19, 59))
+        listColors.add(rgb(59, 20, 60))
+        listColors.add(rgb(105, 21, 60))
+        listColors.add(rgb(120, 22, 61))*/
+
+        listColors.add(rgb(27, 16, 56))
+        listColors.add(rgb(58, 18, 58))
+        listColors.add(rgb(88, 20, 60))
+        listColors.add(rgb(120, 22, 61))
+        listColors.add(rgb(151, 25, 63))
+        listColors.add(rgb(183, 27, 64))
+        listColors.add(rgb(215, 29, 66))
+
+
+        val pieDataSet = PieDataSet(listPieFriend, "")
+        pieDataSet.colors = listColors
+        pieDataSet.valueTextSize = 11F
+        pieDataSet.valueTextColor = rgb(255, 255, 255)
+
+
+        _pieCategoryFriendData.value = PieData(pieDataSet)
+    }
+
+    private fun setupDataForUserCategoryPie(data: HashMap<String, Int>) {
+        for (item in data) {
+            Log.d("VALHALA", "Kategorie jsou: " + item.key + " = " + item.value)
+        }
     }
 
 
