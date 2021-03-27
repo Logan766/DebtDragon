@@ -1,7 +1,5 @@
 package tech.janhoracek.debtdragon.friends.ui
 
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -11,28 +9,23 @@ import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
-import kotlinx.android.synthetic.main.fragment_pending_friend_requests.*
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.friends.models.DebtModel
-import tech.janhoracek.debtdragon.friends.models.RequestModel
+import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
 import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseDebtAdapter
-import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseRequestAdapter
 import tech.janhoracek.debtdragon.friends.ui.adapters.ViewPagerAdapter
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
-import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
@@ -46,6 +39,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     var offsetStatus = true
 
     private lateinit var binding: FragmentFriendDetailBinding
+
     //private lateinit var viewModel: FriendDetailViewModel
     //val viewModel: FriendDetailViewModel by viewModels<FriendDetailViewModel>({requireParentFragment().requireParentFragment()})
     val viewModel by viewModels<FriendDetailViewModel>()
@@ -56,6 +50,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     private var avatar_normalwidth = 0
     private var avatar_normalHeight = 0
     private var avatar_normalTopMargin = 0
+
+    private var userIsDebter = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,30 +109,23 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             binding.materialupAppbar.setExpanded(false, true)
         }
 
-        viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
-            if (data.account == "") {
-                qr_bottom_FriendDetail.isClickable = false
-                qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
-                //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
-            } else {
-                qr_bottom_FriendDetail.isClickable = true
-                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
+        viewModel.debtSummaryLive.observe(viewLifecycleOwner, Observer { sliderValue ->
+            if(sliderValue != null) {
+                setupCreatePayment(sliderValue)
             }
         })
+
+        viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
+            Log.d("QRRR", "OBSERVER")
+            setupQR(data)
+        })
+
 
 
 
         binding.toolbarFriendDetail.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-
-
-
-
 
         return binding.root
     }
@@ -151,13 +140,24 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
-                    FriendDetailViewModel.Event.NavigateBack -> { goBack(view) }
-                    FriendDetailViewModel.Event.GenerateQR -> { navigateToQR(view) }
+                    FriendDetailViewModel.Event.NavigateBack -> {
+                        goBack(view)
+                    }
+                    FriendDetailViewModel.Event.GenerateQR -> {
+                        navigateToQR(view)
+                    }
                     is FriendDetailViewModel.Event.CreateEditDebt -> {
-                        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID, viewModel.friendshipData.value!!, viewModel.friendData.value!!.name)
+                        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(it.debtID,
+                            viewModel.friendshipData.value!!,
+                            viewModel.friendData.value!!.name)
                         Navigation.findNavController(view).navigate(action)
                     }
-                    FriendDetailViewModel.Event.CreatePayment -> {}
+                    FriendDetailViewModel.Event.CreatePayment -> {
+                    }
+
+                    FriendDetailViewModel.Event.SetupQRforFirstTime -> {
+                        setupQR(viewModel.friendData.value!!)
+                    }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
@@ -177,7 +177,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             true
         }
 
-        binding.paymentBottomFriendDetail.setOnClickListener{
+        binding.paymentBottomFriendDetail.setOnClickListener {
             navigateToCreatePayment(view)
         }
 
@@ -193,7 +193,6 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                 this.layoutParams = it
             }
         }
-
         if (offset > 0.5) {
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpFriendDetail.visibility = View.INVISIBLE
@@ -241,8 +240,66 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     }
 
     override fun onDebtClick(debtID: String) {
-        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(debtID, viewModel.friendshipData.value!!, viewModel.friendData.value!!.name)
+        val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(debtID,
+            viewModel.friendshipData.value!!,
+            viewModel.friendData.value!!.name)
         findNavController().navigate(action)
+    }
+
+    private fun setupQR(data: FriendDetailModel) {
+        var summary = viewModel.debtSummaryLive.value
+        Log.d("QRRR", "summary je: " + summary)
+        if (summary != null) {
+            if (data.account.isNotEmpty() && summary < 1) {
+                Log.d("QRRR", "Nastavuji QR na true")
+                qr_bottom_FriendDetail.isClickable = true
+                qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
+            } else {
+                Log.d("QRRR", "Nastavuji QR na false")
+                qr_bottom_FriendDetail.isClickable = false
+                qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
+                //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+                binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
+            }
+        }
+
+
+        /*if (data.account == "" || userIsDebter) {
+            qr_bottom_FriendDetail.isClickable = false
+            qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
+            //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+            binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
+            binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
+        } else {
+            qr_bottom_FriendDetail.isClickable = true
+            qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+            binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
+            binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
+        }*/
+    }
+
+    private fun setupCreatePayment(sliderValue: Int) {
+        Log.d("QRRR", "Nastavuji PAYMENT")
+        if (sliderValue > 0) {
+            Log.d("Zmena", "Slider je min nez 1, nastavuju false")
+            payment_bottom_FriendDetail.isClickable = false
+            payment_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_payments_24_gray)
+            binding.toolbarFriendDetail.menu.getItem(2).icon = resources.getDrawable(R.drawable.ic_baseline_payments_24_gray)
+            binding.toolbarFriendDetail.menu.getItem(2).isEnabled = false
+        } else {
+            Log.d("Zmena", "Slider je vic nez 1, nastavuju true")
+            payment_bottom_FriendDetail.isClickable = true
+            payment_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_payments_24)
+            binding.toolbarFriendDetail.menu.getItem(2).icon = resources.getDrawable(R.drawable.ic_baseline_payments_24)
+            binding.toolbarFriendDetail.menu.getItem(2).isEnabled = true
+        }
+    }
+
+    private fun setuIcons() {
+
     }
 
 }

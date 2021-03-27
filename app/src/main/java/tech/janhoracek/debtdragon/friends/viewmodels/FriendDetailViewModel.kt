@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -46,17 +45,25 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _pieCategoryUserData = MutableLiveData<PieData>()
     val pieCategoryUserData: LiveData<PieData> get() = _pieCategoryUserData
 
-    val testovaci = MutableLiveData(10.0F)
+    val testovaci = MutableLiveData<String>("1")
+
+    var debtSummaryLive = MutableLiveData<Int>(null)
+
 
     private val categorySummaryFriend = HashMap<String, Int>()
 
     private val categorySummaryUser = HashMap<String, Int>()
+
+    /////////////////////////////////////////////////////
+
+    var counter = MutableLiveData(0)
 
 
     sealed class Event {
         object NavigateBack : Event()
         object GenerateQR : Event()
         object CreatePayment : Event()
+        object SetupQRforFirstTime: Event()
         data class CreateEditDebt(val debtID: String?) : Event()
     }
 
@@ -64,8 +71,9 @@ class FriendDetailViewModel : BaseViewModel() {
     val eventsFlow = eventChannel.receiveAsFlow()
 
     fun setData(friendshipID: String) {
-        //this.friendshipID = friendshipID
+
         GlobalScope.launch(IO) {
+
             val friendshipDocument = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).get().await()
             val friendID = if (friendshipDocument.get("member1") == auth.currentUser.uid) {
                 friendshipDocument.get("member2").toString()
@@ -73,6 +81,7 @@ class FriendDetailViewModel : BaseViewModel() {
                 friendshipDocument.get("member1").toString()
             }
 
+            //Gets friend data from Firebase
             db.collection(Constants.DATABASE_USERS).document(friendID)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -85,7 +94,9 @@ class FriendDetailViewModel : BaseViewModel() {
                         Log.w("DATA", "Current data null")
                     }
                 }
-            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).addSnapshotListener { snapshot, error ->
+
+            //Gets friendship data from Firebase
+             val neco = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.w("LSTNR", error.message.toString())
                 }
@@ -97,6 +108,8 @@ class FriendDetailViewModel : BaseViewModel() {
                 }
             }
 
+
+            //Gets all Debts from Firebase
             db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -104,7 +117,7 @@ class FriendDetailViewModel : BaseViewModel() {
                     }
 
                     if (snapshot != null) {
-                        var summary_net = 0
+                        var summaryNet = 0
                         var myPie = 0
                         var friendPie = 0
                         categorySummaryFriend.clear()
@@ -120,14 +133,17 @@ class FriendDetailViewModel : BaseViewModel() {
                                 categorySummaryFriend.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
                             }
                         }
-                        summary_net = myPie - friendPie
-                        if (summary_net > 0) {
-                            _debtSummary.value = "Přítel vám dluží ${summary_net}"
-                        } else if (summary_net < 0) {
-                            _debtSummary.value = "Dlužíte příteli ${summary_net}"
+                        summaryNet = myPie - friendPie
+                        if (summaryNet > 0) {
+                            _debtSummary.value = "Přítel vám dluží ${summaryNet}"
+                        } else if (summaryNet < 0) {
+                            _debtSummary.value = "Dlužíte příteli ${summaryNet}"
                         } else {
                             _debtSummary.value = "Vaše dluhy jsou vyrovnány"
                         }
+                        Log.d("ZMENA", "Vkladam to max value: " + summaryNet)
+                        debtSummaryLive.value = summaryNet
+                        GlobalScope.launch { eventChannel.send(Event.SetupQRforFirstTime) }
                         setupDataForSummaryPie(myPie, friendPie)
                         setupDataForFriendCategoryPie(categorySummaryFriend, PIE_TYPE_FRIEND)
                         setupDataForFriendCategoryPie(categorySummaryUser, PIE_TYPE_USER)
@@ -253,9 +269,8 @@ class FriendDetailViewModel : BaseViewModel() {
 
     }
 
-    fun onValueChanged(value: Float) {
+    fun menimeZivoty(value: Float) {
         Log.d("HILL", "Toz hodnota jest: " + value)
-    //testovaci.value = value
     }
 
 

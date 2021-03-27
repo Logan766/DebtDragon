@@ -52,13 +52,12 @@ object BindingAdapters {
     @BindingAdapter(value = ["onValueChangeListener"])
     fun setOnValueChangeListener(slider: Slider, listener: OnValueChangeListener) {
         slider.addOnChangeListener { _: Slider?, value: Float, _: Boolean ->
-            Log.d("HILL", "Neco se deje a value je: " + value)
-            listener.onValueChanged(value)
+            listener.menimeZivoty(value)
         }
     }
 
     interface OnValueChangeListener {
-        fun onValueChanged(value: Float)
+        fun menimeZivoty(value: Float)
     }
 
 

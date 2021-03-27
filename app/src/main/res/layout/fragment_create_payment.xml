@@ -5,7 +5,6 @@
     tools:context=".friends.ui.CreatePaymentFragment">
 
     <data>
-
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel" />
@@ -31,19 +30,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lottie_autoPlay="true"
+                app:lottie_autoPlay="false"
                 app:lottie_rawRes="@raw/wallet"
                 app:lottie_speed="1.5" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_value_CreatePaymentFragment"
-                android:text="@{viewmodel.testovaci.toString()}"
-                android:layout_marginTop="16dp"
-                android:layout_width="wrap_content"
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/text_input_layout_CreatePayment"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/tv_main_createPaymentFragment"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Částka"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_input_value_CreatePayment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="@={viewmodel.testovaci}"
+                    app:helperTextEnabled="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_main_createPaymentFragment"
@@ -51,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:elegantTextHeight="true"
-                android:text="Vytvořit platbu"
+                android:text="Zadejte nebo vyberte částku"
                 android:textColor="@color/main"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -62,16 +74,16 @@
                 android:id="@+id/tv_sub_createPayment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="Vyberte částku"
 
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_main_createPaymentFragment" />
+                app:layout_constraintTop_toBottomOf="@+id/text_input_layout_CreatePayment" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/slider_createPaymentFragment"
-                app:onValueChangeListener="@{(value)-> viewmodel.onValueChanged(value)}"
-                android:valueTo="300.0"
+                app:onValueChangeListener="@{(value)-> viewmodel.menimeZivoty(value)}"
+                android:valueTo="@{viewmodel.debtSummaryLive}"
                 android:valueFrom="0.0"
                 android:stepSize="1.0"
                 android:layout_width="match_parent"
