@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_friendDetailFragment_to_addEditDebtFragment"
             app:destination="@id/addEditDebtFragment" />
+        <action
+            android:id="@+id/action_friendDetailFragment_to_createPaymentFragment"
+            app:destination="@id/createPaymentFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFriendDialog"
@@ -89,4 +92,9 @@
             android:name="friendName"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/createPaymentFragment"
+        android:name="tech.janhoracek.debtdragon.friends.ui.CreatePaymentFragment"
+        android:label="fragment_create_payment"
+        tools:layout="@layout/fragment_create_payment" />
 </navigation>

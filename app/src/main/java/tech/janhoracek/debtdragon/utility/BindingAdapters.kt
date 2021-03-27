@@ -11,6 +11,7 @@ import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
+import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputLayout
 import tech.janhoracek.debtdragon.R
 
@@ -43,6 +44,21 @@ object BindingAdapters {
     @BindingAdapter("app:entries")
     fun setAdapter(view: AutoCompleteTextView, entries: List<String>?) {
         view.setAdapter(ArrayAdapter(view.context, R.layout.list_item, entries!!))
+    }
+
+
+
+    @JvmStatic
+    @BindingAdapter(value = ["onValueChangeListener"])
+    fun setOnValueChangeListener(slider: Slider, listener: OnValueChangeListener) {
+        slider.addOnChangeListener { _: Slider?, value: Float, _: Boolean ->
+            Log.d("HILL", "Neco se deje a value je: " + value)
+            listener.onValueChanged(value)
+        }
+    }
+
+    interface OnValueChangeListener {
+        fun onValueChanged(value: Float)
     }
 
 

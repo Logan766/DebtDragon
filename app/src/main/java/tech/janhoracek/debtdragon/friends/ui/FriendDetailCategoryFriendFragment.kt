@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailCategoryFriendBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import java.util.*
 
 class FriendDetailCategoryFriendFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
@@ -31,6 +33,8 @@ class FriendDetailCategoryFriendFragment : BaseFragment() {
         viewModel.pieCategoryUserData.observe(viewLifecycleOwner, Observer { pieData ->
             setupFriendCategoryPie(pieData)
         })
+
+
 
         return binding.root
     }

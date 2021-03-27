@@ -1,6 +1,8 @@
 package tech.janhoracek.debtdragon.friends.ui
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -121,6 +123,10 @@ class AddEditDebtFragment : BaseFragment() {
                     AddEditDebtViewModel.Event.HideLoading -> {
                         (activity as MainActivity).hideLoading()
                     }
+                    AddEditDebtViewModel.Event.Deleted -> {
+                        (activity as MainActivity).hideLoading()
+                        findNavController().navigateUp()
+                    }
                     is AddEditDebtViewModel.Event.SetDropDowns -> {
                         binding.dropdownMenuTextPayerAddEditTask.setText(it.payer, false)
                         binding.dropdownMenuTextCategoryAddEditTask.setText(it.category, false)
@@ -136,8 +142,18 @@ class AddEditDebtFragment : BaseFragment() {
                     manageEditButton()
                 }
                 R.id.delete_debt -> {
-                    //navigateToQR(view)
-                    Log.d("RANO", "Klikas na delete debt")
+                    val dialog = AlertDialog.Builder(requireContext())
+                    dialog.setTitle("Odstranit dluh")
+                    dialog.setMessage("Jste si jistý že chcete dluh odstranit?")
+                    dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                        Log.d("RANO", "Na ano!")
+                        (activity as MainActivity).showLoading()
+                        viewModel.deleteDebt()
+                    }
+                    dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                        Log.d("RANO", "Nope")
+                    }
+                    dialog.show()
                 }
             }
             true

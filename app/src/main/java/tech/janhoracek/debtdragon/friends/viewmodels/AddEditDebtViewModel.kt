@@ -62,6 +62,7 @@ class AddEditDebtViewModel : BaseViewModel() {
         object NavigateBack : Event()
         object SaveDebt : Event()
         object HideLoading : Event()
+        object Deleted: Event()
         data class SetDropDowns(val payer: String, val category: String) : Event()
     }
 
@@ -243,6 +244,14 @@ class AddEditDebtViewModel : BaseViewModel() {
         }
     }
 
+    fun deleteDebt() {
+        Log.d("DDDD", "ID debtu jest: " + debtID)
+        GlobalScope.launch(IO) {
+            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document(debtID!!).delete().await()
+            eventChannel.send(Event.Deleted)
+        }
+    }
+
     public override fun onCleared() {
         super.onCleared()
         /* debtId = MutableLiveData<String>("")
@@ -253,6 +262,7 @@ class AddEditDebtViewModel : BaseViewModel() {
          category = MutableLiveData<String>("")*/
         Log.d("RANO", "Mazu data")
     }
+
 
 
 }

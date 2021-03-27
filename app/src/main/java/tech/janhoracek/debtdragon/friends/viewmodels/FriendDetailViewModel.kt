@@ -46,6 +46,8 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _pieCategoryUserData = MutableLiveData<PieData>()
     val pieCategoryUserData: LiveData<PieData> get() = _pieCategoryUserData
 
+    val testovaci = MutableLiveData(10.0F)
+
     private val categorySummaryFriend = HashMap<String, Int>()
 
     private val categorySummaryUser = HashMap<String, Int>()
@@ -250,6 +252,12 @@ class FriendDetailViewModel : BaseViewModel() {
         }
 
     }
+
+    fun onValueChanged(value: Float) {
+        Log.d("HILL", "Toz hodnota jest: " + value)
+    //testovaci.value = value
+    }
+
 
 
 

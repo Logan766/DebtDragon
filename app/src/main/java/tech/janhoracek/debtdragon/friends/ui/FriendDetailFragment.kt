@@ -136,6 +136,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
 
 
+
+
         return binding.root
     }
 
@@ -173,6 +175,10 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                 }
             }
             true
+        }
+
+        binding.paymentBottomFriendDetail.setOnClickListener{
+            navigateToCreatePayment(view)
         }
 
 
@@ -217,6 +223,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     }
 
     private fun navigateToCreatePayment(view: View) {
+        Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_createPaymentFragment)
         Log.d("LETY", "Klikas na create payment")
     }
 
