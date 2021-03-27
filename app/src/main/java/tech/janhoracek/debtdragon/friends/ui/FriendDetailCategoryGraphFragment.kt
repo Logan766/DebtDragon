@@ -44,6 +44,8 @@ class FriendDetailCategoryGraphFragment : BaseFragment() {
     }
 
     private fun setupFriendCategoryPie(data: PieData) {
+        binding.pieChartCategoryFriendFriendDetailChildFragment.centerText = "Poměr vašich dluhů"
+        binding.pieChartCategoryFriendFriendDetailChildFragment.setCenterTextColor(requireActivity().getColor(R.color.white))
         binding.pieChartCategoryFriendFriendDetailChildFragment.description.isEnabled = false
         binding.pieChartCategoryFriendFriendDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))
         binding.pieChartCategoryFriendFriendDetailChildFragment.transparentCircleRadius = 0F

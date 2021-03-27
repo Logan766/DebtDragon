@@ -25,6 +25,9 @@ import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 
 class FriendDetailViewModel : BaseViewModel() {
 
+    private val PIE_TYPE_FRIEND = "friend"
+    private val PIE_TYPE_USER = "user"
+
     private val _friendData = MutableLiveData<FriendDetailModel>()
     val friendData: LiveData<FriendDetailModel> get() = _friendData
 
@@ -40,7 +43,12 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _pieCategoryFriendData = MutableLiveData<PieData>()
     val pieCategoryFriendData: LiveData<PieData> get() = _pieCategoryFriendData
 
+    private val _pieCategoryUserData = MutableLiveData<PieData>()
+    val pieCategoryUserData: LiveData<PieData> get() = _pieCategoryUserData
+
     private val categorySummaryFriend = HashMap<String, Int>()
+
+    private val categorySummaryUser = HashMap<String, Int>()
 
 
     sealed class Event {
@@ -98,10 +106,12 @@ class FriendDetailViewModel : BaseViewModel() {
                         var myPie = 0
                         var friendPie = 0
                         categorySummaryFriend.clear()
+                        categorySummaryUser.clear()
                         snapshot.forEach { document ->
                             if (document["payer"] == auth.currentUser.uid) {
+                                val categoryAndValue = retrieveValueAndCategory(document)
                                 myPie += (document["value"]).toString().toInt()
-
+                                categorySummaryUser.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
                             } else {
                                 val categoryAndValue = retrieveValueAndCategory(document)
                                 friendPie += (document["value"]).toString().toInt()
@@ -117,7 +127,8 @@ class FriendDetailViewModel : BaseViewModel() {
                             _debtSummary.value = "Vaše dluhy jsou vyrovnány"
                         }
                         setupDataForSummaryPie(myPie, friendPie)
-                        setupDataForFriendCategoryPie(categorySummaryFriend)
+                        setupDataForFriendCategoryPie(categorySummaryFriend, PIE_TYPE_FRIEND)
+                        setupDataForFriendCategoryPie(categorySummaryUser, PIE_TYPE_USER)
                     } else {
                         Log.w("DATA", "Current data null")
                     }
@@ -201,7 +212,7 @@ class FriendDetailViewModel : BaseViewModel() {
         return Pair(category, value)
     }
 
-    private fun setupDataForFriendCategoryPie(data: HashMap<String, Int>) {
+    private fun setupDataForFriendCategoryPie(data: HashMap<String, Int>, type: String) {
         val listPieFriend = ArrayList<PieEntry>()
         val listColors = ArrayList<Int>()
 
@@ -232,15 +243,15 @@ class FriendDetailViewModel : BaseViewModel() {
         pieDataSet.valueTextSize = 11F
         pieDataSet.valueTextColor = rgb(255, 255, 255)
 
-
-        _pieCategoryFriendData.value = PieData(pieDataSet)
-    }
-
-    private fun setupDataForUserCategoryPie(data: HashMap<String, Int>) {
-        for (item in data) {
-            Log.d("VALHALA", "Kategorie jsou: " + item.key + " = " + item.value)
+        if (type == PIE_TYPE_FRIEND) {
+            _pieCategoryFriendData.value = PieData(pieDataSet)
+        } else {
+            _pieCategoryUserData.value = PieData(pieDataSet)
         }
+
     }
+
+
 
 
 }

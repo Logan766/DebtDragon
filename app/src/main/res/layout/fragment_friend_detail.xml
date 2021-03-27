@@ -25,7 +25,7 @@
             <FrameLayout
                 android:id="@+id/main.collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="550dp"
+                android:layout_height="600dp"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|snap">

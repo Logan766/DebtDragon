@@ -94,7 +94,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
         val graphList = arrayListOf<Fragment>(
             FriendDetailSummaryGraphFragment(),
-            FriendDetailCategoryGraphFragment()
+            FriendDetailCategoryGraphFragment(),
+            FriendDetailCategoryFriendFragment()
         )
 
         val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
