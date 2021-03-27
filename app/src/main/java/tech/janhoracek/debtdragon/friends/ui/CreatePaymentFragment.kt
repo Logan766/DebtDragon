@@ -11,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentCreatePaymentBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
@@ -19,7 +20,7 @@ import tech.janhoracek.debtdragon.utility.BaseFragment
 class CreatePaymentFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentCreatePaymentBinding
-    val viewModel by viewModels<FriendDetailViewModel>({requireParentFragment()})
+    val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,8 @@ class CreatePaymentFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
+        Log.d("CIGO", "View model v CreateFragmentu: " + viewModel)
+        //binding.sliderCreatePaymentFragment.valueTo = viewModel.maxValueForSlider.value!!.toFloat()
         binding.sliderCreatePaymentFragment.valueTo = 300F
 
         binding.sliderCreatePaymentFragment.addOnChangeListener {slider, value, fromUser ->

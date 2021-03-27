@@ -83,7 +83,6 @@
             <com.google.android.material.slider.Slider
                 android:id="@+id/slider_createPaymentFragment"
                 app:onValueChangeListener="@{(value)-> viewmodel.menimeZivoty(value)}"
-                android:valueTo="@{viewmodel.debtSummaryLive}"
                 android:valueFrom="0.0"
                 android:stepSize="1.0"
                 android:layout_width="match_parent"

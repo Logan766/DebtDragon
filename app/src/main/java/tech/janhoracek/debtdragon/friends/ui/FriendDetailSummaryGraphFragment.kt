@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.navGraphViewModels
 import com.github.mikephil.charting.data.PieData
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailSummaryGraphBinding
@@ -19,7 +20,7 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentFriendDetailSummaryGraphBinding
     //private lateinit var viewModel: FriendDetailViewModel
-    val viewModel by viewModels<FriendDetailViewModel>({requireParentFragment()})
+    val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

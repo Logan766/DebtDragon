@@ -20,6 +20,7 @@ import tech.janhoracek.debtdragon.friends.models.FriendshipModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
+import kotlin.math.abs
 
 
 class FriendDetailViewModel : BaseViewModel() {
@@ -48,6 +49,7 @@ class FriendDetailViewModel : BaseViewModel() {
     val testovaci = MutableLiveData<String>("1")
 
     var debtSummaryLive = MutableLiveData<Int>(null)
+    var maxValueForSlider = MutableLiveData<Int>()
 
 
     private val categorySummaryFriend = HashMap<String, Int>()
@@ -143,6 +145,8 @@ class FriendDetailViewModel : BaseViewModel() {
                         }
                         Log.d("ZMENA", "Vkladam to max value: " + summaryNet)
                         debtSummaryLive.value = summaryNet
+                        maxValueForSlider.value = abs(summaryNet)
+                        Log.d("CIGO", "Tak max valuje je teda: " + maxValueForSlider.value)
                         GlobalScope.launch { eventChannel.send(Event.SetupQRforFirstTime) }
                         setupDataForSummaryPie(myPie, friendPie)
                         setupDataForFriendCategoryPie(categorySummaryFriend, PIE_TYPE_FRIEND)

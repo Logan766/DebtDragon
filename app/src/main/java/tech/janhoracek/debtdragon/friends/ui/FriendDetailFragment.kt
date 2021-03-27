@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
@@ -42,7 +43,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
     //private lateinit var viewModel: FriendDetailViewModel
     //val viewModel: FriendDetailViewModel by viewModels<FriendDetailViewModel>({requireParentFragment().requireParentFragment()})
-    val viewModel by viewModels<FriendDetailViewModel>()
+    val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
     private var debtAdapter: FirebaseDebtAdapter? = null
 
     private lateinit var appBarLayout: AppBarLayout
@@ -70,7 +71,6 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     ): View? {
         binding = FragmentFriendDetailBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
-        //val view =  inflater.inflate(R.layout.fragment_friend_detail, container, false)
         val args: FriendDetailFragmentArgs by navArgs()
         //viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
         if (savedInstanceState == null) {
@@ -78,6 +78,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         }
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        Log.d("CIGO", "View model v DetailFragmentu: " + viewModel)
 
         appBarLayout = binding.materialupAppbar
         ivUserAvatar = binding.materialupProfileImage
@@ -97,6 +99,9 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
         binding.viewPagerGraphFriendDetailFragment.adapter = graphAdapter
         binding.springDotsIndicator.setViewPager2(binding.viewPagerGraphFriendDetailFragment)
+        binding.viewPagerGraphFriendDetailFragment.post {
+            binding.viewPagerGraphFriendDetailFragment.currentItem = 0
+        }
 
         appBarLayout.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, icko ->
