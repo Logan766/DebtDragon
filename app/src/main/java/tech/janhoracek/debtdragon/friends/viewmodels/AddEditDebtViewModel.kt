@@ -98,6 +98,7 @@ class AddEditDebtViewModel : BaseViewModel() {
                     }
                     if (snapshot != null && snapshot.exists()) {
                         debtDetails = snapshot.toObject(DebtModel::class.java)!!
+                        timestamp = debtDetails.timestamp
                         debtName.value = debtDetails.name
                         debtDescription.value = debtDetails.description
                         debtValue.value = debtDetails.value.toString()

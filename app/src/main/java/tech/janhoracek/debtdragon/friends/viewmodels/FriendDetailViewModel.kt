@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -15,6 +16,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.friends.models.DebtModel
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
 import tech.janhoracek.debtdragon.friends.models.FriendshipModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
@@ -46,6 +48,9 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _pieCategoryUserData = MutableLiveData<PieData>()
     val pieCategoryUserData: LiveData<PieData> get() = _pieCategoryUserData
 
+    private val _paymentError = MutableLiveData<String>("")
+    val paymentError: LiveData<String> get() = _paymentError
+
     val testovaci = MutableLiveData<String>("1")
 
     var debtSummaryLive = MutableLiveData<Int>(null)
@@ -66,6 +71,8 @@ class FriendDetailViewModel : BaseViewModel() {
         object GenerateQR : Event()
         object CreatePayment : Event()
         object SetupQRforFirstTime: Event()
+        object PaymentCreated: Event()
+        object HideLoading: Event()
         data class CreateEditDebt(val debtID: String?) : Event()
     }
 
@@ -277,7 +284,46 @@ class FriendDetailViewModel : BaseViewModel() {
         Log.d("HILL", "Toz hodnota jest: " + value)
     }
 
+    fun createPaymentClick(value: Float) {
+        if(validatePayment(value)) {
+            GlobalScope.launch(IO) {
+                val payment = DebtModel()
+                val paymentRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.value!!.uid).collection(Constants.DATABASE_DEBTS).document()
 
+                payment.id = paymentRef.id
+                payment.name = "Splátka dluhu"
+                payment.value = value.toInt()
+                payment.category = Constants.DATABASE_DEBT_CATEGORY_PAYMENT
+                payment.payer = auth.currentUser.uid
+                payment.timestamp = Timestamp.now()
+
+                Log.d("RISE", "Payment ID: " + payment.id)
+                Log.d("RISE", "Payment CATEGORY: " + payment.category)
+                Log.d("RISE", "Payment Decstiption: " + payment.description)
+                Log.d("RISE", "Payment img: " + payment.img)
+                Log.d("RISE", "Payment NAME: " + payment.name)
+                Log.d("RISE", "Payment PAYER: " + payment.payer)
+                Log.d("RISE", "Payment VALUE: " + payment.value)
+                Log.d("RISE", "Payment TIMESTAMP: " + payment.timestamp)
+
+                paymentRef.set(payment).await()
+                eventChannel.send(Event.PaymentCreated)
+            }
+
+
+        }
+    }
+
+    private fun validatePayment(value: Float):Boolean {
+        _paymentError.value = ""
+        return if(value.toInt() == 0) {
+            _paymentError.value = "Částka musí být větší něž 0"
+            GlobalScope.launch { eventChannel.send(Event.HideLoading) }
+            false
+        } else {
+            true
+        }
+    }
 
 
 

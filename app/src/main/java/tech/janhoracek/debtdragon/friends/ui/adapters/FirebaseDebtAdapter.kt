@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -52,9 +53,16 @@ class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtMode
             itemView.tv_name_debtFriendItem.text = debt.name
             itemView.tv_value_debtFriendItem.text = debt.value.toString()
 
-            itemView.setOnClickListener {
-                mDebtListener.onDebtClick(debt.id)
+            if(debt.category != Constants.DATABASE_DEBT_CATEGORY_PAYMENT) {
+                itemView.setOnClickListener {
+                    mDebtListener.onDebtClick(debt.id)
+                }
+            } else {
+                itemView.setOnClickListener{
+                    Toast.makeText(view.context, "Platby nelze editovat", Toast.LENGTH_LONG).show()
+                }
             }
+
         }
     }
 

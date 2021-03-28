@@ -3,19 +3,20 @@ package tech.janhoracek.debtdragon.friends.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import kotlinx.coroutines.flow.onEach
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentCreatePaymentBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 class CreatePaymentFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
@@ -45,9 +46,11 @@ class CreatePaymentFragment : BaseFragment() {
 
         binding.textInputValueCreatePayment.doAfterTextChanged {
             if(!it.isNullOrEmpty()) {
-                if( it.toString().toFloat() > 0) {
+                if( it.toString().toFloat() > 0 && it.toString().toFloat() <= viewModel.maxValueForSlider.value!!) {
                     if(!binding.lottieCreatePaymentFragment.isAnimating) {binding.lottieCreatePaymentFragment.playAnimation()}
                     binding.sliderCreatePaymentFragment.value = it.toString().toFloat()
+                } else if (it.toString().toFloat() > viewModel.maxValueForSlider.value!!) {
+                    binding.textInputValueCreatePayment.setText(viewModel.maxValueForSlider.value.toString())
                 }
             }
         }
@@ -62,6 +65,25 @@ class CreatePaymentFragment : BaseFragment() {
         binding.btnCancelCreatePaymentFragment.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.btnCreateCreatePaymentFragment.setOnClickListener {
+            (activity as MainActivity).showLoading()
+            viewModel.createPaymentClick(binding.sliderCreatePaymentFragment.value)
+        }
+
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when (it) {
+                    FriendDetailViewModel.Event.PaymentCreated -> {
+                        (activity as MainActivity).hideLoading()
+                        findNavController().navigateUp()
+                    }
+                    FriendDetailViewModel.Event.HideLoading -> {
+                        (activity as MainActivity).hideLoading()
+                    }
+
+                }
+            }.observeInLifecycle(viewLifecycleOwner)
     }
 
 }

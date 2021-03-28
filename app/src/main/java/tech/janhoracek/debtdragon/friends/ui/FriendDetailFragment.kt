@@ -18,6 +18,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.R
@@ -232,7 +233,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     }
 
     private fun setUpRecyclerView(friendshipID: String) {
-        val query = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS)
+        val query = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS).orderBy("timestamp", Query.Direction.DESCENDING)
         val firestoreRecyclerOptions: FirestoreRecyclerOptions<DebtModel> = FirestoreRecyclerOptions.Builder<DebtModel>()
             .setQuery(query, DebtModel::class.java)
             .build()
