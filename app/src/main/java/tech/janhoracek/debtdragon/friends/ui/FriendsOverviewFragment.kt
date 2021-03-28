@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon.friends.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,12 +15,14 @@ import tech.janhoracek.debtdragon.friends.ui.adapters.ViewPagerAdapter
 import tech.janhoracek.debtdragon.databinding.FragmentFriendsOverviewBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.AddFriendDialogViewModel
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendsOverviewViewModel
-
-private lateinit var binding: FragmentFriendsOverviewBinding
-private var currentTab = 0
+import tech.janhoracek.debtdragon.utility.BaseFragment
 
 
-class FriendsOverViewFragment : Fragment() {
+
+class FriendsOverViewFragment : BaseFragment() {
+    private lateinit var binding: FragmentFriendsOverviewBinding
+    private var currentTab = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +56,11 @@ class FriendsOverViewFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onPause() {

@@ -1,5 +1,7 @@
 package tech.janhoracek.debtdragon.friends.viewmodels
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Color.rgb
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,6 +11,9 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -16,6 +21,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.UserObject
 import tech.janhoracek.debtdragon.friends.models.DebtModel
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
 import tech.janhoracek.debtdragon.friends.models.FriendshipModel
@@ -325,6 +331,47 @@ class FriendDetailViewModel : BaseViewModel() {
         }
     }
 
+    fun generateQRCode(text: String): Bitmap {
+        val width = 500
+        val height = 500
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val codeWriter = MultiFormatWriter()
+        try {
+            val bitMatrix = codeWriter.encode(text, BarcodeFormat.QR_CODE, width, height)
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+                }
+            }
+        } catch (e: WriterException) {
+            Log.d("QR", "generateQRCode: ${e.message}")
+        }
+        return bitmap
+    }
+
+    fun gatherDataForQR(value: String): String {
+
+            db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).get().addOnCompleteListener {
+
+            }
+
+            val head = "SPD*1.0*"
+            val acc = "ACC:${friendData.value!!.account}*"
+            //val altAcc = "ALT-ACC:*"
+            val moneyAmount = "AM:${value}.00*"
+            //val currency = "CC:${currency}*"
+            val recieverName = "RN:${friendData.value!!.name}*"
+            val message = "MSG:Platba dluhu od uživatele ${UserObject.name} z aplikace DebtDragon ve výši ${value}*"
+
+
+
+            return head+acc+moneyAmount+recieverName+message
+
+
+
+
+
+    }
 
 
 }

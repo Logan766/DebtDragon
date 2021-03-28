@@ -1,26 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".friends.ui.GenerateQRCodeFragment">
 
     <data>
+
         <variable
             name="viewmodel"
-            type="tech.janhoracek.debtdragon.friends.viewmodels.GenerateQRCodeViewModel" />
+            type="tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:padding="16dp">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:id="@+id/tv_QR_Test"
+        <ImageView
+            android:id="@+id/image_view_QR"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_main_generateQR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:elegantTextHeight="true"
+            android:text="Zadejte částku pro generování QR kódu"
+            android:textColor="@color/main"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_view_QR" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout_GenerateQR"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Generate QR"
-            android:textSize="36sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Částka"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/tv_main_generateQR">
 
-    </FrameLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_value_GenerateQR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@={viewmodel.testovaci}"
+                app:helperTextEnabled="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_GenerateQR"
+            android:valueTo="@{viewmodel.maxValueForSlider}"
+            android:valueFrom="0.0"
+            android:stepSize="1.0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout_GenerateQR"/>
+
+        <Button
+            android:id="@+id/btn_save_QR_code"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Uložit QR kód"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/slider_GenerateQR" />
+
+        <Button
+            android:id="@+id/btn_generate_QR_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Vygenerovat QR kód"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slider_GenerateQR" />
+
+        <Button
+            android:id="@+id/btn_save_payment_GenerateQRCode"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Zrušit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_generate_QR_code" />
+
+        <Button
+            android:id="@+id/btn_create_CreatePaymentFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Uložit platbu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_generate_QR_code" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

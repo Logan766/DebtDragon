@@ -14,9 +14,19 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.navigationadvancedsample.setupWithNavController
+import com.google.android.gms.common.internal.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.friends.models.DebtModel
+import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
+import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
+import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 import java.util.logging.Handler
 
 private lateinit var mAuth: FirebaseAuth
@@ -26,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     //////////////
     private var currentNavController: LiveData<NavController>? = null
     /////////////////
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +47,29 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         }
+
+
         ////////////////
 
+        ////pokus////
+
+        GlobalScope.launch(IO) {
+            db.collection(tech.janhoracek.debtdragon.utility.Constants.DATABASE_USERS).document(auth.currentUser.uid).addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w("LSTNR", error.message.toString())
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("PRASE", "Tady to maka")
+                    snapshot.toObject(UserObject::class.java)
+                    Log.d("PRASE", "Moje jmeno jest: " + UserObject.name)
+                } else {
+                    Log.w("DATA", "Current data null")
+                }
+            }
+        }
+
+
+        ////konec - pokus ////////////
 
         /*val bottomNavigationView = bottomNavigationViewMain //bottomNavigationViewMain
             val navController = findNavController(R.id.fragment)

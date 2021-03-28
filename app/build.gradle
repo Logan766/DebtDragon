@@ -114,5 +114,8 @@ dependencies {
     //Dot indicator
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
 
+    //QR Generator
+    implementation 'com.google.zxing:core:3.4.0'
+
     
 }

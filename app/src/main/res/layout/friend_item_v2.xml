@@ -34,7 +34,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_FriendItem2_Sum"
         android:textColor="@color/main"
-        android:drawableStart="@drawable/ic_baseline_add_24"
+        android:textStyle="bold"
         android:drawablePadding="2dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +42,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="500" />
+        android:text="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

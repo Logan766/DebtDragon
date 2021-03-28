@@ -38,7 +38,6 @@ class CreatePaymentFragment : BaseFragment() {
 
         Log.d("CIGO", "View model v CreateFragmentu: " + viewModel)
         //binding.sliderCreatePaymentFragment.valueTo = viewModel.maxValueForSlider.value!!.toFloat()
-        binding.sliderCreatePaymentFragment.valueTo = 300F
 
         binding.sliderCreatePaymentFragment.addOnChangeListener {slider, value, fromUser ->
             viewModel.testovaci.value = value.toInt().toString()
