@@ -40,6 +40,9 @@ class DashboradFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
 
+        binding.testfab.setOnClickListener {
+            viewModel.nactiPolozky()
+        }
 
     }
 
