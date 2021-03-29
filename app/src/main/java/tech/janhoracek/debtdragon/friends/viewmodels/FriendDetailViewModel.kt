@@ -82,11 +82,14 @@ class FriendDetailViewModel : BaseViewModel() {
         object SetupQRforFirstTime: Event()
         object PaymentCreated: Event()
         object HideLoading: Event()
+        object FriendDeleted: Event()
+        object FrienshipExistNoMore: Event()
         data class CreateEditDebt(val debtID: String?) : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
+
 
     fun setData(friendshipID: String) {
 
@@ -125,6 +128,27 @@ class FriendDetailViewModel : BaseViewModel() {
                     Log.w("DATA", "Current data null")
                 }
             }
+
+
+            ////////////////////////////////////////Odstraneni pritele
+            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w("LSTNR", error.message.toString())
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("KRAVA", "Cekuju uid a jest: " + snapshot[Constants.DATABASE_USER_UID].toString())
+                    /*if(snapshot[Constants.DATABASE_USER_UID].toString().isEmpty()) {
+                       GlobalScope.launch(IO) { eventChannel.send(Event.FrienshipExistNoMore) }
+                    }*/
+                    //_friendshipData.value = snapshot.toObject(FriendshipModel::class.java)
+                } else {
+                    Log.w("DATA", "Current data null")
+                    //GlobalScope.launch(IO) { eventChannel.send(Event.FrienshipExistNoMore) }
+                }
+            }
+
+            ///////////////////////////////////////
 
 
             //Gets all Debts from Firebase
@@ -375,6 +399,20 @@ class FriendDetailViewModel : BaseViewModel() {
     fun CharSequence.unaccent(): String {
         val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
         return REGEX_UNACCENT.replace(temp, "")
+    }
+
+    fun deleteFriend() {
+
+        val delete = GlobalScope.launch(IO) {
+            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.value!!.uid).delete().await()
+            db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_FRIENDSHIPS).document(friendData.value!!.uid).delete().await()
+            db.collection(Constants.DATABASE_USERS).document(friendData.value!!.uid).collection(Constants.DATABASE_FRIENDSHIPS).document(auth.currentUser.uid).delete().await()
+        }
+        GlobalScope.launch (Main) {
+            delete.join()
+            eventChannel.send(Event.FriendDeleted)
+        }
+
     }
 
 

@@ -1,5 +1,7 @@
 package tech.janhoracek.debtdragon.friends.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_friend_detail.*
 import kotlinx.coroutines.flow.onEach
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.friends.models.DebtModel
@@ -164,12 +167,30 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                     FriendDetailViewModel.Event.SetupQRforFirstTime -> {
                         setupQR(viewModel.friendData.value!!)
                     }
+                    FriendDetailViewModel.Event.FriendDeleted -> {
+                        (activity as MainActivity).hideLoading()
+                        findNavController().navigateUp()
+                    }
+                    FriendDetailViewModel.Event.FrienshipExistNoMore -> {
+                        findNavController().navigate(R.id.action_global_friendsOverViewFragment)
+                    }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
         binding.toolbarFriendDetail.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_friend -> {
+                    val dialog = AlertDialog.Builder(requireContext())
+                    dialog.setTitle("Odebrat uživatele z přátel")
+                    dialog.setMessage("Provedením této akce odeberete uživatele z přátel. Pokračovat?")
+                    dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                        (activity as MainActivity).showLoading()
+                        viewModel.deleteFriend()
+                    }
+                    dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                        Log.d("RANO", "Nope")
+                    }
+                    dialog.show()
                     Log.d("RANO", "Klikas na delete friend")
                 }
                 R.id.generateQR -> {

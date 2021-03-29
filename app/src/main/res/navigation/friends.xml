@@ -96,5 +96,5 @@
         android:id="@+id/createPaymentFragment"
         android:name="tech.janhoracek.debtdragon.friends.ui.CreatePaymentFragment"
         android:label="fragment_create_payment"
-        tools:layout="@layout/fragment_create_payment" />
+        tools:layout="@layout/fragment_create_payment" /><action android:id="@+id/action_global_friendsOverViewFragment" app:destination="@id/friendsOverViewFragment"/>
 </navigation>
