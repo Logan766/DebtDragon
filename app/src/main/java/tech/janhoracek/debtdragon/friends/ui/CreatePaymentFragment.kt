@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import kotlinx.coroutines.flow.onEach
@@ -36,11 +35,13 @@ class CreatePaymentFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
+        viewModel.createPaymentValue.value = "0"
+
         Log.d("CIGO", "View model v CreateFragmentu: " + viewModel)
         //binding.sliderCreatePaymentFragment.valueTo = viewModel.maxValueForSlider.value!!.toFloat()
 
         binding.sliderCreatePaymentFragment.addOnChangeListener {slider, value, fromUser ->
-            viewModel.testovaci.value = value.toInt().toString()
+            viewModel.createPaymentValue.value = value.toInt().toString()
         }
 
         binding.textInputValueCreatePayment.doAfterTextChanged {
@@ -68,6 +69,7 @@ class CreatePaymentFragment : BaseFragment() {
         binding.btnCreateCreatePaymentFragment.setOnClickListener {
             (activity as MainActivity).showLoading()
             viewModel.createPaymentClick(binding.sliderCreatePaymentFragment.value)
+            binding.sliderCreatePaymentFragment.value = 0F
         }
 
         binding.viewmodel!!.eventsFlow
@@ -83,6 +85,11 @@ class CreatePaymentFragment : BaseFragment() {
 
                 }
             }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.paymentError.value = ""
     }
 
 }

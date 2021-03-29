@@ -28,6 +28,7 @@ import tech.janhoracek.debtdragon.friends.models.FriendshipModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
+import java.text.Normalizer
 import kotlin.math.abs
 
 
@@ -35,6 +36,7 @@ class FriendDetailViewModel : BaseViewModel() {
 
     private val PIE_TYPE_FRIEND = "friend"
     private val PIE_TYPE_USER = "user"
+    private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
 
     private val _friendData = MutableLiveData<FriendDetailModel>()
     val friendData: LiveData<FriendDetailModel> get() = _friendData
@@ -54,10 +56,11 @@ class FriendDetailViewModel : BaseViewModel() {
     private val _pieCategoryUserData = MutableLiveData<PieData>()
     val pieCategoryUserData: LiveData<PieData> get() = _pieCategoryUserData
 
-    private val _paymentError = MutableLiveData<String>("")
-    val paymentError: LiveData<String> get() = _paymentError
+    val paymentError = MutableLiveData<String>("")
 
-    val testovaci = MutableLiveData<String>("1")
+    val createPaymentValue = MutableLiveData<String>("0")
+
+    val generateQRvalue = MutableLiveData<String>("0")
 
     var debtSummaryLive = MutableLiveData<Int>(null)
     var maxValueForSlider = MutableLiveData<Int>()
@@ -158,7 +161,14 @@ class FriendDetailViewModel : BaseViewModel() {
                         }
                         Log.d("ZMENA", "Vkladam to max value: " + summaryNet)
                         debtSummaryLive.value = summaryNet
-                        maxValueForSlider.value = abs(summaryNet)
+
+                        if(summaryNet != 0) {
+                            maxValueForSlider.value = abs(summaryNet)
+                        } else {
+                            maxValueForSlider.value = 1
+                        }
+
+                        //maxValueForSlider.value = abs(summaryNet)
                         Log.d("CIGO", "Tak max valuje je teda: " + maxValueForSlider.value)
                         GlobalScope.launch { eventChannel.send(Event.SetupQRforFirstTime) }
                         setupDataForSummaryPie(myPie, friendPie)
@@ -321,9 +331,9 @@ class FriendDetailViewModel : BaseViewModel() {
     }
 
     private fun validatePayment(value: Float):Boolean {
-        _paymentError.value = ""
+        paymentError.value = ""
         return if(value.toInt() == 0) {
-            _paymentError.value = "Částka musí být větší něž 0"
+            paymentError.value = "Částka musí být větší něž 0"
             GlobalScope.launch { eventChannel.send(Event.HideLoading) }
             false
         } else {
@@ -351,26 +361,20 @@ class FriendDetailViewModel : BaseViewModel() {
 
     fun gatherDataForQR(value: String): String {
 
-            db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).get().addOnCompleteListener {
-
-            }
-
             val head = "SPD*1.0*"
             val acc = "ACC:${friendData.value!!.account}*"
             //val altAcc = "ALT-ACC:*"
-            val moneyAmount = "AM:${value}.00*"
+            val moneyAmount = "AM:${value}*"
             //val currency = "CC:${currency}*"
-            val recieverName = "RN:${friendData.value!!.name}*"
-            val message = "MSG:Platba dluhu od uživatele ${UserObject.name} z aplikace DebtDragon ve výši ${value}*"
-
-
+            val recieverName = "RN:${friendData.value!!.name.unaccent()}*"
+            val message = "MSG:Platba dluhu od uživatele ${UserObject.name!!.unaccent()} z aplikace DebtDragon ve výši ${value}*".unaccent()
 
             return head+acc+moneyAmount+recieverName+message
+    }
 
-
-
-
-
+    fun CharSequence.unaccent(): String {
+        val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
+        return REGEX_UNACCENT.replace(temp, "")
     }
 
 

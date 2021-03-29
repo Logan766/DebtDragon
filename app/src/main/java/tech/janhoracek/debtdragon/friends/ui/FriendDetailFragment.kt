@@ -256,7 +256,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         var summary = viewModel.debtSummaryLive.value
         Log.d("QRRR", "summary je: " + summary)
         if (summary != null) {
-            if (data.account.isNotEmpty() && summary < 1) {
+            if (data.account.isNotEmpty() && summary < 0) {
                 Log.d("QRRR", "Nastavuji QR na true")
                 qr_bottom_FriendDetail.isClickable = true
                 qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
@@ -289,7 +289,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
     private fun setupCreatePayment(sliderValue: Int) {
         Log.d("QRRR", "Nastavuji PAYMENT")
-        if (sliderValue > 0) {
+        if (sliderValue >= 0) {
             Log.d("Zmena", "Slider je min nez 1, nastavuju false")
             payment_bottom_FriendDetail.isClickable = false
             payment_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_payments_24_gray)
