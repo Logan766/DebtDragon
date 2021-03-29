@@ -72,10 +72,15 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
 
                 val friendshipID = db.collection("Friendships").document()
                 val friendship: MutableMap<String, Any> = HashMap()
+                var members = ArrayList<String>()
+
+                members.add(id)
+                members.add(auth.currentUser.uid)
 
                 friendship["uid"] = friendshipID.id
                 friendship["member1"] = auth.currentUser.uid
                 friendship["member2"] = id
+                friendship["members"] = members
 
                 friendshipID.set(friendship)
 
