@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradBinding
+import tech.janhoracek.debtdragon.friends.ui.adapters.ViewPagerAdapter
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 class DashboradFragment : BaseFragment() {
@@ -29,8 +31,20 @@ class DashboradFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val graphList = arrayListOf<Fragment>(
+            DashboradSummaryGraph(),
+            DashboradUserCategoryGraph(),
+            DashboardFriendsCategoryGraph(),
+            DashboradTopDebtors(),
+            DashboradTopCreditors()
+        )
 
-
+        val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
+        binding.viewPagerDashborad.adapter = graphAdapter
+        binding.springDotsIndicatorDashboard.setViewPager2(binding.viewPagerDashborad)
+        binding.viewPagerDashborad.post{
+            binding.viewPagerDashborad.currentItem = 0
+        }
 
 
         return binding.root

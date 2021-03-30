@@ -2,6 +2,8 @@ package tech.janhoracek.debtdragon.dashboard.viewmodels
 
 import android.graphics.Color
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -19,6 +21,9 @@ class DashboradViewModel : BaseViewModel() {
 
     private val PIE_TYPE_FRIEND = "friend"
     private val PIE_TYPE_USER = "user"
+
+    private val _summaryPieData = MutableLiveData<PieData>()
+    val summaryPieData: LiveData<PieData> get() = _summaryPieData
 
     private val categorySummaryFriends = HashMap<String, Int>()
     private val categorySummaryUser = HashMap<String, Int>()
@@ -157,6 +162,8 @@ class DashboradViewModel : BaseViewModel() {
         }
         GlobalScope.launch(IO) {
             job.join()
+            setupDataForSummaryPie(mySummary, friendsSummary)
+
             printuj(mySummary, friendsSummary, summaryOfFriendsDebts, categorySummaryFriends, categorySummaryUser)
             getDataForTop5(summaryOfFriendsDebts)
         }
@@ -179,7 +186,8 @@ class DashboradViewModel : BaseViewModel() {
         pieDataSet.valueTextSize = 11F
         pieDataSet.valueTextColor = Color.rgb(255, 255, 255)
 
-        //_pieData.value = PieData(pieDataSet)
+        _summaryPieData.postValue(PieData(pieDataSet))
+        //_summaryPieData.value = PieData(pieDataSet)
     }
 
     fun setupDataForFriendsCategoryPie(data: HashMap<String, Int>, type: String) {
@@ -210,13 +218,15 @@ class DashboradViewModel : BaseViewModel() {
         }
     }
 
-    fun getDataForTop5(data: HashMap<String, Int>) {
+    fun getDataForTop5(data: HashMap<String, Int>): Map<String, Int> {
         //val sortedMap = data.toSortedMap(compareBy { it })
         val sortedList = data.toList().sortedBy { (_, value) -> value}.toMap()
 
         for (entry in sortedList) {
             Log.d("SORTUJ", "ID: " + entry.key + " Hodnota: " + entry.value)
         }
+
+        return sortedList
     }
 
 }
