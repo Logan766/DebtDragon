@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.formatter.PercentFormatter
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradSummaryGraphBinding
@@ -39,7 +40,7 @@ class DashboradSummaryGraph : BaseFragment() {
 
 
     private fun setupSummaryPie(pieData: PieData) {
-        Log.d("KOLAC", "Sypu data do kolace")
+        pieData.setValueFormatter(PercentFormatter(binding.pieSummaryDashboard))
         binding.pieSummaryDashboard.description.isEnabled = false
         binding.pieSummaryDashboard.setHoleColor(requireActivity().getColor(R.color.transparent))
         binding.pieSummaryDashboard.transparentCircleRadius = 0F

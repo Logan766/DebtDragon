@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.formatter.PercentFormatter
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailSummaryGraphBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
@@ -47,6 +48,7 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
 
     private fun setupSummaryPie(pieData: PieData) {
         Log.d("KOLAC", "Sypu data do kolace")
+        pieData.setValueFormatter(PercentFormatter(binding.pieChartFriendDetailChildFragment))
         binding.pieChartFriendDetailChildFragment.description.isEnabled = false
         binding.pieChartFriendDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))
         binding.pieChartFriendDetailChildFragment.transparentCircleRadius = 0F

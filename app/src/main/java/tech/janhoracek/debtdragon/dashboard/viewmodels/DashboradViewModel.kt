@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -25,12 +26,20 @@ class DashboradViewModel : BaseViewModel() {
     private val _summaryPieData = MutableLiveData<PieData>()
     val summaryPieData: LiveData<PieData> get() = _summaryPieData
 
+    private val _userCategoryPieData = MutableLiveData<PieData>()
+    val userCategoryPieData: LiveData<PieData> get() = _userCategoryPieData
+
+    private val _friendsCategoryPieData = MutableLiveData<PieData>()
+    val friendsCategoryPieData: LiveData<PieData> get() = _friendsCategoryPieData
+
     private val categorySummaryFriends = HashMap<String, Int>()
     private val categorySummaryUser = HashMap<String, Int>()
     private val summaryOfFriendsDebts = HashMap<String, Int>()
     var summaryNet = 0
     var mySummary = 0
     var friendsSummary = 0
+
+    val pozdrav = "Ahoj"
 
     init {
         GlobalScope.launch(IO) {
@@ -163,6 +172,8 @@ class DashboradViewModel : BaseViewModel() {
         GlobalScope.launch(IO) {
             job.join()
             setupDataForSummaryPie(mySummary, friendsSummary)
+            setupDataForFriendsCategoryPie(categorySummaryUser, PIE_TYPE_USER)
+            setupDataForFriendsCategoryPie(categorySummaryFriends, PIE_TYPE_FRIEND)
 
             printuj(mySummary, friendsSummary, summaryOfFriendsDebts, categorySummaryFriends, categorySummaryUser)
             getDataForTop5(summaryOfFriendsDebts)
@@ -210,11 +221,13 @@ class DashboradViewModel : BaseViewModel() {
         pieDataSet.colors = listColors
         pieDataSet.valueTextSize = 11F
         pieDataSet.valueTextColor = Color.rgb(255, 255, 255)
+        pieDataSet.sliceSpace = 3F
+        pieDataSet.valueFormatter = PercentFormatter()
 
         if (type == PIE_TYPE_FRIEND) {
-            //_pieCategoryFriendData.value = PieData(pieDataSet)
+            _friendsCategoryPieData.postValue(PieData(pieDataSet))
         } else {
-            //_pieCategoryUserData.value = PieData(pieDataSet)
+            _userCategoryPieData.postValue(PieData(pieDataSet))
         }
     }
 
@@ -227,6 +240,10 @@ class DashboradViewModel : BaseViewModel() {
         }
 
         return sortedList
+    }
+
+    fun pajova(vstup: String) {
+        Log.d("PAJICEK", vstup + " pajo")
     }
 
 }

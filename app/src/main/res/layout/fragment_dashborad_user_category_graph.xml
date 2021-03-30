@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_status_summary_graph_Dashborad"
+            android:id="@+id/tv_status_user_graph_Dashborad"
             style="@style/TextAppearance.MaterialComponents.Headline5"
             android:visibility="visible"
             android:layout_width="wrap_content"
@@ -43,13 +43,13 @@
 
 
         <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pie_summary_Dashboard"
+            android:id="@+id/pie_user_category_Dashboard"
             android:layout_width="match_parent"
             android:layout_height="380dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_status_summary_graph_Dashborad" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pie_user_category" />
 
 
 
