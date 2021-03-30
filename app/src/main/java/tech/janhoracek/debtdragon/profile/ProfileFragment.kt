@@ -48,9 +48,10 @@ class ProfileFragment : Fragment() {
         viewModel.logOutStatus.observe(viewLifecycleOwner, Observer { status ->
             if (status == true) {
                 val intentLoginActivity = Intent(activity, LoginActivity::class.java)
+                startActivity(intentLoginActivity)
                 requireActivity().viewModelStore.clear()
                 requireActivity().finish()
-                startActivity(intentLoginActivity)
+
             }
         })
 

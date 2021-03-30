@@ -1,27 +1,36 @@
 package tech.janhoracek.debtdragon.dashboard.viewmodels
 
 import android.graphics.Color
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.UserObject
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
+import java.lang.Exception
 
 class DashboradViewModel : BaseViewModel() {
 
     private val PIE_TYPE_FRIEND = "friend"
     private val PIE_TYPE_USER = "user"
+
+    private val _userImage = MutableLiveData<String>()
+    val userImage: LiveData<String> get() = _userImage
 
     private val _summaryPieData = MutableLiveData<PieData>()
     val summaryPieData: LiveData<PieData> get() = _summaryPieData
@@ -32,11 +41,13 @@ class DashboradViewModel : BaseViewModel() {
     private val _friendsCategoryPieData = MutableLiveData<PieData>()
     val friendsCategoryPieData: LiveData<PieData> get() = _friendsCategoryPieData
 
-    private val _topDebtors = MutableLiveData<MutableList<Pair<String, Int>>>()
-    val topDebtors:  LiveData<MutableList<Pair<String, Int>>> get() = _topDebtors
+    private val _topDebtors = MutableLiveData<List<Pair<String, Int>>>()
+    val topDebtors: LiveData<List<Pair<String, Int>>> get() = _topDebtors
 
-    private val _topCreditors = MutableLiveData<MutableList<Pair<String, Int>>>()
-    val topCreditors:  LiveData<MutableList<Pair<String, Int>>> get() = _topCreditors
+    private val _topCreditors = MutableLiveData<List<Pair<String, Int>>>()
+    val topCreditors: LiveData<List<Pair<String, Int>>> get() = _topCreditors
+
+    var test = MutableLiveData<List<Pair<String, Int>>>()
 
     private val categorySummaryFriends = HashMap<String, Int>()
     private val categorySummaryUser = HashMap<String, Int>()
@@ -44,6 +55,7 @@ class DashboradViewModel : BaseViewModel() {
     var summaryNet = 0
     var mySummary = 0
     var friendsSummary = 0
+
 
     val pozdrav = "Ahoj"
 
@@ -59,10 +71,12 @@ class DashboradViewModel : BaseViewModel() {
 
                     if (snapshot != null) {
                         Log.d("INSANE", "Ted bych nacital podle frienships")
+                        nactiPolozky()
                         snapshot.forEach { document ->
                             db.collection(Constants.DATABASE_FRIENDSHIPS).document(document.id).collection(Constants.DATABASE_DEBTS)
                                 .addSnapshotListener { snapshot, error ->
                                     Log.d("INSANE", "Ted bych nacital podle debts")
+                                    nactiPolozky()
                                 }
                         }
                     } else {
@@ -145,36 +159,42 @@ class DashboradViewModel : BaseViewModel() {
         var friendsSummary = 0
         val job = GlobalScope.launch(IO) {
 
-            val friendships = db.collection(Constants.DATABASE_FRIENDSHIPS).whereArrayContains("members", auth.currentUser.uid).get().await()
+            try {
+                val friendships = db.collection(Constants.DATABASE_FRIENDSHIPS).whereArrayContains("members", UserObject.uid.toString()).get().await()
 
-            friendships.forEach { friendship ->
-                var friendID = if (friendship["member1"] == auth.currentUser.uid) {
-                    friendship["member2"].toString()
-                } else {
-                    friendship["member1"].toString()
-                }
-
-                val debts = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendship.id).collection(Constants.DATABASE_DEBTS).get().await()
-                debts.forEach { debt ->
-                    if (debt[Constants.DATABASE_DEBT_PAYER] == auth.currentUser.uid) {
-                        val categoryAndValue = retrieveValueAndCategory(debt)
-                        mySummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
-                        summaryOfFriendsDebts.merge(friendID, debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
-                        categorySummaryUser.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
-                        Log.d("Dashik", "Merguju: " + friendID + " s hodnotou +" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
-                        Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
+                friendships.forEach { friendship ->
+                    var friendID = if (friendship["member1"] == auth.currentUser.uid) {
+                        friendship["member2"].toString()
                     } else {
-                        val categoryAndValue = retrieveValueAndCategory(debt)
-                        friendsSummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
-                        summaryOfFriendsDebts.merge(friendID, -debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
-                        categorySummaryFriends.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
-                        Log.d("Dashik", "Merguju: " + friendID + " s hodnotou -" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
-                        Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
+                        friendship["member1"].toString()
+                    }
 
+                    val debts =
+                        db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendship.id).collection(Constants.DATABASE_DEBTS).get().await()
+                    debts.forEach { debt ->
+                        if (debt[Constants.DATABASE_DEBT_PAYER] == auth.currentUser.uid) {
+                            val categoryAndValue = retrieveValueAndCategory(debt)
+                            mySummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
+                            summaryOfFriendsDebts.merge(friendID, debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
+                            categorySummaryUser.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
+                            Log.d("Dashik", "Merguju: " + friendID + " s hodnotou +" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
+                            Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
+                        } else {
+                            val categoryAndValue = retrieveValueAndCategory(debt)
+                            friendsSummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
+                            summaryOfFriendsDebts.merge(friendID, -debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
+                            categorySummaryFriends.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
+                            Log.d("Dashik", "Merguju: " + friendID + " s hodnotou -" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
+                            Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
+
+                        }
                     }
                 }
+            } catch (e: Exception) {
+
             }
         }
+
         GlobalScope.launch(IO) {
             job.join()
             setupDataForSummaryPie(mySummary, friendsSummary)
@@ -184,6 +204,7 @@ class DashboradViewModel : BaseViewModel() {
             printuj(mySummary, friendsSummary, summaryOfFriendsDebts, categorySummaryFriends, categorySummaryUser)
             getDataForTop5(summaryOfFriendsDebts)
         }
+
     }
 
     fun setupDataForSummaryPie(mySummary: Int, friendSummary: Int) {
@@ -239,12 +260,51 @@ class DashboradViewModel : BaseViewModel() {
 
     fun getDataForTop5(data: HashMap<String, Int>) {
         //val sortedMap = data.toSortedMap(compareBy { it })
-        val sortedMap1 = data.toList().sortedBy { (_, value) -> value}
-        val sortedMap2 = data.toList().sortedBy { (_, value) -> value}.reversed()
+        val sortedMap1 = data.toList().sortedBy { (_, value) -> value }
+        val sortedMap2 = data.toList().sortedBy { (_, value) -> value }.reversed()
 
-        val topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
-        val topDebtors: MutableList<Pair<String, Int>> = mutableListOf()
+        for (entry in sortedMap1) {
+            Log.d("SORTUJ", "1: " + entry)
+        }
 
+        for (entry in sortedMap2) {
+            Log.d("SORTUJ", "2: " + entry)
+        }
+
+        var topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
+        var topDebtors: MutableList<Pair<String, Int>> = mutableListOf()
+
+        for (i in 0..2) {
+            if (i <= sortedMap1.size - 1) {
+                if (sortedMap1[i].second < 0) {
+                    topCreditors.add(sortedMap1[i])
+                }
+            }
+        }
+
+        for (i in 0..2) {
+            if (i <= sortedMap2.size - 1) {
+                if (sortedMap2[i].second > 0) {
+                    topDebtors.add(sortedMap2[i])
+                }
+            }
+        }
+
+
+        /*try {
+            topCreditors = sortedMap1 as MutableList<Pair<String, Int>>
+            for (entry in topCreditors) {
+                if (entry.second > 0) {
+                    topCreditors.remove(entry)
+                }
+            }
+            Log.d("SERES", "Dobehlo to")
+        } catch (e: Exception) {
+            Log.d("SERES", e.message.toString())
+        }*/
+
+
+        /*
         for (e in sortedMap1) {
             Log.d("SORTUJ", "1: " + e)
         }
@@ -254,7 +314,7 @@ class DashboradViewModel : BaseViewModel() {
         }
 
         for(i in 0..2) {
-            if(i <= sortedMap1.size) {
+            if(i < sortedMap1.size) {
                 if (sortedMap1[i].second < 0) {
                     topCreditors.add(sortedMap1[i])
                 }
@@ -262,15 +322,32 @@ class DashboradViewModel : BaseViewModel() {
         }
 
         for(i in 0..2) {
-            if(i <= sortedMap2.size) {
+            if(i < sortedMap2.size) {
                 if (sortedMap2[i].second > 0) {
                     topDebtors.add(sortedMap2[i])
                 }
             }
+        }*/
+
+
+        try {
+            test.postValue(topCreditors)
+            Log.d("SERES", "proslo to!")
+        } catch (e: Exception) {
+            Log.d("SERES", e.message.toString())
         }
 
-        _topCreditors.value = topCreditors
-        _topDebtors.value = topDebtors
+
+        try {
+            _topCreditors.postValue(topCreditors)
+            _topDebtors.postValue(topDebtors)
+            GlobalScope.launch(Main) { _topDebtors.value = _topDebtors.value }
+
+            Log.d("SERES", "Pokus real prosel")
+        } catch (e: Error) {
+            Log.d("SERES", "Pokus real spatne: " + e.message.toString())
+        }
+
 
         for (entry in topCreditors) {
             Log.d("SORTUJ", "1S: " + entry)
@@ -280,67 +357,12 @@ class DashboradViewModel : BaseViewModel() {
             Log.d("SORTUJ", "2S: " + entry)
         }
 
-
-
-
-
-
-        /*for (entry in sortedMap) {
-            Log.d("SORTUJ", "ID: " + entry.key + " Hodnota: " + entry.value)
-        }
-
-        val sortedList = sortedMap.toList()
-        val topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
-
-        for (i in 0..2) {
-            if(sortedList[i].second < 0) {
-                Log.d("SORTUJ", "F: " + sortedList[i])
-                topCreditors.add(sortedList[i])
-            }
-        }
-
-        Log.d("SORTUJ", "T: " + topCreditors.size)
-
-        for (i in 0..topCreditors.size-1) {
-            Log.d("SORTUJ", "C: " + topCreditors[i])
-        }*/
-
-
-        ///////////////////////////////////////////////////////////////////////
-
-        /*val sortedList = sortedMap.toList()
-        var topDebtors : MutableList<Pair<String, Int>>? = null
-        var topCreditors: MutableList<Pair<String, Int>>? = null
-
-        for (i in 0..2) {
-            if(sortedList[i].second > 0) {
-                topDebtors!!.add(sortedList[i])
-            }
-        }*/
-
-        /*for (i in sortedList.size..sortedList.size-2) {
-            if(sortedList[i].second > 0) {
-                topCreditors!!.add(sortedList[i])
-            }
-        }*/
-
-        /*if (topCreditors != null) {
-            for (entry in topCreditors) {
-                Log.d("SEZNAM", "Top creditor: " + entry)
-            }
-        }*/
-
-        /*if (topDebtors != null) {
-            for (entry in topDebtors) {
-                Log.d("SEZNAM", "Top debtor: " + entry)
-            }
-        }*/
-
-        //return sortedMap
     }
 
-    fun pajova(vstup: String) {
-        Log.d("PAJICEK", vstup + " pajo")
+    override fun onCleared() {
+        Log.d("KAFE", "ODHLASUJU")
+        super.onCleared()
     }
+
 
 }

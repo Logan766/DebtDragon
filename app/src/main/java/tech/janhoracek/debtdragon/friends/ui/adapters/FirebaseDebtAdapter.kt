@@ -85,6 +85,7 @@ class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtMode
                 Log.w("MAK", "Current data null")
             }
         }
+        holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 
     interface OnDebtClickListener {
