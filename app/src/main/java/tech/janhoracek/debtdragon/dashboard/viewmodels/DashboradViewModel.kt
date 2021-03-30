@@ -32,6 +32,12 @@ class DashboradViewModel : BaseViewModel() {
     private val _friendsCategoryPieData = MutableLiveData<PieData>()
     val friendsCategoryPieData: LiveData<PieData> get() = _friendsCategoryPieData
 
+    private val _topDebtors = MutableLiveData<MutableList<Pair<String, Int>>>()
+    val topDebtors:  LiveData<MutableList<Pair<String, Int>>> get() = _topDebtors
+
+    private val _topCreditors = MutableLiveData<MutableList<Pair<String, Int>>>()
+    val topCreditors:  LiveData<MutableList<Pair<String, Int>>> get() = _topCreditors
+
     private val categorySummaryFriends = HashMap<String, Int>()
     private val categorySummaryUser = HashMap<String, Int>()
     private val summaryOfFriendsDebts = HashMap<String, Int>()
@@ -231,15 +237,106 @@ class DashboradViewModel : BaseViewModel() {
         }
     }
 
-    fun getDataForTop5(data: HashMap<String, Int>): Map<String, Int> {
+    fun getDataForTop5(data: HashMap<String, Int>) {
         //val sortedMap = data.toSortedMap(compareBy { it })
-        val sortedList = data.toList().sortedBy { (_, value) -> value}.toMap()
+        val sortedMap1 = data.toList().sortedBy { (_, value) -> value}
+        val sortedMap2 = data.toList().sortedBy { (_, value) -> value}.reversed()
 
-        for (entry in sortedList) {
+        val topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
+        val topDebtors: MutableList<Pair<String, Int>> = mutableListOf()
+
+        for (e in sortedMap1) {
+            Log.d("SORTUJ", "1: " + e)
+        }
+
+        for (b in sortedMap2) {
+            Log.d("SORTUJ", "2: " + b)
+        }
+
+        for(i in 0..2) {
+            if(i <= sortedMap1.size) {
+                if (sortedMap1[i].second < 0) {
+                    topCreditors.add(sortedMap1[i])
+                }
+            }
+        }
+
+        for(i in 0..2) {
+            if(i <= sortedMap2.size) {
+                if (sortedMap2[i].second > 0) {
+                    topDebtors.add(sortedMap2[i])
+                }
+            }
+        }
+
+        _topCreditors.value = topCreditors
+        _topDebtors.value = topDebtors
+
+        for (entry in topCreditors) {
+            Log.d("SORTUJ", "1S: " + entry)
+        }
+
+        for (entry in topDebtors) {
+            Log.d("SORTUJ", "2S: " + entry)
+        }
+
+
+
+
+
+
+        /*for (entry in sortedMap) {
             Log.d("SORTUJ", "ID: " + entry.key + " Hodnota: " + entry.value)
         }
 
-        return sortedList
+        val sortedList = sortedMap.toList()
+        val topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
+
+        for (i in 0..2) {
+            if(sortedList[i].second < 0) {
+                Log.d("SORTUJ", "F: " + sortedList[i])
+                topCreditors.add(sortedList[i])
+            }
+        }
+
+        Log.d("SORTUJ", "T: " + topCreditors.size)
+
+        for (i in 0..topCreditors.size-1) {
+            Log.d("SORTUJ", "C: " + topCreditors[i])
+        }*/
+
+
+        ///////////////////////////////////////////////////////////////////////
+
+        /*val sortedList = sortedMap.toList()
+        var topDebtors : MutableList<Pair<String, Int>>? = null
+        var topCreditors: MutableList<Pair<String, Int>>? = null
+
+        for (i in 0..2) {
+            if(sortedList[i].second > 0) {
+                topDebtors!!.add(sortedList[i])
+            }
+        }*/
+
+        /*for (i in sortedList.size..sortedList.size-2) {
+            if(sortedList[i].second > 0) {
+                topCreditors!!.add(sortedList[i])
+            }
+        }*/
+
+        /*if (topCreditors != null) {
+            for (entry in topCreditors) {
+                Log.d("SEZNAM", "Top creditor: " + entry)
+            }
+        }*/
+
+        /*if (topDebtors != null) {
+            for (entry in topDebtors) {
+                Log.d("SEZNAM", "Top debtor: " + entry)
+            }
+        }*/
+
+        //return sortedMap
     }
 
     fun pajova(vstup: String) {
