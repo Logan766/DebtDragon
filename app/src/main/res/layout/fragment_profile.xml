@@ -4,87 +4,247 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.profile.ProfileViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout2"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/main"
-        tools:context=".profile.ProfileFragment">
+        android:layout_height="match_parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imageView_profileFragment"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:imageUrl="@{viewmodel.userImage}"
-            app:placeholder="@{@drawable/avatar_profileavatar}"
-            app:civ_border_color="@color/white"
-            app:civ_border_width="3dp"
-            tools:src="@tools:sample/avatars" />
-
-        <TextView
-            android:id="@+id/tv_ProfiileFragment_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewmodel.userName}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@id/imageView_profileFragment" />
-
-        <Button
-            android:id="@+id/Test"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:padding="15dp"
-            android:text="Text Button"
-            android:textColor="@color/white"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_ProfiileFragment_username" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/frameLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/main"
+                tools:context=".profile.ProfileFragment">
 
-        <Button
-            android:id="@+id/btn_TBM_changeprofilepic"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:padding="15dp"
-            android:text="TBM Vyber obrazek"
-            android:textColor="@color/white"
+                <FrameLayout
+                    android:id="@+id/frameLayout_profile_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Test" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_change_profile_pic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:elevation="2dp"
+                        android:focusable="true"
+                        android:src="@drawable/ic_baseline_photo_camera_24"
+                        app:fabSize="mini" />
 
-        <Button
-            android:id="@+id/Test3"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:padding="15dp"
-            android:onClick="@{() -> viewmodel.clickLogout()}"
-            android:text="Odhlasit"
-            android:textColor="@color/white"
-
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imageView_profileFragment"
+                        android:layout_width="170dp"
+                        android:layout_height="170dp"
 
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_TBM_changeprofilepic"
-            app:rippleColor="@color/ic_launcher_background" />
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="5dp"
+                        app:imageUrl="@{viewmodel.userImage}"
+                        app:placeholder="@{@drawable/avatar_profileavatar}"
+                        tools:src="@tools:sample/avatars" />
+                </FrameLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_ProfiileFragment_username"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="23dp"
+                    android:text="@{viewmodel.userName}"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/frameLayout_profile_picture" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_headline_account_setting_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nastavení účtu"
+                    android:textColor="@color/pajova"
+                    android:textStyle="bold"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginTop="23dp"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_ProfiileFragment_username" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_change_name_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="start"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Změnit jméno"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_edit_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+                    app:iconSize="20dp"
+                    app:iconTint="@null"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_headline_account_setting_profile" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_change_password_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Změnit heslo"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_vpn_key_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+                    app:iconSize="20dp"
+                    app:iconTint="@null"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_change_name_profile"
+                    app:rippleColor="@color/ic_launcher_background" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_account_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Upravit bankovní účet"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_account_balance_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+                    app:iconSize="20dp"
+                    app:iconTint="@null"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_change_password_profile"
+                    app:rippleColor="@color/ic_launcher_background" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_headline_about_app_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="O aplikaci"
+                    android:textColor="@color/pajova"
+                    android:textStyle="bold"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_add_account_profile"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_application_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Informace o aplikaci"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_info_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+                    app:iconSize="20dp"
+
+                    app:iconTint="@null"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_headline_about_app_profile"
+                    app:rippleColor="@color/ic_launcher_background" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/contact_author_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Kontaktovat vývojáře"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_contact_support_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+                    app:iconSize="20dp"
+                    app:iconTint="@null"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_about_application_profile"
+                    app:rippleColor="@color/ic_launcher_background" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_logout_profile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="start"
+                    android:onClick="@{() -> viewmodel.clickLogout()}"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="Odhlásit se"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_baseline_logout_24"
+                    app:iconGravity="start"
+                    app:iconPadding="10dp"
+
+                    app:iconSize="20dp"
+                    app:iconTint="@null"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/contact_author_profile"
+                    app:rippleColor="@color/ic_launcher_background" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
 </layout>

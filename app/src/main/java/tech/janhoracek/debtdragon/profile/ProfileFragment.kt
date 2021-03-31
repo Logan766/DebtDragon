@@ -64,7 +64,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#120f38")
 
-        binding.btnTBMChangeprofilepic.setOnClickListener {
+        binding.fabChangeProfilePic.setOnClickListener {
             ImagePicker.with(this)
                 .cropSquare() //Crop image(Optional), Check Customization for more option
                 //.compress(1024)	//Final image size will be less than 1 MB(Optional)
