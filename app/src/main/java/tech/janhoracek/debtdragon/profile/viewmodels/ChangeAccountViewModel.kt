@@ -18,6 +18,9 @@ class ChangeAccountViewModel: BaseViewModel() {
     private val _accountError = MutableLiveData<String>("")
     val accountError: LiveData<String> get() = _accountError
 
+    private val _accountExists = MutableLiveData<Boolean>(false)
+    val accountExists: LiveData<Boolean> get() = _accountExists
+
     private var userData = UserModel()
 
     init {

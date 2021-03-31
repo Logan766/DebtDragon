@@ -5,6 +5,8 @@
     tools:context=".profile.ui.ChangeAccountFragment">
 
     <data>
+        <import type="androidx.navigation.Navigation"/>
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.profile.viewmodels.ChangeAccountViewModel" />
@@ -26,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_addFriendDialog"
+                android:id="@+id/lottie_addAccount"
                 android:layout_width="220dp"
                 android:layout_height="220dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -37,37 +39,37 @@
                 app:lottie_speed="1.5" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_addFriendDialog_main"
+                android:id="@+id/tv_addAccount_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:elegantTextHeight="true"
-                android:text="@{viewmodel.ibanAccount}"
+                android:text="@{viewmodel.ibanAccount != &quot;&quot; ? &quot;Existuje&quot; : &quot;Neexistuje&quot;}"
                 android:textColor="@color/main"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lottie_addFriendDialog" />
+                app:layout_constraintTop_toBottomOf="@+id/lottie_addAccount" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_addFriendDialog_sub"
+                android:id="@+id/tv_addAccount_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Zadejte e-mailovou adresu přítele"
+                android:text="Pečlivě zadejte svůj účet ve formátu IBAN"
 
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_addFriendDialog_main" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_addAccount_main" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout_addFriendFragment"
+                android:id="@+id/textInputLayout_addAccount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="E-mail přítele"
+                android:hint="IBAN účtu"
                 app:errorText="@{viewmodel.accountError}"
                 app:errorEnabled="true"
-                app:layout_constraintTop_toBottomOf="@+id/tv_addFriendDialog_sub">
+                app:layout_constraintTop_toBottomOf="@+id/tv_addAccount_sub">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:text="@={viewmodel.ibanAccount}"
@@ -77,24 +79,25 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_addFriendDialogFragment_cancel"
+                android:id="@+id/btn_addAccount_cancel"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:onClick="@{view -> Navigation.findNavController(view).navigateUp()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Zrušit"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayout_addFriendFragment" />
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout_addAccount" />
 
             <Button
-                android:id="@+id/btn_addFriendDialogFragment_add"
+                android:id="@+id/btn_addAccount_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="@{() -> viewmodel.saveAccount()}"
-                android:text="Uložit účet"
+                android:text="@{viewmodel.ibanAccount != &quot;&quot; ? &quot;Upravit účet&quot; : &quot;Uložit účet&quot;}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_addFriendFragment" />
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_addAccount" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
