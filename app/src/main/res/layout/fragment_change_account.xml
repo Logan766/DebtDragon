@@ -34,9 +34,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lottie_autoPlay="false"
-                app:lottie_rawRes="@raw/request_sent"
-                app:lottie_speed="1.5" />
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/bank_anim"
+                app:lottie_speed="2" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_addAccount_main"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:elegantTextHeight="true"
-                android:text="@{viewmodel.ibanAccount != &quot;&quot; ? &quot;Existuje&quot; : &quot;Neexistuje&quot;}"
+                android:text="@{viewmodel.ibanAccount != &quot;&quot; ? &quot;Upravit bankovní účet&quot; : &quot;Přidat bankovní účet&quot;}"
                 android:textColor="@color/main"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Pečlivě zadejte svůj účet ve formátu IBAN"
+                android:text="Pečlivě zadejte svůj bankovní účet ve formátu IBAN"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_addAccount_main" />

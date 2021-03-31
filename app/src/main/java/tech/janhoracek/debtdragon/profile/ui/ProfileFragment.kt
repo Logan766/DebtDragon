@@ -17,8 +17,9 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentProfileBinding
 import tech.janhoracek.debtdragon.profile.viewmodels.ProfileViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
+import tech.janhoracek.debtdragon.utility.BaseFragment
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var viewModel: ProfileViewModel
@@ -59,6 +60,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#120f38")
+
 
         binding.fabChangeProfilePic.setOnClickListener {
             ImagePicker.with(this)

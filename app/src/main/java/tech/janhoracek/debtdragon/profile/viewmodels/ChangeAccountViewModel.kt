@@ -5,8 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.UserObject
+import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
 import tech.janhoracek.debtdragon.profile.models.UserModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
@@ -22,6 +26,13 @@ class ChangeAccountViewModel: BaseViewModel() {
     val accountExists: LiveData<Boolean> get() = _accountExists
 
     private var userData = UserModel()
+
+    sealed class Event {
+        object AccountChanged : Event()
+    }
+
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
 
     init {
         GlobalScope.launch(IO) {
@@ -44,6 +55,10 @@ class ChangeAccountViewModel: BaseViewModel() {
     fun saveAccount() {
         if(isValidIban(ibanAccount.value!!)) {
             _accountError.value = ""
+            GlobalScope.launch(IO) {
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("account", ibanAccount.value).await()
+                eventChannel.send(Event.AccountChanged)
+            }
             Log.d("PERMONIK", "Je to validni IBAN")
         } else {
             _accountError.value = "Účet není ve formátu IBAN"
