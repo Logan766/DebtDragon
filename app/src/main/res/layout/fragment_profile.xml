@@ -5,10 +5,13 @@
     tools:context=".profile.ui.ProfileFragment">
 
     <data>
-        <import type="android.view.View"/>
+        <import type="tech.janhoracek.debtdragon.R"/>
+        <import type="androidx.navigation.Navigation"/>
+
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
-            type="tech.janhoracek.debtdragon.profile.ProfileViewModel" />
+            type="tech.janhoracek.debtdragon.profile.viewmodels.ProfileViewModel" />
     </data>
 
     <FrameLayout
@@ -73,23 +76,23 @@
                     app:layout_constraintTop_toBottomOf="@id/frameLayout_profile_picture" />
 
 
-
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_headline_account_setting_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="23dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
                     android:text="Nastavení účtu"
                     android:textColor="@color/pajova"
                     android:textStyle="bold"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="16dp"
-                    android:layout_marginTop="23dp"
 
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_ProfiileFragment_username" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_change_name_profile"
+                    android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_changeNameFragment)}"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,12 +111,13 @@
 
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_headline_account_setting_profile" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_headline_account_setting_profile"
+                    app:rippleColor="@color/ic_launcher_background"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_change_password_profile"
+                    android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_changePasswordFragment)}"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:visibility="@{viewmodel.authProviderIsPassword ? View.VISIBLE : View.GONE}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
@@ -122,6 +126,7 @@
                     android:text="Změnit heslo"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
+                    android:visibility="@{viewmodel.authProviderIsPassword ? View.VISIBLE : View.GONE}"
                     app:icon="@drawable/ic_baseline_vpn_key_24"
                     app:iconGravity="start"
                     app:iconPadding="10dp"
@@ -135,6 +140,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_add_account_profile"
+                    android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_changeAccountFragment)}"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -159,18 +165,19 @@
                     android:id="@+id/tv_headline_about_app_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
                     android:text="O aplikaci"
                     android:textColor="@color/pajova"
                     android:textStyle="bold"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="16dp"
-                    android:layout_marginTop="8dp"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_add_account_profile"/>
+                    app:layout_constraintTop_toBottomOf="@id/btn_add_account_profile" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_about_application_profile"
+                    android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_aboutAppFragment)}"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -220,8 +227,8 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="start"
                     android:onClick="@{() -> viewmodel.clickLogout()}"
                     android:paddingHorizontal="16dp"

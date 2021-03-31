@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentProfileBinding
-import tech.janhoracek.debtdragon.profile.ProfileViewModel
+import tech.janhoracek.debtdragon.profile.viewmodels.ProfileViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 
 class ProfileFragment : Fragment() {

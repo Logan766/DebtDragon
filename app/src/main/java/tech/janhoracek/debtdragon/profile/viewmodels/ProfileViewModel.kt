@@ -1,11 +1,10 @@
-package tech.janhoracek.debtdragon.profile
+package tech.janhoracek.debtdragon.profile.viewmodels
 
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
@@ -69,7 +68,8 @@ class ProfileViewModel : BaseViewModel() {
                 }*/
 
 
-                Log.d("PERMONIK", "Auth provider jest: " + auth.currentUser.providerData[auth.currentUser.providerData.size - 1].providerId)
+
+                //Log.d("PERMONIK", "Auth provider jest: " + auth.currentUser.providerData[auth.currentUser.providerData.size - 1].providerId)
 
             }
 
@@ -104,7 +104,24 @@ class ProfileViewModel : BaseViewModel() {
         }
     }
 
+    fun isIbanValid(iban: String): Boolean {
+        if (!"^[0-9A-Z]*\$".toRegex().matches(iban)) {
+            return false
+        }
 
+        val symbols = iban.trim { it <= ' ' }
+        if (symbols.length < 15 || symbols.length > 34) {
+            return false
+        }
+        val swapped = symbols.substring(4) + symbols.substring(0, 4)
+        return swapped.toCharArray()
+            .map { it.toInt() }
+            .fold(0) { previousMod: Int, _char: Int ->
+                val value = Integer.parseInt(Character.toString(_char.toChar()), 36)
+                val factor = if (value < 10) 10 else 100
+                (factor * previousMod + value) % 97
+            } == 1
+    }
 
 }
 
