@@ -2,7 +2,10 @@ package tech.janhoracek.debtdragon.profile
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.Dispatchers.IO
@@ -10,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
-import java.lang.Exception
+
 
 class ProfileViewModel : BaseViewModel() {
 
@@ -23,9 +26,14 @@ class ProfileViewModel : BaseViewModel() {
     private val _logOutStatus = MutableLiveData<Boolean>(false)
     val logOutStatus: LiveData<Boolean> get() = _logOutStatus
 
+    private val _authProviderIsPassword = MutableLiveData<Boolean>(false)
+    val authProviderIsPassword: LiveData<Boolean> get() = _authProviderIsPassword
+
     private var docRef: ListenerRegistration
 
     init {
+        _authProviderIsPassword.value = auth.currentUser.providerData[auth.currentUser.providerData.size - 1].providerId == "password"
+
         docRef = db.collection("Users").document(auth.currentUser.uid)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
@@ -54,8 +62,18 @@ class ProfileViewModel : BaseViewModel() {
                     //_userImage.postValue(url.toString())
                 }
 
+                /*val firebaseUser = FirebaseAuth.getInstance().currentUser
+                if (firebaseUser.providerData.size > 0) {
+                    //Prints Out google.com for Google Sign In, prints facebook.com for Facebook
+                    Log.d("PERMONIK", "Provider: " + firebaseUser.providerData[firebaseUser.providerData.size - 1].providerId)
+                }*/
+
+
+                Log.d("PERMONIK", "Auth provider jest: " + auth.currentUser.providerData[auth.currentUser.providerData.size - 1].providerId)
 
             }
+
+
     }
 
     fun clickLogout() {
@@ -84,8 +102,9 @@ class ProfileViewModel : BaseViewModel() {
                 Log.d("STRG", "Picture upload error: " + e.message.toString())
             }
         }
-
     }
+
+
 
 }
 
