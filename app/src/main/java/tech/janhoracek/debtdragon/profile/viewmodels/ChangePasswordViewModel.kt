@@ -39,11 +39,21 @@ class ChangePasswordViewModel : BaseViewModel() {
         object ShowLoading: Event()
         object HideLoading: Event()
         object PasswordChanged: Event()
+        object ReadyToChange: Event()
         data class ShowToast(val message: String?) : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
+
+
+    fun tryToChangePassword() {
+        GlobalScope.launch(Main) {
+            if (validatePasswords()) {
+                eventChannel.send(Event.ReadyToChange)
+            }
+        }
+    }
 
     fun changePassword() {
         GlobalScope.launch(Main) {
@@ -63,7 +73,6 @@ class ChangePasswordViewModel : BaseViewModel() {
                 }
             } else {
                 eventChannel.send(Event.HideLoading)
-                eventChannel.send(Event.ShowToast("TEstovaci toast"))
                 Log.d("CAJ", "Nejsme ready menit hesla")
             }
         }

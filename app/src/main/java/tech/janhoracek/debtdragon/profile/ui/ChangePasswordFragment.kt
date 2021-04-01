@@ -1,8 +1,11 @@
 package tech.janhoracek.debtdragon.profile.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +43,9 @@ class ChangePasswordFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
+        binding.btnChangePasswordOk.setOnClickListener {
+            //viewModel.tryToChangePassword()
+        }
 
         return binding.root
     }
@@ -58,6 +64,19 @@ class ChangePasswordFragment : BaseFragment() {
                         requireActivity().viewModelStore.clear()
                         requireActivity().finish()}
                     is ChangePasswordViewModel.Event.ShowToast -> { Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show() }
+                    ChangePasswordViewModel.Event.ReadyToChange -> {
+                        val dialog = AlertDialog.Builder(requireContext())
+                        dialog.setTitle("Změnit heslo")
+                        dialog.setMessage("Po změně hesla budete odhlášeni a bude nutné se znovu přihlásit novým heslem. Přejete si pokračovat?")
+                        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                            Log.d("CAJ", "Na ano!")
+                            viewModel.changePassword()
+                        }
+                        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                            Log.d("CAJ", "Nope")
+                        }
+                        dialog.show()
+                    }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
     }
