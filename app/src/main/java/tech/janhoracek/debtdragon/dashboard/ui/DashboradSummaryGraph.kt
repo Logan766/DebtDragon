@@ -1,5 +1,6 @@
 package tech.janhoracek.debtdragon.dashboard.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradSummaryGraphBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import kotlin.math.abs
 
 class DashboradSummaryGraph : BaseFragment() {
     private lateinit var binding: FragmentDashboradSummaryGraphBinding
@@ -29,9 +31,29 @@ class DashboradSummaryGraph : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDashboradSummaryGraphBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewmodel = viewModel
 
         viewModel.summaryPieData.observe(viewLifecycleOwner, Observer { pieData->
             setupSummaryPie(pieData)
+        })
+
+        viewModel.summary.observe(viewLifecycleOwner, Observer { summary ->
+            if (summary == 0) {
+                binding.tvStatusSummaryGraphDashborad.text = "Vaše dluhy jsou vyrovnány"
+                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.INVISIBLE
+            } else if (summary < 0) {
+                binding.tvStatusSummaryGraphDashborad.text = "Celkem dlužíte přátelům"
+                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
+                binding.tvStatusSummaryNumberGraphDashboard.text = abs(summary).toString()
+                binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#ee1f43"))
+            } else {
+                binding.tvStatusSummaryGraphDashborad.text = "Přátelé Vám celkem dluží"
+                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
+                binding.tvStatusSummaryNumberGraphDashboard.text = summary.toString()
+                binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#120f38"))
+
+            }
         })
 
 

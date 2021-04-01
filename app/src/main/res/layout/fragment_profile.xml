@@ -168,7 +168,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="10dp"
-                    android:text="O aplikaci"
+                    android:text="Aplikace"
                     android:textColor="@color/pajova"
                     android:textStyle="bold"
 

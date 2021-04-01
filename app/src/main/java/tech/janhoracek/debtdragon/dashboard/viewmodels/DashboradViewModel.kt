@@ -47,6 +47,9 @@ class DashboradViewModel : BaseViewModel() {
     private val _topCreditors = MutableLiveData<List<Pair<String, Int>>>()
     val topCreditors: LiveData<List<Pair<String, Int>>> get() = _topCreditors
 
+    private val _summary = MutableLiveData<Int>()
+    val summary: LiveData<Int> get() = _summary
+
     var test = MutableLiveData<List<Pair<String, Int>>>()
 
     private val categorySummaryFriends = HashMap<String, Int>()
@@ -83,6 +86,10 @@ class DashboradViewModel : BaseViewModel() {
                         Log.d("ZIPPO", "Current data null")
                     }
                 }
+            var url: Uri? = null
+            url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+            Log.d("ASS", "url jest: " + url)
+            _userImage.postValue(url.toString())
         }
     }
 
@@ -197,6 +204,7 @@ class DashboradViewModel : BaseViewModel() {
 
         GlobalScope.launch(IO) {
             job.join()
+            _summary.postValue(mySummary - friendsSummary)
             setupDataForSummaryPie(mySummary, friendsSummary)
             setupDataForFriendsCategoryPie(categorySummaryUser, PIE_TYPE_USER)
             setupDataForFriendsCategoryPie(categorySummaryFriends, PIE_TYPE_FRIEND)

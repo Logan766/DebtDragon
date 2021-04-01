@@ -34,15 +34,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Přátelé vám dluží 500"
-            app:layout_constraintBottom_toTopOf="@+id/pieChart_overview"
+            android:text="Přátelé vám dluží"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pie_overview"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pie_overview" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_status_summary_number_graph_Dashboard"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textStyle="bold"
+            android:text="500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status_summary_graph_Dashborad" />
 
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,9 +70,8 @@
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_centerInParent="true"
-                android:elevation="5dp"
                 app:imageUrl="@{viewmodel.userImage}"
-                app:placeholder="@{@drawable/avatar_profileavatar}"/>
+                app:placeholder="@{@drawable/avatar_profileavatar}" />
         </RelativeLayout>
 
 
