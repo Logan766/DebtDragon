@@ -9,11 +9,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
+import tech.janhoracek.debtdragon.utility.Constants
 
 
 class RegisterViewModel() : BaseViewModel() {
-
-    private val passwordLength = 6
 
     val nameContent = MutableLiveData<String>("")
     val emailContent = MutableLiveData<String>("")
@@ -84,9 +83,9 @@ class RegisterViewModel() : BaseViewModel() {
     }
 
     private fun validatePasswordLength(): Boolean {
-        return if (!(password1Content.value?.length!! >= passwordLength)) {
+        return if (!(password1Content.value?.length!! >= Constants.PASSWORD_LENGTH)) {
             _passwordErrorLength.value =
-                localized(R.string.passwor_must_have) + passwordLength + localized(
+                localized(R.string.passwor_must_have) + Constants.PASSWORD_LENGTH + localized(
                     R.string.number_of_characters)
             false
         } else {
