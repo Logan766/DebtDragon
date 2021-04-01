@@ -9,8 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import tech.janhoracek.debtdragon.UserObject
-import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
 import tech.janhoracek.debtdragon.profile.models.UserModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants

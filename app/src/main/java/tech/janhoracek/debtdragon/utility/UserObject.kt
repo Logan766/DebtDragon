@@ -1,4 +1,4 @@
-package tech.janhoracek.debtdragon
+package tech.janhoracek.debtdragon.utility
 
 import com.google.firebase.firestore.Exclude
 import java.io.Serializable
