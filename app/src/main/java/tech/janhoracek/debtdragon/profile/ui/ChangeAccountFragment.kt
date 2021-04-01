@@ -1,7 +1,10 @@
 package tech.janhoracek.debtdragon.profile.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +39,20 @@ class ChangeAccountFragment : BaseFragment() {
         binding = FragmentChangeAccountBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
+
+        binding.fabDeleteAccount.setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("Odstranit účet")
+            dialog.setMessage("Váš účet bude odebrán z aplikace a vaši přátelé již nebudou moci generovat QR kódy pro platby. Přejete si pokračovat?")
+            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                Log.d("CAJ", "Na ano!")
+                viewModel.deleteAccount()
+            }
+            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                Log.d("CAJ", "Nope")
+            }
+            dialog.show()
+        }
 
         return binding.root
     }

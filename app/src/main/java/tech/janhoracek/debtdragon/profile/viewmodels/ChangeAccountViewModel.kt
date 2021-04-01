@@ -85,4 +85,11 @@ class ChangeAccountViewModel: BaseViewModel() {
 
     }
 
+    fun deleteAccount() {
+        GlobalScope.launch(IO) {
+            db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("account", "").await()
+            eventChannel.send(Event.AccountChanged)
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputLayout
 import tech.janhoracek.debtdragon.R
@@ -58,6 +59,16 @@ object BindingAdapters {
 
     interface OnValueChangeListener {
         fun menimeZivoty(value: Float)
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:fabStatus")
+    fun setFabStatus(fab: FloatingActionButton, status: Boolean) {
+        if (status) {
+            fab.show()
+        } else {
+            fab.hide()
+        }
     }
 
 
