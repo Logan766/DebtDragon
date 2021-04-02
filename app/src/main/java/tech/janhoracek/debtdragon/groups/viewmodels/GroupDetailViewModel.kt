@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.groups.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,6 +17,8 @@ class GroupDetailViewModel: BaseViewModel() {
     val isCurrentUserOwner = MutableLiveData<Boolean>()
 
     val groupModel = MutableLiveData<GroupModel>()
+
+    val friendsToAdd = MutableLiveData<List<String>>()
 
     fun setData(groupID: String) {
         GlobalScope.launch(IO) {
@@ -63,6 +66,15 @@ class GroupDetailViewModel: BaseViewModel() {
             for (member in rozdil) {
                 Log.d("VODA", "Person to invite: " + member)
             }
+
+            friendsToAdd.postValue(rozdil)
+        }
+    }
+
+    fun addMembers(membersToAdd: ArrayList<String>) {
+        val document = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
+        for (member in membersToAdd) {
+            document.update("members", FieldValue.arrayUnion(member))
         }
     }
 

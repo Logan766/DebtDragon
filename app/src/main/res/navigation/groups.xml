@@ -51,10 +51,84 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_groupDetailFragment_to_addBillFragment"
+            app:destination="@id/addBillFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_groupDetailFragment_to_billDetailFragment"
+            app:destination="@id/billDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_groupDetailFragment_to_groupResultsFragment"
+            app:destination="@id/groupResultsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/manageMembersFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.ManageMembersFragment"
         android:label="fragment_manage_members"
-        tools:layout="@layout/fragment_manage_members" />
+        tools:layout="@layout/fragment_manage_members" >
+        <action
+            android:id="@+id/action_manageMembersFragment_to_addGroupMemberFragment"
+            app:destination="@id/addGroupMemberFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_manageMembersFragment_to_removeGroupMembersFragment"
+            app:destination="@id/removeGroupMembersFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/addGroupMemberFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.AddGroupMemberFragment"
+        android:label="fragment_add_group_member"
+        tools:layout="@layout/fragment_add_group_member" />
+    <fragment
+        android:id="@+id/removeGroupMembersFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.RemoveGroupMembersFragment"
+        android:label="fragment_remove_group_members"
+        tools:layout="@layout/fragment_remove_group_members" />
+    <fragment
+        android:id="@+id/addBillFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.AddBillFragment"
+        android:label="fragment_add_bill"
+        tools:layout="@layout/fragment_add_bill" />
+    <fragment
+        android:id="@+id/billDetailFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.BillDetailFragment"
+        android:label="fragment_bill_detail"
+        tools:layout="@layout/fragment_bill_detail" >
+        <action
+            android:id="@+id/action_billDetailFragment_to_addGroupDebtFragment"
+            app:destination="@id/addGroupDebtFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/addGroupDebtFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.AddGroupDebtFragment"
+        android:label="fragment_add_group_debt"
+        tools:layout="@layout/fragment_add_group_debt" />
+    <fragment
+        android:id="@+id/groupResultsFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.GroupResultsFragment"
+        android:label="fragment_group_results"
+        tools:layout="@layout/fragment_group_results" />
 </navigation>
