@@ -55,8 +55,8 @@
                         />
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/debt_image_AddEditDebt"
-                        app:imageUrl="@{viewmodel.groupImageURL}"
+                        android:id="@+id/group_image_CreateGroup"
+                        app:imageUrl="@{viewmodel.groupModel.photoUrl}"
                         app:placeholder="@{@drawable/avatar_profileavatar}"
                         android:layout_width="140dp"
                         app:civ_border_width="3dp"
@@ -76,10 +76,10 @@
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_input_name_AddEditDebt"
+                        android:id="@+id/text_input_name_CreateGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:text="@={viewmodel.groupModel.name}"
                         app:helperTextEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,14 +94,15 @@
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_input_desc_create_group"
+                        android:id="@+id/text_input_desc_CreateGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:text="@={viewmodel.groupModel.description}"
                         app:helperTextEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:onClick="@{() -> viewmodel.saveGroup()}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

@@ -5,6 +5,8 @@ object Constants {
 
     const val DATABASE_REQUESTS = "Requests"
     const val DATABASE_FRIENDSHIPS = "Friendships"
+    const val DATABASE_GROUPS = "Groups"
+    const val DATABASE_NAMES_GROUP_PROFILE_IMAGE = "groupImage.jpg"
     const val DATABASE_DEBTS = "Debts"
     const val DATABASE_USERS = "Users"
     const val DATABASE_USER_NAME = "name"

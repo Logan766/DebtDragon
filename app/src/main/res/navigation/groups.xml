@@ -22,5 +22,11 @@
         android:id="@+id/createGroupFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.CreateGroupFragment"
         android:label="fragment_create_group"
-        tools:layout="@layout/fragment_create_group" />
+        tools:layout="@layout/fragment_create_group" >
+        <argument
+            android:name="groupData"
+            app:argType="tech.janhoracek.debtdragon.groups.models.GroupModel"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

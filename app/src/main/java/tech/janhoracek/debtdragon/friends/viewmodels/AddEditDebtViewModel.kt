@@ -154,10 +154,8 @@ class AddEditDebtViewModel : BaseViewModel() {
 
                     if (debtProfilePhoto.value != null) {
                         try {
-                            storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}")
-                                .putBytes(debtProfilePhoto.value!!).await()
-                            profileImageURL =
-                                storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").downloadUrl.await()
+                            storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").putBytes(debtProfilePhoto.value!!).await()
+                            profileImageURL = storage.reference.child("/${Constants.DATABASE_DEBTS}/${debtRef.id}/${Constants.DATABASE_NAMES_DEBT_PROFILE_IMAGE}").downloadUrl.await()
                         } catch (e: Exception) {
                             Log.d("STRG", e.message.toString())
                         }

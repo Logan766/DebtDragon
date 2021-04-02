@@ -4,4 +4,7 @@ import tech.janhoracek.debtdragon.utility.BaseViewModel
 
 class GroupsViewModel: BaseViewModel() {
 
+    init {
+
+    }
 }
