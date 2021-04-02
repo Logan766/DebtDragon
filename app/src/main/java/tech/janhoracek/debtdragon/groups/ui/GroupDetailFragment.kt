@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.marginTop
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.appbar.AppBarLayout
 import tech.janhoracek.debtdragon.R
@@ -41,9 +42,9 @@ class GroupDetailFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //var args:
+        val args: GroupDetailFragmentArgs by navArgs()
         if(savedInstanceState == null) {
-            viewModel.setData()
+            viewModel.setData(args.groupID)
         }
 
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false)

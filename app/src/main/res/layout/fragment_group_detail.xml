@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-
+                        android:text="@{viewmodel.groupModel.name}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
 
 
@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
-
+                        android:text="@{viewmodel.groupModel.description}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
                         android:textColor="@android:color/white" />
 
@@ -159,10 +159,10 @@
             android:elevation="8dp"
             app:civ_border_color="@color/white"
             app:civ_border_width="3dp"
-
+            app:imageUrl="@{viewmodel.groupModel.photoUrl}"
             app:layout_anchorGravity="top|center_horizontal"
             app:layout_scrollFlags="scroll"
-
+            app:placeholder="@{@drawable/avatar_profileavatar}"
 
             />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

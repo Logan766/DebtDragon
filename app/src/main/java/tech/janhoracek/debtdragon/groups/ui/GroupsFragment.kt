@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -72,6 +73,8 @@ class GroupsFragment : BaseFragment(), GroupsFirebaseAdapter.OnGroupClickListene
     }
 
     override fun onGroupClick(groupID: String) {
+        val action = GroupsFragmentDirections.actionGroupsFragmentToGroupDetailFragment(groupID)
+        findNavController().navigate(action)
         Log.d("SLUZ", "ID grupy je: " + groupID)
     }
 
