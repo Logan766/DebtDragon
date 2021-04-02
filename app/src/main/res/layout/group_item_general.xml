@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingVertical="18dp"
+    android:paddingHorizontal="16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/CircImageView_GroupGeneral"
+        android:src="@drawable/avatar_profileavatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:civ_border_color="@color/main"
+        app:civ_border_width="3dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_GroupGeneral_Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/CircImageView_GroupGeneral"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:textColor="@color/main"
+        android:text="Název skupiny" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_GroupGeneral_Status"
+        android:visibility="invisible"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/admin_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_groupsFragment_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/createGroupFragment"
@@ -29,4 +32,9 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/groupDetailFragment"
+        android:name="tech.janhoracek.debtdragon.groups.ui.GroupDetailFragment"
+        android:label="fragment_group_detail"
+        tools:layout="@layout/fragment_group_detail" />
 </navigation>
