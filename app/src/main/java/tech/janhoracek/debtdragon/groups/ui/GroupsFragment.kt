@@ -47,8 +47,6 @@ class GroupsFragment : BaseFragment(), GroupsFirebaseAdapter.OnGroupClickListene
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
-
-
         return binding.root
     }
 

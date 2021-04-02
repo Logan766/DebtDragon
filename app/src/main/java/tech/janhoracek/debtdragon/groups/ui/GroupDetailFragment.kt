@@ -2,12 +2,15 @@ package tech.janhoracek.debtdragon.groups.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.marginTop
+import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -76,6 +79,25 @@ class GroupDetailFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+        binding.toolbarGroupDetail.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.manage_members -> {
+                    Navigation.findNavController(view).navigate(R.id.action_groupDetailFragment_to_manageMembersFragment)
+                }
+            }
+            true
+        }
+
+        viewModel.isCurrentUserOwner.observe(viewLifecycleOwner, Observer { status->
+            setOwnerOptions()
+        })
+    }
+
     private fun updateUI(offset: Float) {
         groupAvatar.apply {
             this.layoutParams.also {
@@ -87,18 +109,22 @@ class GroupDetailFragment : BaseFragment() {
         if (offset > 0.5) {
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpGroupDetail.visibility = View.INVISIBLE
-            //binding.btnBackBottomFriendDetail.visibility = View.VISIBLE
-            //binding.qrBottomFriendDetail.visibility = View.VISIBLE
-            //binding.paymentBottomFriendDetail.visibility = View.VISIBLE
+            binding.btnBackBottomGroupDetail.visibility = View.VISIBLE
+            binding.membersBottomGroupDetail.visibility = View.VISIBLE
             offsetStatus = false
         } else {
             requireActivity().window.statusBarColor = Color.parseColor("#83173d")
             binding.lottieArrowUpGroupDetail.visibility = View.VISIBLE
-            //binding.btnBackBottomFriendDetail.visibility = View.GONE
-            //binding.qrBottomFriendDetail.visibility = View.GONE
-            //binding.paymentBottomFriendDetail.visibility = View.GONE
+            binding.btnBackBottomGroupDetail.visibility = View.GONE
+            binding.membersBottomGroupDetail.visibility = View.GONE
             offsetStatus = true
         }
+    }
+
+    private fun setOwnerOptions() {
+        binding.toolbarGroupDetail.menu.getItem(1).isVisible = viewModel.isCurrentUserOwner.value!!
+        binding.toolbarGroupDetail.menu.getItem(2).isVisible = viewModel.isCurrentUserOwner.value!!
+        binding.toolbarGroupDetail.menu.getItem(3).isVisible = viewModel.isCurrentUserOwner.value!!
     }
 
 }
