@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +41,7 @@ class AddGroupMemberFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.recyclerViewAddGroupMembers.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewAddGroupMembers.layoutManager = LinearLayoutManager(this.context)
 
 
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
@@ -51,27 +53,27 @@ class AddGroupMemberFragment : BaseFragment() {
         })
 
         binding.FABAddMembers.setOnClickListener {
-            val dunno = binding.recyclerViewAddGroupMembers.adapter as AddRemoveGroupMemeberAdapter
-            for (item in dunno.checkedFriends) {
-                Log.d("KINO", "Id jest: " + item)
+            val friendsToAdd = binding.recyclerViewAddGroupMembers.adapter as AddRemoveGroupMemeberAdapter
+            if (friendsToAdd.checkedFriends.size == 0) {
+                Toast.makeText(requireContext(), "Nejsou vybráni žádní uživatelé", Toast.LENGTH_LONG).show()
+            } else {
+                viewModel.addMembers(friendsToAdd.checkedFriends)
+                findNavController().navigateUp()
+                Toast.makeText(requireContext(), "Uživatelé přidáni", Toast.LENGTH_LONG).show()
             }
-            viewModel.addMembers(dunno.checkedFriends)
-            //findNavController().navigateUp()
-        }
 
+        }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.addGroupMembersToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        //viewModel.getMembers()
-    }
 
 }

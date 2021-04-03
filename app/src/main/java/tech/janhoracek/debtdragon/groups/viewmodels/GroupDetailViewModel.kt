@@ -1,6 +1,7 @@
 package tech.janhoracek.debtdragon.groups.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Dispatchers.IO
@@ -19,6 +20,9 @@ class GroupDetailViewModel: BaseViewModel() {
     val groupModel = MutableLiveData<GroupModel>()
 
     val friendsToAdd = MutableLiveData<List<String>>()
+
+    private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
+    val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
     fun setData(groupID: String) {
         GlobalScope.launch(IO) {
@@ -75,6 +79,37 @@ class GroupDetailViewModel: BaseViewModel() {
         val document = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
         for (member in membersToAdd) {
             document.update("members", FieldValue.arrayUnion(member))
+        }
+    }
+
+    fun removeMembers(membersToRemove: ArrayList<String>) {
+        val document = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
+        for (member in membersToRemove) {
+            document.update("members", FieldValue.arrayRemove(member))
+        }
+    }
+
+    fun getNamesForGroup() {
+        GlobalScope.launch(IO) {
+            val membersIDs = groupModel.value!!.members
+            val membersAndNamesArray: ArrayList<Pair<String, String>> = arrayListOf()
+
+            for(member in membersIDs) {
+                val document = db.collection(Constants.DATABASE_USERS).document(member).get().await()
+                membersAndNamesArray.add(Pair(member, document[Constants.DATABASE_USER_NAME].toString()))
+            }
+
+            for(member in membersAndNamesArray) {
+                Log.d("KOFOLA", "ID: " + member.first + " Jméno: " + member.second)
+            }
+
+            Log.d("KOFOLA", "Najdi Jana Horáčka: " + membersAndNamesArray.find { it.second == "Jan Horáček" }!!.first)
+
+            //val membersNames = mutableListOf<String>()
+            //val itemArray: ArrayList<Pair<String, String>> = arrayListOf()
+            //val result = itemArray.find { it.first == "ahoj" }
+
+            _membersAndNames.postValue(membersAndNamesArray)
         }
     }
 

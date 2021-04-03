@@ -5,13 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.navigation.navGraphViewModels
+import tech.janhoracek.debtdragon.DataBinderMapperImpl
 import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.databinding.FragmentAddBillBinding
+import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 class AddBillFragment : BaseFragment() {
+    override var bottomNavigationViewVisibility = View.GONE
+    private lateinit var binding: FragmentAddBillBinding
+
+    val viewModel by navGraphViewModels<GroupDetailViewModel>(R.id.groups)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -19,6 +28,14 @@ class AddBillFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_bill, container, false)
+        binding = FragmentAddBillBinding.inflate(inflater, container, false)
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel.groupModel.observe(viewLifecycleOwner, Observer {
+            viewModel.getNamesForGroup()
+        })
+
+        return binding.root
     }
 }

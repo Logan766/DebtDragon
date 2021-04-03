@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.groups.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,10 +42,11 @@ class ManageMembersFragment : BaseFragment() {
             findNavController().navigateUp()
         }
 
-        binding.recyclerViewManageMember.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewManageMember.layoutManager = LinearLayoutManager(this.context)
 
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
-            binding.recyclerViewManageMember.adapter = MembersAdapter(it.members, viewModel.groupModel.value!!.owner)
+            val members = it.members
+            binding.recyclerViewManageMember.adapter = MembersAdapter(members, viewModel.groupModel.value!!.owner)
         })
 
         return binding.root
@@ -52,7 +54,7 @@ class ManageMembersFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getGroupMembers()
+        //viewModel.getGroupMembers()
     }
 
 

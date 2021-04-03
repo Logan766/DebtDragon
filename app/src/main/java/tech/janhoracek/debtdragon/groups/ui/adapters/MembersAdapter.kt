@@ -26,6 +26,7 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
         val administrator = itemView.lottie_member_item
 
         fun bindToVH(name: String, image: String, owner: Boolean) {
+            Log.d("PICA", "Binduju: " + name)
             memberName.text = name
 
             if(owner) {
@@ -71,6 +72,7 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
                 } else {
                     Log.w("DATA", "Current data null")
                 }
+                Log.d("KURVA", "SIZE JEST: " + snapshot!!.data!!.size)
             }
         }
 
