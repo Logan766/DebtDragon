@@ -26,6 +26,8 @@ class GroupDetailViewModel: BaseViewModel() {
 
     val groupModel = MutableLiveData<GroupModel>()
 
+    val billModel = MutableLiveData<BillModel>()
+
     val friendsToAdd = MutableLiveData<List<String>>()
 
     val billNameToAdd = MutableLiveData<String>("")
@@ -41,6 +43,16 @@ class GroupDetailViewModel: BaseViewModel() {
 
     private val _billNameError = MutableLiveData<String>("")
     val billNameError: LiveData<String> get() = _billNameError
+
+    private val _billDetailName = MutableLiveData<String>("")
+    val billDetailName: LiveData<String> get() = _billDetailName
+
+    private val _billDetailPayerName = MutableLiveData<String>("")
+    val billDetailPayerName: LiveData<String> get() = _billDetailPayerName
+
+    private val _billDetailPayerImg = MutableLiveData<String>("")
+    val billDetailPayerImg: LiveData<String> get() = _billDetailPayerImg
+
 
     sealed class Event {
         data class BillCreated(val billID: String) : Event()
@@ -187,6 +199,36 @@ class GroupDetailViewModel: BaseViewModel() {
         }
     }
 
+    fun setDataForBillDetail(billID: String) {
+        Log.d("SPATNY", "Nastavuju data")
+        GlobalScope.launch(IO) {
+            db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billID).addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w("LSTNR", error.message.toString())
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
+                    db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString()).addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            Log.w("LSTNR", error.message.toString())
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            val model = snapshot.toObject(BillModel::class.java)
+                            billModel.postValue(model!!)
+                            _billDetailPayerImg.postValue(snapshot.data!![Constants.DATABASE_USER_IMG_URL].toString())
+                            _billDetailPayerName.postValue(snapshot.data!![Constants.DATABASE_USER_NAME].toString())
+                        } else {
+                            Log.w("DATA", "Current data null1")
+                        }
+                    }
+                } else {
+                    Log.w("DATA", "Current data null2")
+                }
+            }
+        }
+    }
 
 
 }
