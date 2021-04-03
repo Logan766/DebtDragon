@@ -24,6 +24,12 @@ class GroupDetailViewModel: BaseViewModel() {
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
+    private val _membersNames = MutableLiveData<List<String>>()
+    val membersNames: LiveData<List<String>> get() = _membersNames
+
+    private val _payerProfileImg = MutableLiveData<String>()
+    val payerProfileImg: LiveData<String> get() = _payerProfileImg
+
     fun setData(groupID: String) {
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_GROUPS).document(groupID).addSnapshotListener { snapshot, error ->
@@ -93,6 +99,7 @@ class GroupDetailViewModel: BaseViewModel() {
         GlobalScope.launch(IO) {
             val membersIDs = groupModel.value!!.members
             val membersAndNamesArray: ArrayList<Pair<String, String>> = arrayListOf()
+            val membersNames: ArrayList<String> = arrayListOf()
 
             for(member in membersIDs) {
                 val document = db.collection(Constants.DATABASE_USERS).document(member).get().await()
@@ -101,6 +108,7 @@ class GroupDetailViewModel: BaseViewModel() {
 
             for(member in membersAndNamesArray) {
                 Log.d("KOFOLA", "ID: " + member.first + " Jméno: " + member.second)
+                membersNames.add(member.second)
             }
 
             Log.d("KOFOLA", "Najdi Jana Horáčka: " + membersAndNamesArray.find { it.second == "Jan Horáček" }!!.first)
@@ -110,6 +118,24 @@ class GroupDetailViewModel: BaseViewModel() {
             //val result = itemArray.find { it.first == "ahoj" }
 
             _membersAndNames.postValue(membersAndNamesArray)
+            _membersNames.postValue(membersNames)
+        }
+    }
+
+    fun setImageForPayer(payerID: String) {
+        ///////////////DODELAT!
+        Log.d("KOFILA", "ID je: " + payerID)
+        GlobalScope.launch (IO) {
+            db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
+                val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
+                if(url == "null") {
+                    _payerProfileImg.postValue("")
+                } else{
+                    _payerProfileImg.postValue(url)
+                }
+                Log.d("KOFILA", "URL je: " + url)
+
+            }
         }
     }
 

@@ -44,7 +44,10 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("app:entries")
     fun setAdapter(view: AutoCompleteTextView, entries: List<String>?) {
-        view.setAdapter(ArrayAdapter(view.context, R.layout.list_item, entries!!))
+        if(entries != null) {
+            view.setAdapter(ArrayAdapter(view.context, R.layout.list_item, entries!!))
+        }
+
     }
 
 

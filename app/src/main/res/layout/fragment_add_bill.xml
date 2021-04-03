@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".groups.ui.AddBillFragment">
 
     <data>
@@ -9,16 +10,122 @@
             type="tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/remove_group_members_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="Vytvořit účet"
+                app:navigationIcon="?attr/homeAsUpIndicator"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:padding="16dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    </FrameLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleImageView"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginBottom="45dp"
+                android:layout_marginTop="80dp"
+                app:imageUrl="@{viewmodel.payerProfileImg}"
+                app:placeholder="@{@drawable/avatar_profileavatar}"
+                app:civ_border_color="@color/main"
+                app:civ_border_width="3dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Kdo za tento účet platil?"
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayout_add_bill_payer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_add_bill_payer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Plátce"
+
+                android:layout_marginBottom="65dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialTextView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView">
+
+                <AutoCompleteTextView
+                    android:id="@+id/textInputPayer_add_bill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:entries="@{viewmodel.membersNames}"
+                    android:inputType="none"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+
+                android:id="@+id/materialTextView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Zadejte název účtu (například Restaurace Pod Lípou)"
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_add_bill_payer" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Název"
+                app:errorEnabled="true"
+                android:layout_marginBottom="120dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/materialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="35dp"
+                android:text="Vytvořit účet"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

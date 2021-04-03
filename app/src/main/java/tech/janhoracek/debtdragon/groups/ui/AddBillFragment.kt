@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import tech.janhoracek.debtdragon.DataBinderMapperImpl
@@ -35,6 +36,11 @@ class AddBillFragment : BaseFragment() {
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
             viewModel.getNamesForGroup()
         })
+
+        binding.textInputPayerAddBill.doAfterTextChanged {
+            val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputPayerAddBill.text.toString() }!!.first
+            viewModel.setImageForPayer(payerID)
+        }
 
         return binding.root
     }
