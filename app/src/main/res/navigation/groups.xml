@@ -35,6 +35,14 @@
             app:argType="tech.janhoracek.debtdragon.groups.models.GroupModel"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_createGroupFragment_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/groupsFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupDetailFragment"
@@ -107,7 +115,16 @@
         android:id="@+id/addBillFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.AddBillFragment"
         android:label="fragment_add_bill"
-        tools:layout="@layout/fragment_add_bill" />
+        tools:layout="@layout/fragment_add_bill" >
+        <action
+            android:id="@+id/action_addBillFragment_to_billDetailFragment"
+            app:destination="@id/billDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/groupDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/billDetailFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.BillDetailFragment"
@@ -120,6 +137,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <argument
+            android:name="billID"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/addGroupDebtFragment"

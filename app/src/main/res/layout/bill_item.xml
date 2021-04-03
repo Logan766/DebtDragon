@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="16dp"
+    android:paddingHorizontal="16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image_View_BillItem"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/avatar_profileavatar"
+        app:civ_border_color="@color/main"
+        app:civ_border_width="3dp"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_value_BillItem"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name_BillItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_BillItem" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_payer_BillItem"
+        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jmeno Příjmení"
+        android:textColor="@color/pajova"
+        app:layout_constraintBottom_toTopOf="@+id/tv_name_BillItem"
+        app:layout_constraintStart_toStartOf="@+id/tv_name_BillItem" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_name_BillItem"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Název"
+        app:layout_constraintBottom_toBottomOf="@+id/image_View_BillItem"
+        app:layout_constraintStart_toEndOf="@+id/image_View_BillItem"
+        app:layout_constraintTop_toTopOf="@+id/image_View_BillItem"
+        app:layout_constraintVertical_bias="0.61" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

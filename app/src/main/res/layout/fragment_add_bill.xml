@@ -38,7 +38,7 @@
                 android:id="@+id/circleImageView"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:layout_marginBottom="45dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginTop="80dp"
                 app:imageUrl="@{viewmodel.payerProfileImg}"
                 app:placeholder="@{@drawable/avatar_profileavatar}"
@@ -55,6 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
                 android:text="Kdo za tento účet platil?"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout_add_bill_payer"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +88,7 @@
                 android:id="@+id/materialTextView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_marginBottom="8dp"
                 android:text="Zadejte název účtu (například Restaurace Pod Lípou)"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,21 +102,23 @@
                 android:layout_height="wrap_content"
                 android:hint="Název"
                 app:errorEnabled="true"
+                app:errorText="@{viewmodel.billNameError}"
                 android:layout_marginBottom="120dp"
-                app:layout_constraintBottom_toTopOf="@+id/materialButton"
+                app:layout_constraintBottom_toTopOf="@+id/btn_addBill"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="number"
+                    android:inputType="textPersonName"
+                    android:text="@={viewmodel.billNameToAdd}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/materialButton"
+                android:id="@+id/btn_addBill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="35dp"

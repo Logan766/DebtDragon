@@ -5,13 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.dashboard.ui.adapters.TopDebtorsAdapter
+import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
+import tech.janhoracek.debtdragon.groups.models.BillModel
 import tech.janhoracek.debtdragon.groups.models.GroupModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
+import java.lang.Error
+import java.lang.Exception
 
 class GroupDetailViewModel: BaseViewModel() {
 
@@ -21,6 +28,8 @@ class GroupDetailViewModel: BaseViewModel() {
 
     val friendsToAdd = MutableLiveData<List<String>>()
 
+    val billNameToAdd = MutableLiveData<String>("")
+
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
@@ -29,6 +38,16 @@ class GroupDetailViewModel: BaseViewModel() {
 
     private val _payerProfileImg = MutableLiveData<String>()
     val payerProfileImg: LiveData<String> get() = _payerProfileImg
+
+    private val _billNameError = MutableLiveData<String>("")
+    val billNameError: LiveData<String> get() = _billNameError
+
+    sealed class Event {
+        data class BillCreated(val billID: String) : Event()
+    }
+
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
 
     fun setData(groupID: String) {
         GlobalScope.launch(IO) {
@@ -126,18 +145,48 @@ class GroupDetailViewModel: BaseViewModel() {
         ///////////////DODELAT!
         Log.d("KOFILA", "ID je: " + payerID)
         GlobalScope.launch (IO) {
-            db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
-                val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
-                if(url == "null") {
-                    _payerProfileImg.postValue("")
-                } else{
-                    _payerProfileImg.postValue(url)
-                }
-                Log.d("KOFILA", "URL je: " + url)
+            try {
+                db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
+                    val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
+                    if(url == "null") {
+                        _payerProfileImg.postValue("")
+                    } else{
+                        _payerProfileImg.postValue(url)
+                    }
+                    Log.d("KOFILA", "URL je: " + url)
 
+                }
+            } catch (e: Exception) {
+                Log.d("ERR", e.message.toString())
             }
+
         }
     }
+
+    fun createBill(payerName: String) {
+        if(billNameToAdd.value.isNullOrEmpty()) {
+            _billNameError.value = "Název nemůže být prádzný"
+        } else {
+            _billNameError.value = ""
+            Log.d("BILL", "Vytvářim účet")
+            val payerID = membersAndNames.value!!.find { it.second == payerName }!!.first
+            val billRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document()
+            val billToAdd = BillModel()
+
+            billToAdd.id = billRef.id
+            billToAdd.name = billNameToAdd.value.toString()
+            billToAdd.payer = payerID
+
+            Log.d("BILL", "ID billu jest: " + billToAdd.id)
+            Log.d("BILL", "Name uctu jest: " + billToAdd.name)
+            Log.d("BILL", "Payer ID jest: " + billToAdd.payer)
+            Log.d("BILL", "Timestamp jest: " + billToAdd.timestamp)
+
+            billRef.set(billToAdd)
+            GlobalScope.launch(Main) { eventChannel.send(Event.BillCreated(billToAdd.id)) }
+        }
+    }
+
 
 
 }

@@ -24,4 +24,9 @@ object Constants {
     const val DATABASE_NAMES_DEBT_PROFILE_IMAGE = "debtImage.jpg"
     const val DATABASE_DEBTS_VALUE = "value"
     const val DATABASE_DEBTS_CATEGORY = "category"
+    const val DATABASE_BILL = "Bills"
+    const val DATABASE_BILL_NAME = "name"
+    const val DATABASE_BILL_PAYER = "payer"
+    const val DATABASE_BILL_ID = "id"
+    const val DATABASE_BILL_TIMESTAMP = "timestamp"
 }
