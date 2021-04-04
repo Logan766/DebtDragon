@@ -1,14 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AddGroupDebtFragment">
+    tools:context=".groups.ui.AddGroupDebtFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_view_payer_group_debt"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:imageUrl="@{viewmodel.billDetailPayerImg}"
+                app:placeholder="@{@drawable/avatar_profileavatar}"
+                app:civ_border_color="@color/main"
+                app:civ_border_width="3dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_payer_add_group_debt"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:enabled="false"
+                android:focusable="false"
+                android:clickable="false"
+                android:layout_width="0dp"
+                app:errorEnabled="true"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:boxStrokeWidth="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/image_view_payer_group_debt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_view_payer_group_debt"
+                app:layout_constraintTop_toTopOf="@+id/image_view_payer_group_debt">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputEditText_payer_add_group_debt"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#797979"
+                    android:inputType="none"
+                    android:text="@{viewmodel.billDetailPayerName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView3"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/pajova"
+                android:text="zaplatil za"
+                app:layout_constraintBottom_toTopOf="@+id/image_view_debtor_group_debt"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout_payer_add_group_debt"
+                app:layout_constraintTop_toBottomOf="@+id/image_view_payer_group_debt" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_view_debtor_group_debt"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:civ_border_color="@color/main"
+                app:civ_border_width="3dp"
+                android:layout_marginTop="64dp"
+                app:imageUrl="@{viewmodel.payerProfileImg}"
+                app:placeholder="@{@drawable/avatar_profileavatar}"
+                app:layout_constraintEnd_toEndOf="@+id/image_view_payer_group_debt"
+                app:layout_constraintStart_toStartOf="@+id/image_view_payer_group_debt"
+                app:layout_constraintTop_toBottomOf="@+id/image_view_payer_group_debt" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_add_group_debt_debtor"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:boxStrokeWidth="0dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:errorEnabled="true"
+                app:errorText="@{viewmodel.groupDebtDebtorError}"
+                android:hint="Dlužník"
+                app:layout_constraintBottom_toBottomOf="@+id/image_view_debtor_group_debt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_view_debtor_group_debt"
+                app:layout_constraintTop_toTopOf="@+id/image_view_debtor_group_debt">
+
+                <AutoCompleteTextView
+                    android:id="@+id/textInputDebtor_add_group_debt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    app:entries="@{viewmodel.possibleDebtors}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_debt_name_add_group_debt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Zadejte název položky"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_view_debtor_group_debt" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_debt_name_add_group_debt"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Název"
+                app:errorEnabled="true"
+                app:errorText="@{viewmodel.groupDebtNameError}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_debt_name_add_group_debt">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_input_name_AddEditDebt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewmodel.debtDetailDebtName}"
+                    app:helperTextEnabled="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_debt_value_heading_add_group_debt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Zadejte částku"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_name_add_group_debt" />
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:id="@+id/textInputLayout_debt_value_add_group_debt"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Výše částky"
+                app:errorEnabled="true"
+                app:errorText="@{viewmodel.groupDebtValueError}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_debt_value_heading_add_group_debt">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:text="@={viewmodel.debtDetailDebtValue}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    app:helperTextEnabled="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_add_group_debt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Potvrdit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_value_add_group_debt" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/materialButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Zrušit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_value_add_group_debt" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

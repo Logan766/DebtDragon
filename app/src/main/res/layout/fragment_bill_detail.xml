@@ -5,7 +5,10 @@
     tools:context=".groups.ui.BillDetailFragment">
 
     <data>
+        <import type="tech.janhoracek.debtdragon.R"/>
+        <import type="androidx.navigation.Navigation"/>
 
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel" />
@@ -120,6 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_billDetailFragment_to_addGroupDebtFragment)}"
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"

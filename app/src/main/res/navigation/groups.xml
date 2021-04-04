@@ -145,7 +145,13 @@
         android:id="@+id/addGroupDebtFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.AddGroupDebtFragment"
         android:label="fragment_add_group_debt"
-        tools:layout="@layout/fragment_add_group_debt" />
+        tools:layout="@layout/fragment_add_group_debt" >
+        <argument
+            android:name="groupDebtID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="none" />
+    </fragment>
     <fragment
         android:id="@+id/groupResultsFragment"
         android:name="tech.janhoracek.debtdragon.groups.ui.GroupResultsFragment"

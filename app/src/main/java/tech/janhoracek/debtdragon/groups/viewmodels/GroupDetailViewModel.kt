@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.groups.viewmodels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -14,6 +15,7 @@ import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.dashboard.ui.adapters.TopDebtorsAdapter
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.groups.models.BillModel
+import tech.janhoracek.debtdragon.groups.models.GroupDebtModel
 import tech.janhoracek.debtdragon.groups.models.GroupModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
@@ -28,15 +30,24 @@ class GroupDetailViewModel: BaseViewModel() {
 
     val billModel = MutableLiveData<BillModel>()
 
+    val groupDebtModel = MutableLiveData<GroupDebtModel>()
+
     val friendsToAdd = MutableLiveData<List<String>>()
 
     val billNameToAdd = MutableLiveData<String>("")
+
+    val debtDetailDebtName = MutableLiveData<String>("")
+
+    val debtDetailDebtValue = MutableLiveData<String>("")
 
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
     private val _membersNames = MutableLiveData<List<String>>()
     val membersNames: LiveData<List<String>> get() = _membersNames
+
+    private val _possibleDebtors = MutableLiveData<List<String>>()
+    val possibleDebtors: LiveData<List<String>> get() = _possibleDebtors
 
     private val _payerProfileImg = MutableLiveData<String>()
     val payerProfileImg: LiveData<String> get() = _payerProfileImg
@@ -52,6 +63,19 @@ class GroupDetailViewModel: BaseViewModel() {
 
     private val _billDetailPayerImg = MutableLiveData<String>("")
     val billDetailPayerImg: LiveData<String> get() = _billDetailPayerImg
+
+    private val _groupDebtNameError = MutableLiveData<String>("")
+    val groupDebtNameError: LiveData<String> get() = _groupDebtNameError
+
+    private val _groupDebtValueError = MutableLiveData<String>("")
+    val groupDebtValueError: LiveData<String> get() = _groupDebtValueError
+
+    private val _groupDebtDebtorError = MutableLiveData<String>("")
+    val groupDebtDebtorError: LiveData<String> get() = _groupDebtDebtorError
+
+    /*private val _debtDetailDebtorImg = MutableLiveData<String>("")
+    val debtDetailDebtorImg: LiveData<String> get() = _debtDetailDebtorImg*/
+
 
 
     sealed class Event {
@@ -77,10 +101,6 @@ class GroupDetailViewModel: BaseViewModel() {
                 }
             }
         }
-    }
-
-    fun getGroupMembers() {
-
     }
 
     fun getMembers() {
@@ -142,7 +162,7 @@ class GroupDetailViewModel: BaseViewModel() {
                 membersNames.add(member.second)
             }
 
-            Log.d("KOFOLA", "Najdi Jana Horáčka: " + membersAndNamesArray.find { it.second == "Jan Horáček" }!!.first)
+            //Log.d("KOFOLA", "Najdi Jana Horáčka: " + membersAndNamesArray.find { it.second == "Jan Horáček" }!!.first)
 
             //val membersNames = mutableListOf<String>()
             //val itemArray: ArrayList<Pair<String, String>> = arrayListOf()
@@ -209,14 +229,16 @@ class GroupDetailViewModel: BaseViewModel() {
 
                 if (snapshot != null && snapshot.exists()) {
                     _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
+                    val model = snapshot.toObject(BillModel::class.java)
+                    Log.d("GDEBT", "Nastavuju model: " + model!!.id)
+                    billModel.postValue(model!!)
+
                     db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString()).addSnapshotListener { snapshot, error ->
                         if (error != null) {
                             Log.w("LSTNR", error.message.toString())
                         }
 
                         if (snapshot != null && snapshot.exists()) {
-                            val model = snapshot.toObject(BillModel::class.java)
-                            billModel.postValue(model!!)
                             _billDetailPayerImg.postValue(snapshot.data!![Constants.DATABASE_USER_IMG_URL].toString())
                             _billDetailPayerName.postValue(snapshot.data!![Constants.DATABASE_USER_NAME].toString())
                         } else {
@@ -227,6 +249,103 @@ class GroupDetailViewModel: BaseViewModel() {
                     Log.w("DATA", "Current data null2")
                 }
             }
+        }
+    }
+
+    fun setDataForAddDebt(groupDebtID: String?) {
+        val memberWithoutPayer = groupModel.value!!.members.toMutableList()
+        memberWithoutPayer.remove(billModel.value!!.payer)
+        val membersNamesWithoutPayer: ArrayList<String> = arrayListOf()
+
+        for(member in memberWithoutPayer) {
+            val memberName = membersAndNames.value!!.find { it.first == member }!!.second
+            membersNamesWithoutPayer.add(memberName)
+        }
+
+        _possibleDebtors.postValue(membersNamesWithoutPayer)
+
+        if(groupDebtID == "none") {
+            groupDebtModel.value = GroupDebtModel()
+        } else {
+
+        }
+    }
+
+    fun saveGroupDebt(debtorName: String) {
+        Log.d("GDEBT", "Dluznik jest: " + debtorName)
+        if(validateGroupDebt(debtorName)) {
+            GlobalScope.launch(IO) {
+                var groupDebtRef: DocumentReference? = null
+                val groupDebtToSave = GroupDebtModel()
+                if(groupDebtModel.value!!.id == "") {
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document()
+                    groupDebtToSave.id = groupDebtRef.id
+                } else {
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document(groupDebtModel.value!!.id)
+                    groupDebtToSave.id = groupDebtModel.value!!.id
+                    groupDebtToSave.timestamp = groupDebtModel.value!!.timestamp
+                }
+                groupDebtToSave.payer = billModel.value!!.payer
+                groupDebtToSave.debtor = membersAndNames.value!!.find{it.second == debtorName}!!.first
+                groupDebtToSave.name = debtDetailDebtName.value!!
+                groupDebtToSave.value = debtDetailDebtValue.value!!
+
+                Log.d("GDEBT", "S: ID: " + groupDebtToSave.id)
+                Log.d("GDEBT", "S: payer: " + groupDebtToSave.payer)
+                Log.d("GDEBT", "S: debtor: " + groupDebtToSave.debtor)
+                Log.d("GDEBT", "S: name: " + groupDebtToSave.name)
+                Log.d("GDEBT", "S: value: " + groupDebtToSave.value)
+                Log.d("GDEBT", "S: timestamp: " + groupDebtToSave.timestamp)
+
+                groupDebtRef!!.set(groupDebtToSave).addOnCompleteListener {
+                    if (it.isSuccessful) {
+
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    private fun validateGroupDebt(debtorName: String): Boolean {
+        val nameValidation = validateGroupDebtName()
+        val valueValidation = validateGroupDebtValue()
+        val debtorValidation = validateGroupDebtDebtor(debtorName)
+
+        return nameValidation && valueValidation && debtorValidation
+    }
+
+    private fun validateGroupDebtName(): Boolean {
+        return if(debtDetailDebtName.value == "") {
+            _groupDebtNameError.value = "Název nemůže být prázdný"
+            false
+        } else {
+            _groupDebtNameError.value = ""
+            true
+        }
+    }
+
+    private fun validateGroupDebtValue(): Boolean {
+        return if(debtDetailDebtValue.value == "") {
+            _groupDebtValueError.value = "Výše částky nemůže být prázdná"
+            false
+        } else if(debtDetailDebtValue.value!!.toInt() <= 0) {
+            _groupDebtValueError.value = "Částka musí být větší než 0"
+            false
+        } else {
+            _groupDebtValueError.value = ""
+            true
+        }
+    }
+
+    private fun validateGroupDebtDebtor(debtor: String): Boolean {
+        return if(debtor == "") {
+            _groupDebtDebtorError.value = "Vyberte dlužníka"
+            false
+        } else {
+            _groupDebtDebtorError.value = ""
+            true
         }
     }
 

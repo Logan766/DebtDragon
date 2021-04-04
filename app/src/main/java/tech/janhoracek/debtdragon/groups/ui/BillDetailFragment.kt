@@ -31,8 +31,9 @@ class BillDetailFragment : BaseFragment() {
         requireActivity().window.statusBarColor = Color.parseColor("#83173d")
         // Inflate the layout for this fragment
         val args: BillDetailFragmentArgs by navArgs()
-
+        viewModel.getNamesForGroup()
         viewModel.setDataForBillDetail(args.billID)
+
 
         binding = FragmentBillDetailBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel

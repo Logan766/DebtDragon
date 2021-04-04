@@ -29,4 +29,5 @@ object Constants {
     const val DATABASE_BILL_PAYER = "payer"
     const val DATABASE_BILL_ID = "id"
     const val DATABASE_BILL_TIMESTAMP = "timestamp"
+    const val DATABASE_GROUPDEBT = "GDebts"
 }
