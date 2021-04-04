@@ -40,6 +40,8 @@ class AddGroupDebtFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.setImageForPayer("")
+
         binding.textInputDebtorAddGroupDebt.doAfterTextChanged {
             val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputDebtorAddGroupDebt.text.toString() }!!.first
             viewModel.setImageForPayer(payerID)
@@ -49,8 +51,8 @@ class AddGroupDebtFragment : BaseFragment() {
             viewModel.saveGroupDebt(binding.textInputDebtorAddGroupDebt.text.toString())
         }
 
-
         return binding.root
     }
+
 
 }

@@ -22,7 +22,7 @@ import tech.janhoracek.debtdragon.utility.Constants
 import java.lang.Error
 import java.lang.Exception
 
-class GroupDetailViewModel: BaseViewModel() {
+class GroupDetailViewModel : BaseViewModel() {
 
     val isCurrentUserOwner = MutableLiveData<Boolean>()
 
@@ -76,6 +76,7 @@ class GroupDetailViewModel: BaseViewModel() {
     /*private val _debtDetailDebtorImg = MutableLiveData<String>("")
     val debtDetailDebtorImg: LiveData<String> get() = _debtDetailDebtorImg*/
 
+    val test = MutableLiveData<String>("AHOJ")
 
 
     sealed class Event {
@@ -105,15 +106,16 @@ class GroupDetailViewModel: BaseViewModel() {
 
     fun getMembers() {
         val membersInGroup = groupModel.value!!.members
-        for(member in membersInGroup) {
+        for (member in membersInGroup) {
             Log.d("VODA", "Member ID je: " + member)
         }
 
         GlobalScope.launch(IO) {
             val friendList = mutableListOf<String>()
-            val friends = db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_FRIENDSHIPS).get().await()
+            val friends =
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_FRIENDSHIPS).get().await()
             friends.forEach { document ->
-                if(document["member1"] == auth.currentUser.uid) {
+                if (document["member1"] == auth.currentUser.uid) {
                     friendList.add(document["member2"].toString())
                 } else {
                     friendList.add(document["member1"].toString())
@@ -152,12 +154,12 @@ class GroupDetailViewModel: BaseViewModel() {
             val membersAndNamesArray: ArrayList<Pair<String, String>> = arrayListOf()
             val membersNames: ArrayList<String> = arrayListOf()
 
-            for(member in membersIDs) {
+            for (member in membersIDs) {
                 val document = db.collection(Constants.DATABASE_USERS).document(member).get().await()
                 membersAndNamesArray.add(Pair(member, document[Constants.DATABASE_USER_NAME].toString()))
             }
 
-            for(member in membersAndNamesArray) {
+            for (member in membersAndNamesArray) {
                 Log.d("KOFOLA", "ID: " + member.first + " Jméno: " + member.second)
                 membersNames.add(member.second)
             }
@@ -175,28 +177,40 @@ class GroupDetailViewModel: BaseViewModel() {
 
     fun setImageForPayer(payerID: String) {
         ///////////////DODELAT!
-        Log.d("KOFILA", "ID je: " + payerID)
-        GlobalScope.launch (IO) {
-            try {
-                db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
-                    val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
-                    if(url == "null") {
-                        _payerProfileImg.postValue("")
-                    } else{
-                        _payerProfileImg.postValue(url)
+        Log.d("KOFILA", "ID payera je: " + payerID)
+        if (payerID == "") {
+            _payerProfileImg.postValue("")
+        } else {
+            GlobalScope.launch(IO) {
+                try {
+                    db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
+                        val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
+                        if (error != null) {
+                            Log.w("LSTNR", error.message.toString())
+                            Log.d("KOFILA", "Nastavuju nic protoze error")
+                            _payerProfileImg.postValue("")
+                        }
+
+                        if (url == "null") {
+                            Log.d("KOFILA", "Nastavuju nic: " + url)
+                            _payerProfileImg.postValue("")
+                        } else {
+                            Log.d("KOFILA", "Nastavuju img nebo url jest: " + url)
+                            _payerProfileImg.postValue(url)
+                        }
+                        Log.d("KOFILA", "URL je: " + url)
+
                     }
-                    Log.d("KOFILA", "URL je: " + url)
-
+                } catch (e: Exception) {
+                    Log.d("ERR", e.message.toString())
                 }
-            } catch (e: Exception) {
-                Log.d("ERR", e.message.toString())
             }
-
         }
+
     }
 
     fun createBill(payerName: String) {
-        if(billNameToAdd.value.isNullOrEmpty()) {
+        if (billNameToAdd.value.isNullOrEmpty()) {
             _billNameError.value = "Název nemůže být prádzný"
         } else {
             _billNameError.value = ""
@@ -222,33 +236,35 @@ class GroupDetailViewModel: BaseViewModel() {
     fun setDataForBillDetail(billID: String) {
         Log.d("SPATNY", "Nastavuju data")
         GlobalScope.launch(IO) {
-            db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billID).addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.w("LSTNR", error.message.toString())
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
-                    val model = snapshot.toObject(BillModel::class.java)
-                    Log.d("GDEBT", "Nastavuju model: " + model!!.id)
-                    billModel.postValue(model!!)
-
-                    db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString()).addSnapshotListener { snapshot, error ->
-                        if (error != null) {
-                            Log.w("LSTNR", error.message.toString())
-                        }
-
-                        if (snapshot != null && snapshot.exists()) {
-                            _billDetailPayerImg.postValue(snapshot.data!![Constants.DATABASE_USER_IMG_URL].toString())
-                            _billDetailPayerName.postValue(snapshot.data!![Constants.DATABASE_USER_NAME].toString())
-                        } else {
-                            Log.w("DATA", "Current data null1")
-                        }
+            db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billID)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.w("LSTNR", error.message.toString())
                     }
-                } else {
-                    Log.w("DATA", "Current data null2")
+
+                    if (snapshot != null && snapshot.exists()) {
+                        _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
+                        val model = snapshot.toObject(BillModel::class.java)
+                        Log.d("GDEBT", "Nastavuju model: " + model!!.id)
+                        billModel.postValue(model!!)
+
+                        db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString())
+                            .addSnapshotListener { snapshot, error ->
+                                if (error != null) {
+                                    Log.w("LSTNR", error.message.toString())
+                                }
+
+                                if (snapshot != null && snapshot.exists()) {
+                                    _billDetailPayerImg.postValue(snapshot.data!![Constants.DATABASE_USER_IMG_URL].toString())
+                                    _billDetailPayerName.postValue(snapshot.data!![Constants.DATABASE_USER_NAME].toString())
+                                } else {
+                                    Log.w("DATA", "Current data null1")
+                                }
+                            }
+                    } else {
+                        Log.w("DATA", "Current data null2")
+                    }
                 }
-            }
         }
     }
 
@@ -257,14 +273,14 @@ class GroupDetailViewModel: BaseViewModel() {
         memberWithoutPayer.remove(billModel.value!!.payer)
         val membersNamesWithoutPayer: ArrayList<String> = arrayListOf()
 
-        for(member in memberWithoutPayer) {
+        for (member in memberWithoutPayer) {
             val memberName = membersAndNames.value!!.find { it.first == member }!!.second
             membersNamesWithoutPayer.add(memberName)
         }
 
         _possibleDebtors.postValue(membersNamesWithoutPayer)
 
-        if(groupDebtID == "none") {
+        if (groupDebtID == "none") {
             groupDebtModel.value = GroupDebtModel()
         } else {
 
@@ -273,20 +289,22 @@ class GroupDetailViewModel: BaseViewModel() {
 
     fun saveGroupDebt(debtorName: String) {
         Log.d("GDEBT", "Dluznik jest: " + debtorName)
-        if(validateGroupDebt(debtorName)) {
+        if (validateGroupDebt(debtorName)) {
             GlobalScope.launch(IO) {
                 var groupDebtRef: DocumentReference? = null
                 val groupDebtToSave = GroupDebtModel()
-                if(groupDebtModel.value!!.id == "") {
-                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document()
+                if (groupDebtModel.value!!.id == "") {
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL)
+                        .document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document()
                     groupDebtToSave.id = groupDebtRef.id
                 } else {
-                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document(groupDebtModel.value!!.id)
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL)
+                        .document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document(groupDebtModel.value!!.id)
                     groupDebtToSave.id = groupDebtModel.value!!.id
                     groupDebtToSave.timestamp = groupDebtModel.value!!.timestamp
                 }
                 groupDebtToSave.payer = billModel.value!!.payer
-                groupDebtToSave.debtor = membersAndNames.value!!.find{it.second == debtorName}!!.first
+                groupDebtToSave.debtor = membersAndNames.value!!.find { it.second == debtorName }!!.first
                 groupDebtToSave.name = debtDetailDebtName.value!!
                 groupDebtToSave.value = debtDetailDebtValue.value!!
 
@@ -317,7 +335,7 @@ class GroupDetailViewModel: BaseViewModel() {
     }
 
     private fun validateGroupDebtName(): Boolean {
-        return if(debtDetailDebtName.value == "") {
+        return if (debtDetailDebtName.value == "") {
             _groupDebtNameError.value = "Název nemůže být prázdný"
             false
         } else {
@@ -327,10 +345,10 @@ class GroupDetailViewModel: BaseViewModel() {
     }
 
     private fun validateGroupDebtValue(): Boolean {
-        return if(debtDetailDebtValue.value == "") {
+        return if (debtDetailDebtValue.value == "") {
             _groupDebtValueError.value = "Výše částky nemůže být prázdná"
             false
-        } else if(debtDetailDebtValue.value!!.toInt() <= 0) {
+        } else if (debtDetailDebtValue.value!!.toInt() <= 0) {
             _groupDebtValueError.value = "Částka musí být větší než 0"
             false
         } else {
@@ -340,7 +358,7 @@ class GroupDetailViewModel: BaseViewModel() {
     }
 
     private fun validateGroupDebtDebtor(debtor: String): Boolean {
-        return if(debtor == "") {
+        return if (debtor == "") {
             _groupDebtDebtorError.value = "Vyberte dlužníka"
             false
         } else {
