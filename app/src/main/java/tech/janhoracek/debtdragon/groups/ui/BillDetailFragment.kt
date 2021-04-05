@@ -145,13 +145,16 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
     }
 
     override fun onGroupDebtClick(groupDebtID: String) {
-        if((viewModel.billModel.value!!.payer == auth.currentUser?.uid) || (viewModel.groupModel.value!!.owner == auth.currentUser?.uid)) {
-            val action = BillDetailFragmentDirections.actionBillDetailFragmentToAddGroupDebtFragment(groupDebtID)
-            findNavController().navigate(action)
+        if(viewModel.groupModel.value!!.calculated == "") {
+            if((viewModel.billModel.value!!.payer == auth.currentUser?.uid) || (viewModel.groupModel.value!!.owner == auth.currentUser?.uid)) {
+                val action = BillDetailFragmentDirections.actionBillDetailFragmentToAddGroupDebtFragment(groupDebtID)
+                findNavController().navigate(action)
+            } else {
+                Toast.makeText(requireContext(), "Editovat může jenom správce skupiny  nebo plátce", Toast.LENGTH_SHORT).show()
+            }
         } else {
-            Toast.makeText(requireContext(), "Editovat může jenom správce skupiny  nebo plátce", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Skupina je uzamčena", Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun setUIBasedOnStatusAndPriv() {

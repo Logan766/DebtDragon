@@ -20,7 +20,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/remove_group_members_toolbar"
+                android:id="@+id/add_bill_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:title="Vytvořit účet"
@@ -32,6 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
+
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -110,6 +114,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/materialTextView2">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInpu_name_add_bill"
                     android:inputType="textPersonName"
                     android:text="@={viewmodel.billNameToAdd}"
                     android:layout_width="match_parent"

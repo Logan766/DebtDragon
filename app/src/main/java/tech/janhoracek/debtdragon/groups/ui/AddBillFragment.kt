@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.DataBinderMapperImpl
@@ -38,6 +39,11 @@ class AddBillFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
+        binding.textInputPayerAddBill.setText("", false)
+        viewModel.billNameToAdd.value = ""
+        viewModel.setImageForPayer("")
+
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
             viewModel.getNamesForGroup()
         })
@@ -49,6 +55,10 @@ class AddBillFragment : BaseFragment() {
 
         binding.btnAddBill.setOnClickListener {
             viewModel.createBill(binding.textInputPayerAddBill.text.toString())
+        }
+
+        binding.addBillToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
         return binding.root

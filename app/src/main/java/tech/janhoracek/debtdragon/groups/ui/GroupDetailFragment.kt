@@ -108,6 +108,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
             }.observeInLifecycle(viewLifecycleOwner)
 
         viewModel.groupModel.observe(viewLifecycleOwner, Observer { groupData->
+            setUIbasedOnStatus()
             setUpRecyclerView()
             billAdapter!!.startListening()
         })
@@ -172,6 +173,21 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToBillDetailFragment(billID)
         findNavController().navigate(action)
         Log.d("BILL", "ID tohoto uctu jest: " + billID)
+    }
+
+    private fun setUIbasedOnStatus() {
+        val status = viewModel.groupModel.value!!.calculated
+        when (status) {
+            "" -> {
+                binding.FABGroupDetail.show()
+            }
+            "locked" -> {
+                binding.FABGroupDetail.hide()
+            }
+            else -> {
+                binding.FABGroupDetail.hide()
+            }
+        }
     }
 
 }
