@@ -49,6 +49,9 @@ class GroupDetailViewModel : BaseViewModel() {
     private val _possibleDebtors = MutableLiveData<List<String>>()
     val possibleDebtors: LiveData<List<String>> get() = _possibleDebtors
 
+    private val _debtorName = MutableLiveData<String>()
+    val debtorName: LiveData<String> get() = _debtorName
+
     private val _payerProfileImg = MutableLiveData<String>()
     val payerProfileImg: LiveData<String> get() = _payerProfileImg
 
@@ -81,6 +84,7 @@ class GroupDetailViewModel : BaseViewModel() {
 
     sealed class Event {
         data class BillCreated(val billID: String) : Event()
+        object GroupDebtCreated : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -279,11 +283,30 @@ class GroupDetailViewModel : BaseViewModel() {
         }
 
         _possibleDebtors.postValue(membersNamesWithoutPayer)
+        _groupDebtDebtorError.value = ""
+        _groupDebtValueError.value = ""
+        _groupDebtNameError.value = ""
 
         if (groupDebtID == "none") {
+            Log.d("NEDELE", "Ted pridavas novej groupDebt")
             groupDebtModel.value = GroupDebtModel()
+            _debtorName.value = ""
         } else {
-
+            Log.d("NEDELE", "Ted to neni novej groupDebt")
+            GlobalScope.launch(IO) {
+                db.collection(Constants.DATABASE_GROUPS)
+                    .document(groupModel.value!!.id)
+                    .collection(Constants.DATABASE_BILL)
+                    .document(billModel.value!!.id)
+                    .collection(Constants.DATABASE_GROUPDEBT)
+                    .document(groupDebtID!!)
+                    .get().addOnCompleteListener {
+                        //_debtorName.postValue("Jan Horáček")
+                        val debtorID = it.result!!["debtor"].toString()
+                        _debtorName.postValue(membersAndNames.value!!.find { it.first == debtorID }!!.second)
+                        groupDebtModel.postValue(it.result!!.toObject(GroupDebtModel::class.java))
+                    }
+            }
         }
     }
 
@@ -305,8 +328,8 @@ class GroupDetailViewModel : BaseViewModel() {
                 }
                 groupDebtToSave.payer = billModel.value!!.payer
                 groupDebtToSave.debtor = membersAndNames.value!!.find { it.second == debtorName }!!.first
-                groupDebtToSave.name = debtDetailDebtName.value!!
-                groupDebtToSave.value = debtDetailDebtValue.value!!
+                groupDebtToSave.name = groupDebtModel.value!!.name
+                groupDebtToSave.value = groupDebtModel.value!!.value
 
                 Log.d("GDEBT", "S: ID: " + groupDebtToSave.id)
                 Log.d("GDEBT", "S: payer: " + groupDebtToSave.payer)
@@ -335,7 +358,7 @@ class GroupDetailViewModel : BaseViewModel() {
     }
 
     private fun validateGroupDebtName(): Boolean {
-        return if (debtDetailDebtName.value == "") {
+        return if (groupDebtModel.value!!.name == "") {
             _groupDebtNameError.value = "Název nemůže být prázdný"
             false
         } else {
@@ -345,10 +368,10 @@ class GroupDetailViewModel : BaseViewModel() {
     }
 
     private fun validateGroupDebtValue(): Boolean {
-        return if (debtDetailDebtValue.value == "") {
+        return if (groupDebtModel.value!!.value == "") {
             _groupDebtValueError.value = "Výše částky nemůže být prázdná"
             false
-        } else if (debtDetailDebtValue.value!!.toInt() <= 0) {
+        } else if (groupDebtModel.value!!.value.toInt() <= 0) {
             _groupDebtValueError.value = "Částka musí být větší než 0"
             false
         } else {

@@ -112,6 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
+                    android:autoCompleteText="@{viewmodel.debtorName}"
                     app:entries="@{viewmodel.possibleDebtors}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,7 +140,7 @@
                     android:id="@+id/text_input_name_AddEditDebt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewmodel.debtDetailDebtName}"
+                    android:text="@={viewmodel.groupDebtModel.name}"
                     app:helperTextEnabled="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +166,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_debt_value_heading_add_group_debt">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:text="@={viewmodel.debtDetailDebtValue}"
+                    android:text="@={viewmodel.groupDebtModel.value}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import tech.janhoracek.debtdragon.R
@@ -33,18 +34,30 @@ class AddGroupDebtFragment : BaseFragment() {
         val args: AddGroupDebtFragmentArgs by navArgs()
         if(savedInstanceState == null) {
             viewModel.setDataForAddDebt(args.groupDebtID)
-            Log.d("WHO", "Je to null? : " + args.groupDebtID.isNullOrEmpty())
+            //Log.d("WHO", "Je to null? : " + args.groupDebtID.isNullOrEmpty())
         }
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
         binding = FragmentAddGroupDebtBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.setImageForPayer("")
+        ///Vyzkouset nutnost!
+        //viewModel.setImageForPayer("")
+
+        /*viewModel.debtorName.observe(viewLifecycleOwner, Observer {
+            binding.textInputDebtorAddGroupDebt.setText(it)
+        })*/
+
 
         binding.textInputDebtorAddGroupDebt.doAfterTextChanged {
-            val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputDebtorAddGroupDebt.text.toString() }!!.first
-            viewModel.setImageForPayer(payerID)
+            if (it.toString() != "") {
+                val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputDebtorAddGroupDebt.text.toString() }!!.first
+                viewModel.setImageForPayer(payerID)
+            } else {
+                Log.d("NEDELE" ,"Ted to triglo nic!")
+                viewModel.setImageForPayer("")
+            }
+
         }
 
         binding.btnSaveAddGroupDebt.setOnClickListener {

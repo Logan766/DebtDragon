@@ -14,11 +14,11 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.GroupDebtModel
 import tech.janhoracek.debtdragon.utility.Constants
 
-class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>) :
+class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>, val mGroupDebtListener: onGroupDebtClickListener) :
     FirestoreRecyclerAdapter<GroupDebtModel, FirebaseGroupDebtAdapter.GroupDebtViewHolder>(options){
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    class GroupDebtViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class GroupDebtViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bindToVH(model: GroupDebtModel, debtorName: String, debtorImage: String) {
             itemView.tv_value_debtFriendItem.text = model.value
@@ -31,6 +31,10 @@ class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(itemView.image_View_DebtFriendDetail)
             } else {
                 Glide.with(itemView).load(debtorImage).into(itemView.image_View_DebtFriendDetail)
+            }
+
+            itemView.setOnClickListener {
+                mGroupDebtListener.onGroupDebtClick(model.id)
             }
         }
     }
@@ -61,5 +65,9 @@ class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>
                 Log.w("LSTNR", "Current data null")
             }
         }
+    }
+
+    interface onGroupDebtClickListener {
+        fun onGroupDebtClick(groupDebtID: String)
     }
 }
