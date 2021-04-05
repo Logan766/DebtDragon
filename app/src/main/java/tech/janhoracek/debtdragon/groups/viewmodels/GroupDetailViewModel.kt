@@ -38,6 +38,9 @@ class GroupDetailViewModel : BaseViewModel() {
 
     val groupDebtAddEditTitle = MutableLiveData<String>("")
 
+    private val _groupSummary = MutableLiveData<String>()
+    val groupSummary: LiveData<String> get() = _groupSummary
+
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
@@ -82,8 +85,8 @@ class GroupDetailViewModel : BaseViewModel() {
         object GroupDebtCreated : Event()
         data class ShowToast(val message: String) : Event()
         object BillDataSet : Event()
-        object GroupDeleted: Event()
-        object BillDeleted: Event()
+        object GroupDeleted : Event()
+        object BillDeleted : Event()
         object ShowLoading : Event()
         object HideLoading : Event()
     }
@@ -107,6 +110,43 @@ class GroupDetailViewModel : BaseViewModel() {
                     GlobalScope.launch(Main) { eventChannel.send(Event.GroupDeleted) }
                 }
             }
+
+            db.collection(Constants.DATABASE_GROUPS).document(groupID).collection(Constants.DATABASE_BILL).addSnapshotListener { bills, error ->
+                bills?.forEach { bill ->
+                    getGroupSummary(groupID)
+                    db.collection(Constants.DATABASE_GROUPS)
+                        .document(groupID)
+                        .collection(Constants.DATABASE_BILL)
+                        .document(bill.id)
+                        .collection(Constants.DATABASE_GROUPDEBT)
+                        .addSnapshotListener { groupDebt, error ->
+                            groupDebt?.forEach {
+                                getGroupSummary(groupID)
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private fun getGroupSummary(groupID: String) {
+        GlobalScope.launch(IO) {
+            var summary = 0
+            val bills = db.collection(Constants.DATABASE_GROUPS).document(groupID).collection(Constants.DATABASE_BILL).get().await()
+            bills?.forEach {
+                val billID = it[Constants.DATABASE_BILL_ID].toString()
+                val gdebts = db.collection(Constants.DATABASE_GROUPS)
+                    .document(groupID)
+                    .collection(Constants.DATABASE_BILL)
+                    .document(billID)
+                    .collection(Constants.DATABASE_GROUPDEBT)
+                    .get().await()
+                gdebts?.forEach {
+                    summary += it[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt()
+                }
+
+            }
+            _groupSummary.postValue(summary.toString())
         }
     }
 
@@ -202,7 +242,7 @@ class GroupDetailViewModel : BaseViewModel() {
                             _payerProfileImg.postValue("")
                         } else {
                             Log.d("KOFILA", "Nastavuju img nebo url jest: " + url)
-                            if(url != null) {
+                            if (url != null) {
                                 _payerProfileImg.postValue(url!!)
                             }
                         }
@@ -448,6 +488,14 @@ class GroupDetailViewModel : BaseViewModel() {
             _groupDebtDebtorError.value = ""
             true
         }
+    }
+
+    fun calculateGroup() {
+        GlobalScope.launch(IO) {  }
+    }
+
+    fun onShowResultsClick() {
+        Log.d("UTERY", "Ukazuju vysledky")
     }
 
 

@@ -28,7 +28,7 @@
             <FrameLayout
                 android:id="@+id/group_main.collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="320dp"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|snap">
@@ -57,22 +57,40 @@
                     android:orientation="vertical"
                     android:paddingTop="150dp">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@{viewmodel.groupModel.name}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+                        style="@style/TextAppearance.MaterialComponents.Headline5" />
 
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="4dp"
                         android:text="@{viewmodel.groupModel.description}"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
                         android:textColor="@android:color/white" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_summary_group_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:text="@{&quot;Celkem utraceno &quot; + viewmodel.groupSummary}"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_show_results_group_detail"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        app:rippleColor="@color/white"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:strokeColor="@color/white"
+                        android:text="Zobrazit výsledky"/>
 
 
 
@@ -161,5 +179,12 @@
             app:placeholder="@{@drawable/avatar_profileavatar}"
 
             />
+        <ImageView
+            android:id="@+id/ImageVeiw_lock_status_group_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            app:layout_anchor="@id/profile_image_groupDetail"
+            android:src="@drawable/ic_baseline_lock_24"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.core.view.marginTop
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -189,16 +190,25 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 binding.FABGroupDetail.show()
                 manageLockButton(false)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = true
+                binding.ImageVeiwLockStatusGroupDetail.isVisible = false
+                binding.btnShowResultsGroupDetail.visibility = View.GONE
+                binding.tvSummaryGroupDetail.textSize = 20F
             }
             Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
                 binding.FABGroupDetail.hide()
                 manageLockButton(true)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = false
+                binding.ImageVeiwLockStatusGroupDetail.isVisible = true
+                binding.btnShowResultsGroupDetail.visibility = View.GONE
+                binding.tvSummaryGroupDetail.textSize = 20F
             }
             else -> {
                 binding.FABGroupDetail.hide()
                 manageLockButton(true)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = false
+                binding.ImageVeiwLockStatusGroupDetail.isVisible = true
+                binding.btnShowResultsGroupDetail.visibility = View.VISIBLE
+                binding.tvSummaryGroupDetail.textSize = 14F
             }
         }
     }
