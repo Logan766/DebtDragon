@@ -26,10 +26,18 @@
         android:orderInCategory="100"
         android:title="Odstranit skupinu"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/edit_group"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:orderInCategory="100"
+        android:title="Upravit skupinu"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/leave_group"
         android:icon="@drawable/ic_baseline_logout_24"
         android:orderInCategory="100"
         android:title="Opustit skupinu"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 </menu>
