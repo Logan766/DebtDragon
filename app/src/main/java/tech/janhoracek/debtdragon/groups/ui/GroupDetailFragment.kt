@@ -21,6 +21,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.flow.onEach
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentGroupDetailBinding
 import tech.janhoracek.debtdragon.groups.models.BillModel
@@ -28,6 +30,7 @@ import tech.janhoracek.debtdragon.groups.ui.adapters.FirebaseBillAdapter
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
 class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListener {
@@ -94,6 +97,15 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when(it) {
+                    GroupDetailViewModel.Event.ShowLoading -> {(activity as MainActivity).showLoading()}
+                    GroupDetailViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
+                    GroupDetailViewModel.Event.GroupDeleted -> {}
+                }
+            }.observeInLifecycle(viewLifecycleOwner)
 
         viewModel.groupModel.observe(viewLifecycleOwner, Observer { groupData->
             setUpRecyclerView()

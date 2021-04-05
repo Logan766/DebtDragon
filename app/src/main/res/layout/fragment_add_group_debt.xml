@@ -31,17 +31,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_title_add_group_debt"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.groupDebtAddEditTitle}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/image_view_payer_group_debt"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                app:imageUrl="@{viewmodel.billDetailPayerImg}"
-                app:placeholder="@{@drawable/avatar_profileavatar}"
+                android:layout_marginTop="32dp"
                 app:civ_border_color="@color/main"
                 app:civ_border_width="3dp"
+                app:imageUrl="@{viewmodel.billDetailPayerImg}"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_add_group_debt"
+                app:placeholder="@{@drawable/avatar_profileavatar}" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout_payer_add_group_debt"

@@ -1,6 +1,7 @@
 package tech.janhoracek.debtdragon.groups.ui.adapters
 
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,8 @@ class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>
             itemView.setOnClickListener {
                 mGroupDebtListener.onGroupDebtClick(model.id)
             }
+
+            itemView.addRipple()
         }
     }
 
@@ -69,5 +72,10 @@ class FirebaseGroupDebtAdapter(options: FirestoreRecyclerOptions<GroupDebtModel>
 
     interface onGroupDebtClickListener {
         fun onGroupDebtClick(groupDebtID: String)
+    }
+
+    private fun View.addRipple() = with(TypedValue()) {
+        context.theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
+        setBackgroundResource(resourceId)
     }
 }

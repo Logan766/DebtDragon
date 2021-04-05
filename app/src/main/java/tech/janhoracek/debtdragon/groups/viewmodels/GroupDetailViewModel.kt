@@ -36,6 +36,8 @@ class GroupDetailViewModel : BaseViewModel() {
 
     val billNameToAdd = MutableLiveData<String>("")
 
+    val groupDebtAddEditTitle = MutableLiveData<String>("")
+
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
@@ -50,6 +52,9 @@ class GroupDetailViewModel : BaseViewModel() {
 
     private val _payerProfileImg = MutableLiveData<String>()
     val payerProfileImg: LiveData<String> get() = _payerProfileImg
+
+    private val _billSummary = MutableLiveData<String>()
+    val billSummary: LiveData<String> get() = _billSummary
 
     private val _billNameError = MutableLiveData<String>("")
     val billNameError: LiveData<String> get() = _billNameError
@@ -76,8 +81,11 @@ class GroupDetailViewModel : BaseViewModel() {
         data class BillCreated(val billID: String) : Event()
         object GroupDebtCreated : Event()
         data class ShowToast(val message: String) : Event()
+        object BillDataSet : Event()
+        object GroupDeleted: Event()
+        object BillDeleted: Event()
         object ShowLoading : Event()
-        object HideLoading: Event()
+        object HideLoading : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -96,6 +104,7 @@ class GroupDetailViewModel : BaseViewModel() {
                     Log.d("VODA", "Spravce: " + isCurrentUserOwner.value)
                 } else {
                     Log.w("DATA", "Current data null")
+                    GlobalScope.launch(Main) { eventChannel.send(Event.GroupDeleted) }
                 }
             }
         }
@@ -181,7 +190,7 @@ class GroupDetailViewModel : BaseViewModel() {
             GlobalScope.launch(IO) {
                 try {
                     db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
-                        val url = value!![Constants.DATABASE_USER_IMG_URL].toString()
+                        val url = value?.get(Constants.DATABASE_USER_IMG_URL)?.toString()
                         if (error != null) {
                             Log.w("LSTNR", error.message.toString())
                             Log.d("KOFILA", "Nastavuju nic protoze error")
@@ -193,7 +202,9 @@ class GroupDetailViewModel : BaseViewModel() {
                             _payerProfileImg.postValue("")
                         } else {
                             Log.d("KOFILA", "Nastavuju img nebo url jest: " + url)
-                            _payerProfileImg.postValue(url)
+                            if(url != null) {
+                                _payerProfileImg.postValue(url!!)
+                            }
                         }
                         Log.d("KOFILA", "URL je: " + url)
 
@@ -246,7 +257,9 @@ class GroupDetailViewModel : BaseViewModel() {
                         _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
                         val model = snapshot.toObject(BillModel::class.java)
                         Log.d("GDEBT", "Nastavuju model: " + model!!.id)
-                        billModel.postValue(model!!)
+                        billModel.value = model!!
+                        //billModel.postValue(model!!)
+                        GlobalScope.launch(Main) { eventChannel.send(Event.BillDataSet) }
 
                         db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString())
                             .addSnapshotListener { snapshot, error ->
@@ -263,9 +276,45 @@ class GroupDetailViewModel : BaseViewModel() {
                             }
                     } else {
                         Log.w("DATA", "Current data null2")
+                        GlobalScope.launch(Main) { eventChannel.send(Event.BillDeleted) }
+                    }
+                }
+
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_BILL)
+                .document(billID)
+                .collection(Constants.DATABASE_GROUPDEBT)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.d("ZIPPO", error.message.toString())
+                    }
+
+                    if (snapshot != null) {
+                        var billSummary = 0
+                        snapshot.forEach { document ->
+                            billSummary += document[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt()
+                        }
+                        _billSummary.postValue(billSummary.toString())
+                    } else {
+                        Log.d("ZIPPO", "Current data null")
                     }
                 }
         }
+    }
+
+    fun deleteBill(billID: String) {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_BILL)
+                .document(billID)
+                .delete()
+                .await()
+            eventChannel.send(Event.HideLoading)
+        }
+
     }
 
     fun setDataForAddDebt(groupDebtID: String?) {
@@ -285,10 +334,12 @@ class GroupDetailViewModel : BaseViewModel() {
 
         if (groupDebtID == "none") {
             Log.d("NEDELE", "Ted pridavas novej groupDebt")
+            groupDebtAddEditTitle.value = "Přidat novou položku"
             groupDebtModel.value = GroupDebtModel()
             _debtorName.value = ""
         } else {
             Log.d("NEDELE", "Ted to neni novej groupDebt")
+            groupDebtAddEditTitle.value = "Upravit položku"
             GlobalScope.launch(IO) {
                 db.collection(Constants.DATABASE_GROUPS)
                     .document(groupModel.value!!.id)
