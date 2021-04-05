@@ -36,10 +36,6 @@ class GroupDetailViewModel : BaseViewModel() {
 
     val billNameToAdd = MutableLiveData<String>("")
 
-    val debtDetailDebtName = MutableLiveData<String>("")
-
-    val debtDetailDebtValue = MutableLiveData<String>("")
-
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
     val membersAndNames: LiveData<List<Pair<String, String>>> get() = _membersAndNames
 
@@ -76,15 +72,12 @@ class GroupDetailViewModel : BaseViewModel() {
     private val _groupDebtDebtorError = MutableLiveData<String>("")
     val groupDebtDebtorError: LiveData<String> get() = _groupDebtDebtorError
 
-    /*private val _debtDetailDebtorImg = MutableLiveData<String>("")
-    val debtDetailDebtorImg: LiveData<String> get() = _debtDetailDebtorImg*/
-
-    val test = MutableLiveData<String>("AHOJ")
-
-
     sealed class Event {
         data class BillCreated(val billID: String) : Event()
         object GroupDebtCreated : Event()
+        data class ShowToast(val message: String) : Event()
+        object ShowLoading : Event()
+        object HideLoading: Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -129,12 +122,12 @@ class GroupDetailViewModel : BaseViewModel() {
                 Log.d("VODA", "Friend ID je: " + friend)
             }
 
-            val rozdil = friendList.minus(membersInGroup)
-            for (member in rozdil) {
+            val peopleToInvite = friendList.minus(membersInGroup)
+            for (member in peopleToInvite) {
                 Log.d("VODA", "Person to invite: " + member)
             }
 
-            friendsToAdd.postValue(rozdil)
+            friendsToAdd.postValue(peopleToInvite)
         }
     }
 
@@ -217,6 +210,7 @@ class GroupDetailViewModel : BaseViewModel() {
         if (billNameToAdd.value.isNullOrEmpty()) {
             _billNameError.value = "Název nemůže být prádzný"
         } else {
+            GlobalScope.launch(Main) { eventChannel.send(Event.ShowLoading) }
             _billNameError.value = ""
             Log.d("BILL", "Vytvářim účet")
             val payerID = membersAndNames.value!!.find { it.second == payerName }!!.first
@@ -233,12 +227,14 @@ class GroupDetailViewModel : BaseViewModel() {
             Log.d("BILL", "Timestamp jest: " + billToAdd.timestamp)
 
             billRef.set(billToAdd)
-            GlobalScope.launch(Main) { eventChannel.send(Event.BillCreated(billToAdd.id)) }
+            GlobalScope.launch(Main) {
+                eventChannel.send(Event.BillCreated(billToAdd.id))
+                eventChannel.send(Event.HideLoading)
+            }
         }
     }
 
     fun setDataForBillDetail(billID: String) {
-        Log.d("SPATNY", "Nastavuju data")
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billID)
                 .addSnapshotListener { snapshot, error ->
@@ -301,7 +297,6 @@ class GroupDetailViewModel : BaseViewModel() {
                     .collection(Constants.DATABASE_GROUPDEBT)
                     .document(groupDebtID!!)
                     .get().addOnCompleteListener {
-                        //_debtorName.postValue("Jan Horáček")
                         val debtorID = it.result!!["debtor"].toString()
                         _debtorName.postValue(membersAndNames.value!!.find { it.first == debtorID }!!.second)
                         groupDebtModel.postValue(it.result!!.toObject(GroupDebtModel::class.java))
@@ -314,15 +309,24 @@ class GroupDetailViewModel : BaseViewModel() {
         Log.d("GDEBT", "Dluznik jest: " + debtorName)
         if (validateGroupDebt(debtorName)) {
             GlobalScope.launch(IO) {
+                eventChannel.send(Event.ShowLoading)
                 var groupDebtRef: DocumentReference? = null
                 val groupDebtToSave = GroupDebtModel()
                 if (groupDebtModel.value!!.id == "") {
-                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL)
-                        .document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document()
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS)
+                        .document(groupModel.value!!.id)
+                        .collection(Constants.DATABASE_BILL)
+                        .document(billModel.value!!.id)
+                        .collection(Constants.DATABASE_GROUPDEBT)
+                        .document()
                     groupDebtToSave.id = groupDebtRef.id
                 } else {
-                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL)
-                        .document(billModel.value!!.id).collection(Constants.DATABASE_GROUPDEBT).document(groupDebtModel.value!!.id)
+                    groupDebtRef = db.collection(Constants.DATABASE_GROUPS)
+                        .document(groupModel.value!!.id)
+                        .collection(Constants.DATABASE_BILL)
+                        .document(billModel.value!!.id)
+                        .collection(Constants.DATABASE_GROUPDEBT)
+                        .document(groupDebtModel.value!!.id)
                     groupDebtToSave.id = groupDebtModel.value!!.id
                     groupDebtToSave.timestamp = groupDebtModel.value!!.timestamp
                 }
@@ -340,7 +344,12 @@ class GroupDetailViewModel : BaseViewModel() {
 
                 groupDebtRef!!.set(groupDebtToSave).addOnCompleteListener {
                     if (it.isSuccessful) {
-
+                        GlobalScope.launch(Main) {
+                            eventChannel.send(Event.GroupDebtCreated)
+                        }
+                    }
+                    GlobalScope.launch(Main) {
+                        eventChannel.send(Event.HideLoading)
                     }
                 }
             }

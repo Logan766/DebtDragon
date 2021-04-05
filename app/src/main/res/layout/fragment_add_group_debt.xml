@@ -5,7 +5,10 @@
     tools:context=".groups.ui.AddGroupDebtFragment">
 
     <data>
+        <import type="tech.janhoracek.debtdragon.R"/>
+        <import type="androidx.navigation.Navigation"/>
 
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
             type="tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel" />
@@ -47,6 +50,7 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:layout_width="0dp"
+                android:hint="Plátce"
                 app:errorEnabled="true"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -188,6 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:onClick="@{view -> Navigation.findNavController(view).navigateUp()}"
                 android:text="Zrušit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_value_add_group_debt" />

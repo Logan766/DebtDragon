@@ -78,7 +78,7 @@ object BindingAdapters {
     @BindingAdapter("android:autoCompleteText")
     fun setAutoText(autoCompleteTextView: AutoCompleteTextView, text: String?) {
         if(text != null) {
-            autoCompleteTextView.setText(text)
+            autoCompleteTextView.setText(text, false)
         }
     }
 

@@ -9,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import kotlinx.coroutines.flow.onEach
+import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentAddGroupDebtBinding
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 class AddGroupDebtFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
@@ -65,6 +69,25 @@ class AddGroupDebtFragment : BaseFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.viewmodel!!.eventsFlow
+            .onEach {
+                when(it) {
+                    GroupDetailViewModel.Event.GroupDebtCreated -> {
+                        findNavController().navigateUp()
+                    }
+                    GroupDetailViewModel.Event.ShowLoading -> {
+                        (activity as MainActivity).showLoading()
+                    }
+                    GroupDetailViewModel.Event.HideLoading -> {
+                        (activity as MainActivity).hideLoading()
+                    }
+                }
+            }.observeInLifecycle(viewLifecycleOwner)
     }
 
 
