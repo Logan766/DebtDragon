@@ -31,7 +31,7 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
 
         fun bindVisibleInfo(ownerID: String ,ownerName: String, image: String, billID: String, name: String) {
             itemView.setOnClickListener {
-                mBillListener.onDebtClick(billID)
+                mBillListener.onBillClick(billID)
             }
 
             billName.text = name
@@ -50,6 +50,9 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
 
         }
 
+        fun bindValue(summary: Int) {
+            billValue.text = summary.toString()
+        }
 
 
     }
@@ -83,10 +86,27 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
                     Log.w("DATA", "Current data null")
                 }
             }
+
+            val groupID = snapshots.getSnapshot(position).reference.parent.parent
+            val billID = snapshots.getSnapshot(position).id
+            var summary = 0
+            //Log.d("UTERY", "billadapter groupID jest: " + groupID!!.id)
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupID!!.id)
+                .collection(Constants.DATABASE_BILL)
+                .document(billID)
+                .collection(Constants.DATABASE_GROUPDEBT)
+                .addSnapshotListener { groupDetbs, error ->
+                    groupDetbs?.forEach { debt ->
+                        summary += debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt()
+                    }
+                    holder.bindValue(summary)
+                }
+
         }
     }
 
     interface OnBillClickListener {
-        fun onDebtClick(billID: String)
+        fun onBillClick(billID: String)
     }
 }

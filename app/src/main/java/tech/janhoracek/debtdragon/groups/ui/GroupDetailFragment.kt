@@ -177,7 +177,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         binding.recyclerViewFragmentGroupDetail.adapter = billAdapter
     }
 
-    override fun onDebtClick(billID: String) {
+    override fun onBillClick(billID: String) {
         val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToBillDetailFragment(billID)
         findNavController().navigate(action)
         Log.d("BILL", "ID tohoto uctu jest: " + billID)
