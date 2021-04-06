@@ -31,6 +31,8 @@ object Constants {
     const val DATABASE_BILL_TIMESTAMP = "timestamp"
     const val DATABASE_GROUPDEBT = "GDebts"
     const val DATABASE_GROUPDEBT_VALUE = "value"
+    const val DATABASE_GROUPDEBT_DEBTOR = "debtor"
+    const val DATABASE_GROUPDEBT_PAYER = "payer"
     const val DATABASE_GROUPS_STATUS = "calculated"
     const val DATABASE_GROUPS_STATUS_LOCKED = "locked"
     const val DATABASE_GROUPS_STATUS_CALCULATED = "calculated"

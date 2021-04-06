@@ -117,5 +117,8 @@ dependencies {
     //QR Generator
     implementation 'com.google.zxing:core:3.4.0'
 
+    //Combinatorics
+    implementation 'com.github.shiguruikai:combinatoricskt:1.6.0'
+
     
 }

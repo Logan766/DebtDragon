@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -12,14 +13,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import tech.janhoracek.debtdragon.dashboard.ui.adapters.TopDebtorsAdapter
-import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.groups.models.BillModel
 import tech.janhoracek.debtdragon.groups.models.GroupDebtModel
 import tech.janhoracek.debtdragon.groups.models.GroupModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
-import java.lang.Error
+import tech.janhoracek.debtdragon.utility.DebtCalculator
 import java.lang.Exception
 
 class GroupDetailViewModel : BaseViewModel() {
@@ -491,7 +490,26 @@ class GroupDetailViewModel : BaseViewModel() {
     }
 
     fun calculateGroup() {
-        GlobalScope.launch(IO) {  }
+        val netMemberValues = HashMap<String, Int>()
+
+        val getData = GlobalScope.launch(IO) {
+            val bills = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).get().await()
+            bills?.forEach { bill ->
+                val groupDebts = bill.reference.collection(Constants.DATABASE_GROUPDEBT).get().await()
+                groupDebts?.forEach { debt ->
+                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_DEBTOR].toString(), debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(), Int::plus)
+                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_PAYER].toString(), -debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(), Int::plus)
+                }
+            }
+            for (member in netMemberValues) {
+                Log.d("POCITAME", "ID: " + member.key + " Castka: " + member.value)
+            }
+            val test = DebtCalculator()
+            GlobalScope.launch (Dispatchers.IO) {
+                test.calculatePayments(netMemberValues)
+            }
+
+        }
     }
 
     fun onShowResultsClick() {

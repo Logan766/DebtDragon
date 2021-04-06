@@ -84,6 +84,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_show_results_group_detail"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:onClick="@{() -> viewmodel.calculateGroup()}"
                         app:rippleColor="@color/white"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/white"
