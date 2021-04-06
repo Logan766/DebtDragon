@@ -6,28 +6,34 @@ import kotlin.math.abs
 
 class DebtCalculator {
 
-    fun calculatePayments(membersNetDebts: HashMap<String, Int>) {
-        val testUsers = HashMap<String, Int>()
-        testUsers["Pepa"] = 10
-        testUsers["Honza"] = -5
-        testUsers["Jana"] = -9
-        testUsers["Anna"] = 13
-        testUsers["Tomas"] = -8
-        testUsers["Martin"] = -1
+    fun calculatePayments(membersNetDebts: HashMap<String, Int>): MutableList<PaymentModel> {
+        /*val inputMemebers = HashMap<String, Int>()
+        inputMemebers["Pepa"] = 10
+        inputMemebers["Honza"] = -5
+        inputMemebers["Jana"] = -9
+        inputMemebers["Anna"] = 13
+        inputMemebers["Tomas"] = -8
+        inputMemebers["Martin"] = -1
+        inputMemebers["Hugo"] = 17
+        inputMemebers["Paja"] = -3
+        inputMemebers["Vera"] = 6
+        inputMemebers["Xenie"] = -20*/
+
+        val inputMemebers = membersNetDebts
 
         //////////////////////////////////////////
         val resultPayments: MutableList<PaymentModel> = mutableListOf()
 
-        val usersList = testUsers.toList()
+        val usersList = inputMemebers.toList()
         for (user in usersList) {
             Log.d("WTF", "User: " + user.first + " Value: " + user.second)
         }
         Log.d("WTF", "///////////////////////////////////")
 
         var n=2
-        while (n < testUsers.size) {
-            val nevimUsers = testUsers.toList()
-            val memberCombination = CombinationGenerator(usersList, n)
+        while (n < inputMemebers.size - 1) {
+            val nevimUsers = inputMemebers.toList()
+            val memberCombination = CombinationGenerator(nevimUsers, n)
             var pairFound = false
             while (memberCombination.hasNext()) {
                 var sum = 0
@@ -40,7 +46,7 @@ class DebtCalculator {
                     val result = calculateSimple(combination)
                     resultPayments.addAll(result)
                     for(member in combination) {
-                        testUsers.remove(member.first)
+                        inputMemebers.remove(member.first)
                     }
                     pairFound = true
                     Log.d("WTF", "////////////////////////////")
@@ -54,15 +60,17 @@ class DebtCalculator {
             }
         }
         Log.d("WTF", "Zbytek")
-        for (left in testUsers) {
+        for (left in inputMemebers) {
             Log.d("WTF", "Zbyl nam: " + left)
         }
-        val result = calculateSimple(testUsers.toList())
+        val result = calculateSimple(inputMemebers.toList())
         resultPayments.addAll(result)
 
         for (res in resultPayments) {
             Log.d("WTF", "Vysledek: " + res.debtor + " -> " + res.value + " -> " + res.creditor )
         }
+
+        return resultPayments
     }
 
     private fun calculateSimple(combination: List<Pair<String, Int>>): MutableList<PaymentModel> {
@@ -103,29 +111,5 @@ class DebtCalculator {
         return result
     }
 
-
-    fun calculatePaymentsTest(membersNetDebts: HashMap<String, Int>) {
-        val list = membersNetDebts.toList()
-        var list2 = listOf(1, 2, 3, 4, 5, 6)
-        val combinaton = CombinationGenerator(list2, 2)
-
-        for(nevim in combinaton) {
-            Log.d("WTF", "Iterace " + nevim)
-            Log.d("WTF", "Iterace prvni element " + nevim[0])
-            Log.d("WTF", "Iterace druhej element " + nevim[1])
-            nevim.forEach {
-                Log.d("WTF", it.toString())
-            }
-        }
-
-        /////////////////////////////
-        /*val test = list2.combinations(2)
-        for(nevim in test) {
-            for (i in nevim.indices) {
-                Log.d("WTF", "$i Cislo + " + nevim[i])
-            }
-        }*/
-        ///////////////////////////////////////
-    }
 
 }

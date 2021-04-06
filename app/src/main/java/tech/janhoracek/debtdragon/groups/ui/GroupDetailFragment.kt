@@ -147,7 +147,12 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpGroupDetail.visibility = View.INVISIBLE
             binding.btnBackBottomGroupDetail.visibility = View.VISIBLE
-            binding.membersBottomGroupDetail.visibility = View.VISIBLE
+            if(viewModel.groupModel.value!!.calculated == "") {
+                binding.membersBottomGroupDetail.visibility = View.VISIBLE
+            } else {
+                binding.membersBottomGroupDetail.visibility = View.GONE
+            }
+
             offsetStatus = false
         } else {
             requireActivity().window.statusBarColor = Color.parseColor("#83173d")

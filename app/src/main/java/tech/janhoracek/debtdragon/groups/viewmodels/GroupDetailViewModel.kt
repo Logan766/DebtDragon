@@ -86,6 +86,7 @@ class GroupDetailViewModel : BaseViewModel() {
         object BillDataSet : Event()
         object GroupDeleted : Event()
         object BillDeleted : Event()
+        object GroupDebtDeleted : Event()
         object ShowLoading : Event()
         object HideLoading : Event()
     }
@@ -388,7 +389,12 @@ class GroupDetailViewModel : BaseViewModel() {
                     .document(groupDebtID!!)
                     .get().addOnCompleteListener {
                         val debtorID = it.result!!["debtor"].toString()
-                        _debtorName.postValue(membersAndNames.value!!.find { it.first == debtorID }!!.second)
+
+                        if(groupModel.value!!.members.contains(debtorID)) {
+                            _debtorName.postValue(membersAndNames.value!!.find { it.first == debtorID }!!.second)
+                        } else {
+                            _debtorName.postValue("")
+                        }
                         groupDebtModel.postValue(it.result!!.toObject(GroupDebtModel::class.java))
                     }
             }
@@ -486,6 +492,22 @@ class GroupDetailViewModel : BaseViewModel() {
         } else {
             _groupDebtDebtorError.value = ""
             true
+        }
+    }
+
+    fun deleteGroupDebt(groupDebtID: String) {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_BILL)
+                .document(billModel.value!!.id)
+                .collection(Constants.DATABASE_GROUPDEBT)
+                .document(groupDebtID)
+                .delete()
+                .await()
+            eventChannel.send(Event.GroupDebtDeleted)
+            eventChannel.send(Event.HideLoading)
         }
     }
 

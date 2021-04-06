@@ -1,5 +1,7 @@
 package tech.janhoracek.debtdragon.groups.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +20,7 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentAddGroupDebtBinding
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 class AddGroupDebtFragment : BaseFragment() {
@@ -44,6 +47,24 @@ class AddGroupDebtFragment : BaseFragment() {
         binding = FragmentAddGroupDebtBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        if (args.groupDebtID != "none") {
+            binding.fabDeleteAddGroupDebt.show()
+        }
+
+        binding.fabDeleteAddGroupDebt.setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("Odstranit dluh")
+            dialog.setMessage("Opravdu chcete odstranit dluh?")
+            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                viewModel.deleteGroupDebt(args.groupDebtID!!)
+            }
+            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+
+            }
+            dialog.show()
+        }
+
 
         ///Vyzkouset nutnost!
         //viewModel.setImageForPayer("")
@@ -74,6 +95,7 @@ class AddGroupDebtFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {
@@ -85,6 +107,9 @@ class AddGroupDebtFragment : BaseFragment() {
                     }
                     GroupDetailViewModel.Event.HideLoading -> {
                         (activity as MainActivity).hideLoading()
+                    }
+                    GroupDetailViewModel.Event.GroupDebtDeleted -> {
+                        findNavController().navigateUp()
                     }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
