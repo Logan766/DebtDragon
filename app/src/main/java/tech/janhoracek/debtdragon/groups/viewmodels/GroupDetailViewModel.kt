@@ -37,7 +37,7 @@ class GroupDetailViewModel : BaseViewModel() {
 
     val groupDebtAddEditTitle = MutableLiveData<String>("")
 
-    private val _groupSummary = MutableLiveData<String>()
+    private val _groupSummary = MutableLiveData<String>("0")
     val groupSummary: LiveData<String> get() = _groupSummary
 
     private val _membersAndNames = MutableLiveData<List<Pair<String, String>>>()
@@ -80,6 +80,7 @@ class GroupDetailViewModel : BaseViewModel() {
     val groupDebtDebtorError: LiveData<String> get() = _groupDebtDebtorError
 
     sealed class Event {
+        data class EditGroup(val groupData: GroupModel): Event()
         data class BillCreated(val billID: String) : Event()
         object GroupDebtCreated : Event()
         data class ShowToast(val message: String) : Event()
@@ -110,6 +111,8 @@ class GroupDetailViewModel : BaseViewModel() {
                     GlobalScope.launch(Main) { eventChannel.send(Event.GroupDeleted) }
                 }
             }
+
+            _groupSummary.postValue("0")
 
             db.collection(Constants.DATABASE_GROUPS).document(groupID).collection(Constants.DATABASE_BILL).addSnapshotListener { bills, error ->
                 bills?.forEach { bill ->
@@ -219,6 +222,10 @@ class GroupDetailViewModel : BaseViewModel() {
             _membersAndNames.postValue(membersAndNamesArray)
             _membersNames.postValue(membersNames)
         }
+    }
+
+    fun editGroup() {
+        GlobalScope.launch(Main) { eventChannel.send(Event.EditGroup(groupModel.value!!)) }
     }
 
     fun setImageForPayer(payerID: String) {
@@ -551,7 +558,24 @@ class GroupDetailViewModel : BaseViewModel() {
                 db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).update(Constants.DATABASE_GROUPS_STATUS, Constants.DATABASE_GROUPS_STATUS_CALCULATED).await()
                 eventChannel.send(Event.HideLoading)
             }
+        }
+    }
 
+    fun unlockCalculatedGroup() {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            val payments = db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_PAYMENT)
+                .get()
+                .await()
+            payments.forEach { payment->
+                payment.reference.delete()
+            }
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .update(Constants.DATABASE_GROUPS_STATUS, "").await()
+            eventChannel.send(Event.HideLoading)
         }
     }
 

@@ -52,6 +52,10 @@ class CreateGroupFragment : BaseFragment() {
                 .start()
         }
 
+        binding.toolbarCreateGroup.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         return binding.root
     }
 
@@ -63,6 +67,7 @@ class CreateGroupFragment : BaseFragment() {
             .onEach {
                 when(it) {
                     CreateGroupViewModel.Event.NavigateBack -> {findNavController().navigateUp()}
+                    is CreateGroupViewModel.Event.GroupCreated -> {findNavController().navigate(CreateGroupFragmentDirections.actionCreateGroupFragmentToGroupDetailFragment(it.groupID))}
                     CreateGroupViewModel.Event.ShowLoading -> {(activity as MainActivity).showLoading()}
                     CreateGroupViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
                 }

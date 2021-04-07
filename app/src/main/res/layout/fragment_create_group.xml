@@ -20,10 +20,11 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar_create_group"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="?attr/homeAsUpIndicator"
-                app:title="Nadpis"/>
+                app:title="@{viewmodel.toolbarTitle}"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="55dp"
-                    android:text="Vytvořit skupinu"/>
+                    android:text="@{viewmodel.buttonTitle}"/>
 
             </LinearLayout>
 

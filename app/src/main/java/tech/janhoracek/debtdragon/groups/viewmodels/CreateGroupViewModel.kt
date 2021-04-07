@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.groups.viewmodels
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.Dispatchers.IO
@@ -27,12 +28,19 @@ class CreateGroupViewModel: BaseViewModel() {
 
     var groupProfilePhoto = MutableLiveData<ByteArray>()
 
+    private val _toolbarTitle = MutableLiveData<String>()
+    val toolbarTitle: LiveData<String> get() = _toolbarTitle
+
+    private val _buttonTitle = MutableLiveData<String>()
+    val buttonTitle: LiveData<String> get() = _buttonTitle
+
     var newGroup = true
 
     sealed class Event {
         object NavigateBack: Event()
         object ShowLoading: Event()
         object HideLoading: Event()
+        data class GroupCreated(val groupID: String): Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -43,10 +51,14 @@ class CreateGroupViewModel: BaseViewModel() {
             Log.d("SLUZ", "Uprava")
             newGroup = false
             groupModel.value = groupData!!
+            _buttonTitle.value = "Uložit změny"
+            _toolbarTitle.value = "Upravit skupinu"
         } else {
             Log.d("SLUZ", "Novy")
             groupModel.value = GroupModel()
             newGroup = true
+            _buttonTitle.value = "Vytvořit skupinu"
+            _toolbarTitle.value = "Vytvořit novou skupinu"
         }
     }
 
@@ -66,7 +78,7 @@ class CreateGroupViewModel: BaseViewModel() {
                 //val membership = MembershipModel(groupData.id, true)
                 //db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_GROUPS).document(groupData.id).set(membership)
             } else {
-                groupRef = db.collection(Constants.DATABASE_GROUPS).document(groupData.id)
+                groupRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
                 groupData.id = groupModel.value!!.id
                 groupData.members = groupModel.value!!.members
             }
@@ -95,7 +107,7 @@ class CreateGroupViewModel: BaseViewModel() {
             groupRef.set(groupData).await()
 
             eventChannel.send(Event.HideLoading)
-            eventChannel.send(Event.NavigateBack)
+            eventChannel.send(Event.GroupCreated(groupData.id))
             Log.d("SLUZ", "Ulozeno")
         }
 

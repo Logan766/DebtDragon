@@ -107,6 +107,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                     GroupDetailViewModel.Event.ShowLoading -> {(activity as MainActivity).showLoading()}
                     GroupDetailViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
                     GroupDetailViewModel.Event.GroupDeleted -> {}
+                    is GroupDetailViewModel.Event.EditGroup -> {findNavController().navigate(GroupDetailFragmentDirections.actionGroupDetailFragmentToCreateGroupFragment(it.groupData))}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
@@ -126,6 +127,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 R.id.calculate_group -> {viewModel.calculateGroup()}
                 R.id.remove_group -> {}
                 R.id.leave_group -> {}
+                R.id.edit_group -> {viewModel.editGroup()}
             }
             true
         }
@@ -165,7 +167,12 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
 
     private fun setOwnerOptions() {
         binding.toolbarGroupDetail.menu.getItem(1).isVisible = viewModel.isCurrentUserOwner.value!!
-        binding.toolbarGroupDetail.menu.getItem(2).isVisible = viewModel.isCurrentUserOwner.value!!
+        if(viewModel.groupModel.value!!.calculated != Constants.DATABASE_GROUPS_STATUS_CALCULATED) {
+            binding.toolbarGroupDetail.menu.getItem(2).isVisible = viewModel.isCurrentUserOwner.value!!
+        } else {
+            binding.toolbarGroupDetail.menu.getItem(2).isVisible = false
+        }
+
         binding.toolbarGroupDetail.menu.getItem(3).isVisible = viewModel.isCurrentUserOwner.value!!
         binding.toolbarGroupDetail.menu.getItem(4).isVisible = viewModel.isCurrentUserOwner.value!!
     }
@@ -198,6 +205,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 binding.ImageVeiwLockStatusGroupDetail.isVisible = false
                 binding.btnShowResultsGroupDetail.visibility = View.GONE
                 binding.tvSummaryGroupDetail.textSize = 20F
+                //binding.toolbarGroupDetail.menu.getItem(2).isVisible = true
             }
             Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
                 binding.FABGroupDetail.hide()
@@ -206,6 +214,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 binding.ImageVeiwLockStatusGroupDetail.isVisible = true
                 binding.btnShowResultsGroupDetail.visibility = View.GONE
                 binding.tvSummaryGroupDetail.textSize = 20F
+                //binding.toolbarGroupDetail.menu.getItem(2).isVisible = true
             }
             else -> {
                 binding.FABGroupDetail.hide()
@@ -214,6 +223,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 binding.ImageVeiwLockStatusGroupDetail.isVisible = true
                 binding.btnShowResultsGroupDetail.visibility = View.VISIBLE
                 binding.tvSummaryGroupDetail.textSize = 14F
+                //binding.toolbarGroupDetail.menu.getItem(2).isVisible = false
             }
         }
     }
@@ -261,6 +271,16 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
             }
             else -> {
                 //Odemknout odstranit vysledky
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setTitle("Odemknout skupinu s výsledky")
+                dialog.setMessage("Odemčením skupiny budou zpřístupněny úpravy, ale rozpočítané transakce budou ztraceny a bude nutné je znovu spočítat. Chcete pokračovat?")
+                dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                    viewModel.unlockCalculatedGroup()
+                }
+                dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+
+                }
+                dialog.show()
             }
         }
     }
