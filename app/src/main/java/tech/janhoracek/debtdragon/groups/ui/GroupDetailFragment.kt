@@ -123,7 +123,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                     Navigation.findNavController(view).navigate(R.id.action_groupDetailFragment_to_manageMembersFragment)
                 }
                 R.id.lock_group -> {onLockButtonClicked()}
-                R.id.calculate_group -> {}
+                R.id.calculate_group -> {viewModel.calculateGroup()}
                 R.id.remove_group -> {}
                 R.id.leave_group -> {}
             }

@@ -390,7 +390,7 @@ class GroupDetailViewModel : BaseViewModel() {
                     .get().addOnCompleteListener {
                         val debtorID = it.result!!["debtor"].toString()
 
-                        if(groupModel.value!!.members.contains(debtorID)) {
+                        if (groupModel.value!!.members.contains(debtorID)) {
                             _debtorName.postValue(membersAndNames.value!!.find { it.first == debtorID }!!.second)
                         } else {
                             _debtorName.postValue("")
@@ -512,6 +512,13 @@ class GroupDetailViewModel : BaseViewModel() {
     }
 
     fun calculateGroup() {
+        GlobalScope.launch(Main) { eventChannel.send(Event.ShowLoading) }
+        if (groupModel.value!!.calculated == "") {
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .update(Constants.DATABASE_GROUPS_STATUS, Constants.DATABASE_GROUPS_STATUS_LOCKED)
+        }
+
         val netMemberValues = HashMap<String, Int>()
 
         val getData = GlobalScope.launch(IO) {
@@ -519,16 +526,30 @@ class GroupDetailViewModel : BaseViewModel() {
             bills?.forEach { bill ->
                 val groupDebts = bill.reference.collection(Constants.DATABASE_GROUPDEBT).get().await()
                 groupDebts?.forEach { debt ->
-                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_DEBTOR].toString(), debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(), Int::plus)
-                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_PAYER].toString(), -debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(), Int::plus)
+                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_DEBTOR].toString(),
+                        debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(),
+                        Int::plus)
+                    netMemberValues.merge(debt[Constants.DATABASE_GROUPDEBT_PAYER].toString(),
+                        -debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt(),
+                        Int::plus)
                 }
             }
             for (member in netMemberValues) {
                 Log.d("POCITAME", "ID: " + member.key + " Castka: " + member.value)
             }
-            val test = DebtCalculator()
-            GlobalScope.launch (Dispatchers.IO) {
-                test.calculatePayments(netMemberValues)
+            val calculator = DebtCalculator()
+            GlobalScope.launch(Dispatchers.IO) {
+                val results = calculator.calculatePayments(netMemberValues)
+                for (result in results) {
+                    val paymentRef = db.collection(Constants.DATABASE_GROUPS)
+                        .document(groupModel.value!!.id)
+                        .collection(Constants.DATABASE_PAYMENT)
+                        .document()
+                    result.id = paymentRef.id
+                    paymentRef.set(result).await()
+                }
+                db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).update(Constants.DATABASE_GROUPS_STATUS, Constants.DATABASE_GROUPS_STATUS_CALCULATED).await()
+                eventChannel.send(Event.HideLoading)
             }
 
         }

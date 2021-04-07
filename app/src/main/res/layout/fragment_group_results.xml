@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GroupResultsFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".groups.ui.GroupResultsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <variable
+            name="viewmodel"
+            type="tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/group_results_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:menu="@menu/group_results_menu"
+                app:title="Výsledky"
+                app:navigationIcon="?attr/homeAsUpIndicator"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_group_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

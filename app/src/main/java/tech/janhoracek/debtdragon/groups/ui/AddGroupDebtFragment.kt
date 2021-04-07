@@ -41,7 +41,6 @@ class AddGroupDebtFragment : BaseFragment() {
         val args: AddGroupDebtFragmentArgs by navArgs()
         if(savedInstanceState == null) {
             viewModel.setDataForAddDebt(args.groupDebtID)
-            //Log.d("WHO", "Je to null? : " + args.groupDebtID.isNullOrEmpty())
         }
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
         binding = FragmentAddGroupDebtBinding.inflate(inflater, container, false)

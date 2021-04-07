@@ -84,7 +84,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_show_results_group_detail"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:onClick="@{() -> viewmodel.calculateGroup()}"
+                        android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_groupDetailFragment_to_groupResultsFragment)}"
                         app:rippleColor="@color/white"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/white"
