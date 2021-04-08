@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/manage_members"
+        android:id="@+id/reset_group"
         android:orderInCategory="100"
-        android:title="Uzavřít dluhy a resetovat skupinu"
+        android:title="Resetovat skupinu"
         app:showAsAction="never" />
 </menu>

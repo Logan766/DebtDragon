@@ -94,6 +94,7 @@ class GroupDetailViewModel : BaseViewModel() {
         object NavigateUp : Event()
         object ShowLoading : Event()
         object HideLoading : Event()
+        data class areAllResolved(val status: Boolean) : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
@@ -638,7 +639,56 @@ class GroupDetailViewModel : BaseViewModel() {
             Log.d("RISE", "Payment TIMESTAMP: " + payment.timestamp)
 
             paymentRef.set(payment).await()
-            //eventChannel.send(FriendDetailViewModel.Event.PaymentCreated)
+        }
+    }
+
+    fun checkIfPaymentsAreResolved() {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            val payments = db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_PAYMENT)
+                .whereEqualTo(Constants.DATABASE_PAYMENT_RESOLVED, false)
+                .get()
+                .await()
+            val areAllResolvedStatus = payments.isEmpty
+            eventChannel.send(Event.HideLoading)
+            eventChannel.send(Event.areAllResolved(areAllResolvedStatus))
+        }
+
+    }
+
+    fun resetGroup() {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            val payments = db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_PAYMENT)
+                .get()
+                .await()
+            payments.forEach { payment->
+                payment.reference.delete()
+            }
+
+            val bills = db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .collection(Constants.DATABASE_BILL)
+                .get()
+                .await()
+            bills.forEach { bill->
+                val gdebts = bill.reference.collection(Constants.DATABASE_GROUPDEBT).get().await()
+                gdebts.forEach { gdebt ->
+                    gdebt.reference.delete()
+                }
+                bill.reference.delete()
+            }
+
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .update(Constants.DATABASE_GROUPS_STATUS, "").await()
+            eventChannel.send(Event.HideLoading)
+            eventChannel.send(Event.NavigateUp)
+            eventChannel.send(Event.ShowToast("Skupina resetována"))
         }
     }
 
