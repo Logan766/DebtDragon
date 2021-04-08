@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.group_item_general.view.*
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.GroupModel
+import tech.janhoracek.debtdragon.utility.Constants
 
 class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val mGroupListener: OnGroupClickListener) :
     FirestoreRecyclerAdapter<GroupModel, GroupsFirebaseAdapter.GroupAdapterViewHolder>(options){
@@ -27,9 +29,24 @@ class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val m
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(itemView.CircImageView_GroupGeneral)
             }
             if(group.owner == auth.currentUser.uid) {
-                itemView.lottie_GroupGeneral_Status.visibility = View.VISIBLE
+                itemView.ImageView_isAdmin_group_item_general.visibility = View.VISIBLE
             } else {
-                itemView.lottie_GroupGeneral_Status.visibility = View.INVISIBLE
+                itemView.ImageView_isAdmin_group_item_general.visibility = View.GONE
+            }
+
+            when (group.calculated) {
+                Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
+                    itemView.ImageView_isLocked_group_item_general.visibility = View.VISIBLE
+                    itemView.ImageView_isCalculated_group_item_general.visibility = View.GONE
+                }
+                Constants.DATABASE_GROUPS_STATUS_CALCULATED -> {
+                    itemView.ImageView_isLocked_group_item_general.visibility = View.VISIBLE
+                    itemView.ImageView_isCalculated_group_item_general.visibility = View.VISIBLE
+                }
+                else -> {
+                    itemView.ImageView_isLocked_group_item_general.visibility = View.GONE
+                    itemView.ImageView_isCalculated_group_item_general.visibility = View.GONE
+                }
             }
 
             itemView.setOnClickListener {

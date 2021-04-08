@@ -1,12 +1,15 @@
 package tech.janhoracek.debtdragon.groups.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.debt_friend_item.view.*
 import kotlinx.android.synthetic.main.payment_item.view.*
@@ -17,6 +20,7 @@ import tech.janhoracek.debtdragon.utility.Constants
 class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>) :
     FirestoreRecyclerAdapter<PaymentModel, FirebaseResultsAdapter.PaymentViewHolder>(options){
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     class PaymentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -40,6 +44,10 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>) :
             } else {
                 Glide.with(itemView).load(debtorImg).into(itemView.CircImageView_debtor_payment_item)
             }
+        }
+
+        fun setPayButton(isFriend: Boolean) {
+            itemView.FAB_payment_item.isVisible = isFriend
         }
     }
 
@@ -74,5 +82,29 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>) :
             debtorImg = userData?.data?.get(Constants.DATABASE_USER_IMG_URL).toString()
             holder.bindDebtor(debtorName, debtorImg)
         }
+
+        if (model.debtor == auth.currentUser.uid) {
+            db.collection(Constants.DATABASE_USERS)
+                .document(model.debtor)
+                .collection(Constants.DATABASE_FRIENDSHIPS)
+                .document(model.creditor)
+                .addSnapshotListener { snapshot, error ->
+                    if(error != null) {
+                        Log.w("LSTNR", error.message.toString())
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        //je friend
+                        holder.setPayButton(true)
+                    } else {
+                        //neni friend
+                        holder.setPayButton(false)
+                        Log.w("DATA", "Current data null")
+                    }
+                }
+        } else {
+            holder.setPayButton(false)
+        }
+
     }
 }

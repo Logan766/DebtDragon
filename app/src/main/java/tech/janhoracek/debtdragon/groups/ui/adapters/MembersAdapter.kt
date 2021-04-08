@@ -23,7 +23,7 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
     class GroupMemberViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val memberName = itemView.tv_member_item_name
         val memberImage = itemView.CircImageView_member_item
-        val administrator = itemView.lottie_member_item
+        val administrator = itemView.ImageView_administrator_member_item
 
         fun bindToVH(name: String, image: String, owner: Boolean) {
             Log.d("PICA", "Binduju: " + name)
@@ -31,6 +31,7 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
 
             if(owner) {
                 administrator.visibility = View.VISIBLE
+
             } else {
                 administrator.visibility = View.GONE
             }
