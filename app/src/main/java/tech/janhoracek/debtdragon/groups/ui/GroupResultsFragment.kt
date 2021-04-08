@@ -2,6 +2,7 @@ package tech.janhoracek.debtdragon.groups.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,12 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentGroupResultsBinding
 import tech.janhoracek.debtdragon.groups.models.PaymentModel
 import tech.janhoracek.debtdragon.groups.ui.adapters.FirebaseResultsAdapter
+import tech.janhoracek.debtdragon.groups.ui.adapters.GroupsFirebaseAdapter
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
 
-class GroupResultsFragment : BaseFragment() {
+class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxChangeListener, FirebaseResultsAdapter.OnAddToFriendDebtsListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -68,10 +70,20 @@ class GroupResultsFragment : BaseFragment() {
             .setQuery(query, PaymentModel::class.java)
             .build()
 
-        paymentAdapter = FirebaseResultsAdapter(options)
+        paymentAdapter = FirebaseResultsAdapter(options, this, this, viewModel.isCurrentUserOwner.value!! )
 
         binding.recyclerViewGroupResults.layoutManager = LinearLayoutManager(activity)
         binding.recyclerViewGroupResults.adapter = paymentAdapter
+    }
+
+    override fun onCheckboxChange(paymentID: String) {
+        Log.d("CTVRTEK", "Id tohohle paymentu jest: " + paymentID)
+        viewModel.resolvePayment(paymentID, true)
+        //db.collection(Constants.DATABASE_GROUPS).document(viewModel.groupModel.value!!.id).collection(Constants.DATABASE_PAYMENT).document(paymentID).update("resolved", true)
+    }
+
+    override fun onAddToFriendsBtnClick(paymentID: String, value: Int) {
+        viewModel.resolvePayment(paymentID, true)
     }
 
 }

@@ -605,5 +605,13 @@ class GroupDetailViewModel : BaseViewModel() {
         Log.d("UTERY", "Ukazuju vysledky")
     }
 
+    fun resolvePayment(paymentID: String, status: Boolean) {
+        db.collection(Constants.DATABASE_GROUPS)
+            .document(groupModel.value!!.id)
+            .collection(Constants.DATABASE_PAYMENT)
+            .document(paymentID)
+            .update(Constants.DATABASE_PAYMENT_RESOLVED, status)
+    }
+
 
 }

@@ -39,5 +39,6 @@ object Constants {
     const val DATABASE_GROUPS_STATUS_CALCULATED = "calculated"
     const val DATABASE_PAYMENT = "Payments"
     const val DATABASE_PAYMENT_ID = "id"
+    const val DATABASE_PAYMENT_RESOLVED = "resolved"
 
 }
