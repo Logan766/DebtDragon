@@ -108,6 +108,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                     GroupDetailViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
                     GroupDetailViewModel.Event.GroupDeleted -> {}
                     is GroupDetailViewModel.Event.EditGroup -> {findNavController().navigate(GroupDetailFragmentDirections.actionGroupDetailFragmentToCreateGroupFragment(it.groupData))}
+                    GroupDetailViewModel.Event.NavigateUp -> {findNavController().navigateUp()}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
@@ -124,9 +125,9 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                     Navigation.findNavController(view).navigate(R.id.action_groupDetailFragment_to_manageMembersFragment)
                 }
                 R.id.lock_group -> {onLockButtonClicked()}
-                R.id.calculate_group -> {viewModel.calculateGroup()}
-                R.id.remove_group -> {}
-                R.id.leave_group -> {}
+                R.id.calculate_group -> {calculateGroupDebts()}
+                R.id.remove_group -> {deleteGroup()}
+                R.id.leave_group -> {leaveGroup()}
                 R.id.edit_group -> {viewModel.editGroup()}
             }
             true
@@ -175,6 +176,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
 
         binding.toolbarGroupDetail.menu.getItem(3).isVisible = viewModel.isCurrentUserOwner.value!!
         binding.toolbarGroupDetail.menu.getItem(4).isVisible = viewModel.isCurrentUserOwner.value!!
+        binding.toolbarGroupDetail.menu.getItem(5).isVisible = !viewModel.isCurrentUserOwner.value!!
     }
 
     private fun setUpRecyclerView() {
@@ -283,6 +285,50 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 dialog.show()
             }
         }
+    }
+
+    private fun calculateGroupDebts() {
+        if(viewModel.groupModel.value!!.calculated == "") {
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("Uzamknout a rozpočítat")
+            dialog.setMessage("Skupina bude uzamčena a následně rozpočítány dluhy, proces může chvíli trvat. Chcete pokračovat?")
+            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                viewModel.calculateGroup()
+            }
+            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+
+            }
+            dialog.show()
+        } else {
+                viewModel.calculateGroup()
+        }
+
+    }
+
+    private fun leaveGroup() {
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setTitle("Opustit skupinu")
+        dialog.setMessage("Opuštěním skupiny do ní ztratíte přístup, vaše záznamy zůstanou zachovány, ale nebudete mít přístup k výsledkům rozpočítání. Opouštění skupiny před rozpočítáním se nedoporučuje. Chcete přesto pokračovat?")
+        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            viewModel.leaveGroup()
+        }
+        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        dialog.show()
+    }
+
+    private fun deleteGroup() {
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setTitle("Smazat skupinu")
+        dialog.setMessage("Skupina bude smazána a veškerá data odstraněna. Přejete si pokračovat?")
+        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            viewModel.deleteGroup()
+        }
+        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        dialog.show()
     }
 
 }

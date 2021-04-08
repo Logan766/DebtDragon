@@ -30,35 +30,38 @@ class DebtCalculator {
         }
         Log.d("WTF", "///////////////////////////////////")
 
-        var n=2
-        while (n < inputMemebers.size - 1) {
-            val nevimUsers = inputMemebers.toList()
-            val memberCombination = CombinationGenerator(nevimUsers, n)
-            var pairFound = false
-            while (memberCombination.hasNext()) {
-                var sum = 0
-                val combination = memberCombination.next()
-                for(member in combination) {
-                    sum += member.second
-                }
-                if(sum == 0) {
-                    //vyres to
-                    val result = calculateSimple(combination)
-                    resultPayments.addAll(result)
+        if(inputMemebers.size <= 15) {
+            var n=2
+            while (n < inputMemebers.size - 1) {
+                val nevimUsers = inputMemebers.toList()
+                val memberCombination = CombinationGenerator(nevimUsers, n)
+                var pairFound = false
+                while (memberCombination.hasNext()) {
+                    var sum = 0
+                    val combination = memberCombination.next()
                     for(member in combination) {
-                        inputMemebers.remove(member.first)
+                        sum += member.second
                     }
-                    pairFound = true
-                    Log.d("WTF", "////////////////////////////")
+                    if(sum == 0) {
+                        //vyres to
+                        val result = calculateSimple(combination)
+                        resultPayments.addAll(result)
+                        for(member in combination) {
+                            inputMemebers.remove(member.first)
+                        }
+                        pairFound = true
+                        Log.d("WTF", "////////////////////////////")
+                    }
+                    if (pairFound) {
+                        break
+                    }
                 }
-                if (pairFound) {
-                    break
+                if (!pairFound) {
+                    n++
                 }
-            }
-            if (!pairFound) {
-                n++
             }
         }
+
         Log.d("WTF", "Zbytek")
         for (left in inputMemebers) {
             Log.d("WTF", "Zbyl nam: " + left)

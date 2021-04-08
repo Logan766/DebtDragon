@@ -20,18 +20,19 @@
         android:orderInCategory="100"
         android:title="Rozpočítat dluhy"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/remove_group"
-        android:icon="@drawable/ic_baseline_delete_24"
-        android:orderInCategory="100"
-        android:title="Odstranit skupinu"
-        app:showAsAction="never" />
+
 
     <item
         android:id="@+id/edit_group"
         android:icon="@drawable/ic_baseline_edit_24"
         android:orderInCategory="100"
         android:title="Upravit skupinu"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/remove_group"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:orderInCategory="100"
+        android:title="Odstranit skupinu"
         app:showAsAction="never" />
 
     <item

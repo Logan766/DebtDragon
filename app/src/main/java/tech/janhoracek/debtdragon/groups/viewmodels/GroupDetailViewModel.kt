@@ -88,6 +88,7 @@ class GroupDetailViewModel : BaseViewModel() {
         object GroupDeleted : Event()
         object BillDeleted : Event()
         object GroupDebtDeleted : Event()
+        object NavigateUp : Event()
         object ShowLoading : Event()
         object HideLoading : Event()
     }
@@ -575,6 +576,27 @@ class GroupDetailViewModel : BaseViewModel() {
             db.collection(Constants.DATABASE_GROUPS)
                 .document(groupModel.value!!.id)
                 .update(Constants.DATABASE_GROUPS_STATUS, "").await()
+            eventChannel.send(Event.HideLoading)
+        }
+    }
+
+    fun leaveGroup() {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            db.collection(Constants.DATABASE_GROUPS)
+                .document(groupModel.value!!.id)
+                .update(Constants.DATABASE_GROUPS_MEMBERS, FieldValue.arrayRemove(auth.currentUser.uid))
+                .await()
+            eventChannel.send(Event.NavigateUp)
+            eventChannel.send(Event.HideLoading)
+        }
+    }
+
+    fun deleteGroup() {
+        GlobalScope.launch(IO) {
+            eventChannel.send(Event.ShowLoading)
+            db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).delete().await()
+            eventChannel.send(Event.NavigateUp)
             eventChannel.send(Event.HideLoading)
         }
     }

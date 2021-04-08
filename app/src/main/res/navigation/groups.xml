@@ -81,9 +81,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
-            android:id="@+id/action_groupDetailFragment_to_editGroupFragment"
-            app:destination="@id/editGroupFragment" />
-        <action
             android:id="@+id/action_groupDetailFragment_to_createGroupFragment"
             app:destination="@id/createGroupFragment" />
     </fragment>
@@ -167,9 +164,4 @@
         android:id="@+id/action_global_groupDetailFragment"
         app:destination="@id/groupDetailFragment"
         app:popUpTo="@id/groupsFragment" /><action android:id="@+id/action_global_groupsFragment" app:destination="@id/groupsFragment"/>
-    <fragment
-        android:id="@+id/editGroupFragment"
-        android:name="tech.janhoracek.debtdragon.EditGroupFragment"
-        android:label="fragment_edit_group"
-        tools:layout="@layout/fragment_edit_group" />
 </navigation>
