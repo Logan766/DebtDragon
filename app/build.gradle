@@ -120,5 +120,8 @@ dependencies {
     //Combinatorics
     implementation 'com.github.shiguruikai:combinatoricskt:1.6.0'
 
+    //PopUp Image
+    implementation "com.github.chathuralakmal:AndroidImagePopup:1.2.2"
+
     
 }

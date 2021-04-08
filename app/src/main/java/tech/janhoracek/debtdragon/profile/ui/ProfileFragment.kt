@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.github.dhaval2404.imagepicker.ImagePicker
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.FragmentProfileBinding
@@ -69,6 +70,16 @@ class ProfileFragment : BaseFragment() {
                 //.maxResultSize(1080, 1080) //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
         }
+
+        val imagePopup = ImagePopup(requireContext())
+        imagePopup.windowHeight = 800
+        imagePopup.windowWidth = 800
+
+        binding.imageViewProfileFragment.setOnClickListener {
+            imagePopup.initiatePopup(binding.imageViewProfileFragment.drawable)
+            imagePopup.viewPopup()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -105,6 +116,7 @@ class ProfileFragment : BaseFragment() {
         //viewModel.onCleared()
         super.onDestroy()
     }
+
 
 
 

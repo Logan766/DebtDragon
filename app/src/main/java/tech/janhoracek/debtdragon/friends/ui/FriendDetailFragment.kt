@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -130,7 +131,14 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         })
 
 
+        val imagePopup = ImagePopup(requireContext())
+        imagePopup.windowHeight = 800
+        imagePopup.windowWidth = 800
 
+        binding.materialupProfileImage.setOnClickListener {
+            imagePopup.initiatePopup(binding.materialupProfileImage.drawable)
+            imagePopup.viewPopup()
+        }
 
         binding.toolbarFriendDetail.setNavigationOnClickListener {
             findNavController().navigateUp()
