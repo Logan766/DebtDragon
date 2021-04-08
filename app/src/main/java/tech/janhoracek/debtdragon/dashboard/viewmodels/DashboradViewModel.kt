@@ -84,7 +84,11 @@ class DashboradViewModel : BaseViewModel() {
                     }
                 }
             var url: Uri? = null
-            url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+            try {
+                url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
+            } catch (e: Exception) {
+
+            }
             Log.d("ASS", "url jest: " + url)
             _userImage.postValue(url.toString())
         }

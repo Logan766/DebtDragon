@@ -18,6 +18,7 @@ import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
@@ -164,6 +165,31 @@ class   LoginViewModel : BaseViewModel() {
         picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
         return photoRef.putBytes(data)
+    }
+
+    fun validateResetEmail(email: String) : Pair<Boolean, String> {
+        var error = ""
+        return if (email == "") {
+            error = localized(R.string.mail_cannot_be_empty)
+            Pair(false, error)
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            error = localized(R.string.mail_is_not_in_form)
+            Pair(false, error)
+        } else {
+            error = ""
+            Pair(true, error)
+        }
+    }
+
+    fun sendResetPassword(email: String) {
+        Log.d("CTVRTEK", "Odesilam reset na mail: " + email)
+        auth.sendPasswordResetEmail(email).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("CTVRTEK", "Uspesne odeslanej reset mail")
+            } else {
+                Log.d("CTVRTEK", "Neco se podelalo")
+            }
+        }
     }
 
 
