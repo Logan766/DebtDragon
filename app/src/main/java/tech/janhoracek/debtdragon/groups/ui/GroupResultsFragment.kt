@@ -82,8 +82,9 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
         //db.collection(Constants.DATABASE_GROUPS).document(viewModel.groupModel.value!!.id).collection(Constants.DATABASE_PAYMENT).document(paymentID).update("resolved", true)
     }
 
-    override fun onAddToFriendsBtnClick(paymentID: String, value: Int) {
+    override fun onAddToFriendsBtnClick(paymentID: String, value: Int, frienshipID: String, creditorID: String) {
         viewModel.resolvePayment(paymentID, true)
+        viewModel.createFriendDebt(creditorID, value, frienshipID)
     }
 
 }

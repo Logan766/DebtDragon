@@ -27,6 +27,7 @@ fun transformDatabaseStringToCategory(category: String):String {
         Constants.DATABASE_DEBT_CATEGORY_ELECTRONIC -> localized(R.string.category_electronics)
         Constants.DATABASE_DEBT_CATEGORY_OTHER -> localized(R.string.category_other)
         Constants.DATABASE_DEBT_CATEGORY_PAYMENT -> localized(R.string.category_payment)
+        Constants.DATABASE_DEBT_CATEGORY_GDEBT -> localized(R.string.category_g_debts)
         else -> {
             "Unknown"
         }

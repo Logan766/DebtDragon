@@ -39,4 +39,5 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="category_other">Ostatní</string>
     <string name="payer_me">Já</string>
     <string name="category_payment">Platba</string>
+    <string name="category_g_debts">Dluhy ze skupin</string>
 </resources>

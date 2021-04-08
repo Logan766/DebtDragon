@@ -5,6 +5,7 @@ object Constants {
 
     const val DATABASE_REQUESTS = "Requests"
     const val DATABASE_FRIENDSHIPS = "Friendships"
+    const val DATABASE_FRIENDSHIPS_UID = "uid"
     const val DATABASE_GROUPS = "Groups"
     const val DATABASE_NAMES_GROUP_PROFILE_IMAGE = "groupImage.jpg"
     const val DATABASE_DEBTS = "Debts"
@@ -21,6 +22,7 @@ object Constants {
     const val DATABASE_DEBT_CATEGORY_ELECTRONIC = "electronics"
     const val DATABASE_DEBT_CATEGORY_OTHER = "other"
     const val DATABASE_DEBT_CATEGORY_PAYMENT = "payment"
+    const val DATABASE_DEBT_CATEGORY_GDEBT = "gdebt"
     const val DATABASE_NAMES_DEBT_PROFILE_IMAGE = "debtImage.jpg"
     const val DATABASE_DEBTS_VALUE = "value"
     const val DATABASE_DEBTS_CATEGORY = "category"

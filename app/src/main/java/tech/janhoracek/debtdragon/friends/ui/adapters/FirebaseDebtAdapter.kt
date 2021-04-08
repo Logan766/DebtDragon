@@ -53,13 +53,21 @@ class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtMode
             itemView.tv_name_debtFriendItem.text = debt.name
             itemView.tv_value_debtFriendItem.text = debt.value.toString()
 
-            if(debt.category != Constants.DATABASE_DEBT_CATEGORY_PAYMENT) {
-                itemView.setOnClickListener {
-                    mDebtListener.onDebtClick(debt.id)
+            when (debt.category) {
+                Constants.DATABASE_DEBT_CATEGORY_PAYMENT -> {
+                    itemView.setOnClickListener{
+                        Toast.makeText(view.context, "Platby nelze editovat", Toast.LENGTH_LONG).show()
+                    }
                 }
-            } else {
-                itemView.setOnClickListener{
-                    Toast.makeText(view.context, "Platby nelze editovat", Toast.LENGTH_LONG).show()
+                Constants.DATABASE_DEBT_CATEGORY_GDEBT -> {
+                    itemView.setOnClickListener{
+                        Toast.makeText(view.context, "Dluhy ze skupin nelze editovat", Toast.LENGTH_LONG).show()
+                    }
+                }
+                else -> {
+                    itemView.setOnClickListener {
+                        mDebtListener.onDebtClick(debt.id)
+                    }
                 }
             }
 

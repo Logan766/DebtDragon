@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.groups.viewmodels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.friends.models.DebtModel
+import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.groups.models.BillModel
 import tech.janhoracek.debtdragon.groups.models.GroupDebtModel
 import tech.janhoracek.debtdragon.groups.models.GroupModel
@@ -611,6 +614,32 @@ class GroupDetailViewModel : BaseViewModel() {
             .collection(Constants.DATABASE_PAYMENT)
             .document(paymentID)
             .update(Constants.DATABASE_PAYMENT_RESOLVED, status)
+    }
+
+    fun createFriendDebt(creditorID: String, value: Int, friendshipID: String) {
+        GlobalScope.launch(IO) {
+            val payment = DebtModel()
+            val paymentRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS).document()
+
+            payment.id = paymentRef.id
+            payment.name = "Dluh ze skupiny ${groupModel.value!!.name}"
+            payment.value = value
+            payment.category = Constants.DATABASE_DEBT_CATEGORY_GDEBT
+            payment.payer = creditorID
+            payment.timestamp = Timestamp.now()
+
+            Log.d("RISE", "Payment ID: " + payment.id)
+            Log.d("RISE", "Payment CATEGORY: " + payment.category)
+            Log.d("RISE", "Payment Decstiption: " + payment.description)
+            Log.d("RISE", "Payment img: " + payment.img)
+            Log.d("RISE", "Payment NAME: " + payment.name)
+            Log.d("RISE", "Payment PAYER: " + payment.payer)
+            Log.d("RISE", "Payment VALUE: " + payment.value)
+            Log.d("RISE", "Payment TIMESTAMP: " + payment.timestamp)
+
+            paymentRef.set(payment).await()
+            //eventChannel.send(FriendDetailViewModel.Event.PaymentCreated)
+        }
     }
 
 

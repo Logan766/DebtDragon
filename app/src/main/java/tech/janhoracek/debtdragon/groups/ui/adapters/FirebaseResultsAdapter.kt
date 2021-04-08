@@ -55,15 +55,15 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
             }
         }
 
-        fun setPayButton(isFriend: Boolean, model: PaymentModel) {
+        fun setPayButton(isFriend: Boolean, model: PaymentModel, frienshipID: String) {
             itemView.FAB_payment_item.isVisible = isFriend
             itemView.FAB_payment_item.setOnClickListener {
-                mButtonListener.onAddToFriendsBtnClick(model.id, model.value)
+                mButtonListener.onAddToFriendsBtnClick(model.id, model.value, frienshipID, model.creditor)
             }
         }
 
         fun bindCheckbox(model: PaymentModel) {
-            if ((model.debtor == auth.currentUser?.uid) || isOwner) {
+            if ((model.creditor == auth.currentUser?.uid) || isOwner) {
                 itemView.checkbox_paymentItem.isVisible = true
                 itemView.checkbox_paymentItem.isEnabled = !model.isResolved
                 itemView.checkbox_paymentItem.isChecked = model.isResolved
@@ -73,6 +73,10 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
                         mCheckboxListener.onCheckboxChange(model.id)
                     }
                 }
+            } else if(model.debtor == auth.currentUser?.uid){
+                itemView.checkbox_paymentItem.isVisible = true
+                itemView.checkbox_paymentItem.isChecked = model.isResolved
+                itemView.checkbox_paymentItem.isEnabled = false
             } else {
                 itemView.checkbox_paymentItem.isVisible = false
             }
@@ -127,15 +131,15 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
 
                     if (snapshot != null && snapshot.exists()) {
                         //je friend
-                        holder.setPayButton(true && !model.isResolved, model)
+                        holder.setPayButton(true && !model.isResolved, model, snapshot[Constants.DATABASE_FRIENDSHIPS_UID].toString())
                     } else {
                         //neni friend
-                        holder.setPayButton(false, model)
+                        holder.setPayButton(false, model, "")
                         Log.w("DATA", "Current data null")
                     }
                 }
         } else {
-            holder.setPayButton(false, model)
+            holder.setPayButton(false, model, "")
         }
 
     }
@@ -145,6 +149,6 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
     }
 
     interface OnAddToFriendDebtsListener {
-        fun onAddToFriendsBtnClick(paymentID: String, value: Int)
+        fun onAddToFriendsBtnClick(paymentID: String, value: Int, friendshipID: String, creditorID: String)
     }
 }
