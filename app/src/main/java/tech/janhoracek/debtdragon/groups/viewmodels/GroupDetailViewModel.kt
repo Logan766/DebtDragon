@@ -237,6 +237,7 @@ class GroupDetailViewModel : BaseViewModel() {
         ///////////////DODELAT!
         Log.d("KOFILA", "ID payera je: " + payerID)
         if (payerID == "") {
+            Log.d("NEDELE", "TED JE TO PRAZDNY A DAVAM NIC")
             _payerProfileImg.postValue("")
         } else {
             GlobalScope.launch(IO) {
@@ -256,6 +257,8 @@ class GroupDetailViewModel : BaseViewModel() {
                             Log.d("KOFILA", "Nastavuju img nebo url jest: " + url)
                             if (url != null) {
                                 _payerProfileImg.postValue(url!!)
+                            } else {
+                                _payerProfileImg.postValue("")
                             }
                         }
                         Log.d("KOFILA", "URL je: " + url)

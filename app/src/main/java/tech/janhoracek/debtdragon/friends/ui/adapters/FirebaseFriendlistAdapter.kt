@@ -36,6 +36,7 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
         val friendName = itemView.tv_FriendItem2_Name
         val friendImage = itemView.CircImageView_FriendItem2
         val debtSum = itemView.tv_FriendItem2_Sum
+        val currency = itemView.tv_currency_FriendItem2
         val view = itemView
 
         fun bindVisibleInfo(name: String, image: String) {
@@ -62,14 +63,17 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
         fun bindSummary(sum: Int) {
             if(sum == 0) {
                 //blue
+                currency.setTextColor(Color.parseColor("#120f38"))
                 debtSum.setTextColor(Color.parseColor("#120f38"))
                 debtSum.text = sum.toString()
             } else if(sum > 0) {
                 //blue
+                currency.setTextColor(Color.parseColor("#120f38"))
                 debtSum.setTextColor(Color.parseColor("#120f38"))
                 debtSum.text = sum.toString()
             } else {
                 //red
+                currency.setTextColor(Color.parseColor("#ee1f43"))
                 debtSum.setTextColor(Color.parseColor("#ee1f43"))
                 debtSum.text = abs(sum).toString()
             }

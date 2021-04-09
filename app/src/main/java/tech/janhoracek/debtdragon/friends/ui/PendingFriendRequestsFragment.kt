@@ -39,7 +39,6 @@ class PendingFriendRequestsFragment : BaseFragment() {
         requestAdapter!!.startListening()
 
         floatingActionButton.setOnClickListener {
-            Toast.makeText(activity, "Mackas mi hada debile", Toast.LENGTH_LONG).show()
             Navigation.findNavController(view).navigate(R.id.action_friendsOverViewFragment_to_addFriendDialog)
         }
 

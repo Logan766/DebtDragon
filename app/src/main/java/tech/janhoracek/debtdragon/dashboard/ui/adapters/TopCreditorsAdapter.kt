@@ -23,12 +23,14 @@ class TopCreditorsAdapter(var topCreditors: List<Pair<String, Int>>): RecyclerVi
         val friendName = itemView.tv_FriendItem2_Name
         val friendImage = itemView.CircImageView_FriendItem2
         val debtorSum = itemView.tv_FriendItem2_Sum
+        val currency = itemView.tv_currency_FriendItem2
 
         fun bindVisibleInfo(name: String, image: String, sum: Int) {
             Log.d("SERES", "Binduju: " + name + sum)
             friendName.text = name
             debtorSum.text = abs(sum).toString()
             debtorSum.setTextColor(itemView.resources.getColor(R.color.second))
+            currency.setTextColor(itemView.resources.getColor(R.color.second))
             if (image == "null") {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(friendImage)
             } else {

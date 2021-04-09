@@ -27,6 +27,16 @@
         android:layout_height="wrap_content"
         android:text="0"
         app:layout_constraintBottom_toBottomOf="@+id/tv_name_BillItem"
+        app:layout_constraintEnd_toStartOf="@+id/tv_currency_BillItem"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_BillItem" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_currency_BillItem"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/currency"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name_BillItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_name_BillItem" />
 

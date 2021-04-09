@@ -186,6 +186,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Výše částky"
                 app:errorEnabled="true"
+                app:suffixText="@string/currency"
                 app:errorText="@{viewmodel.groupDebtValueError}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_debt_value_heading_add_group_debt">

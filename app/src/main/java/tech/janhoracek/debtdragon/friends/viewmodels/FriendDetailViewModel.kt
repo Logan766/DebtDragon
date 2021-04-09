@@ -21,10 +21,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.utility.UserObject
 import tech.janhoracek.debtdragon.friends.models.DebtModel
 import tech.janhoracek.debtdragon.friends.models.FriendDetailModel
 import tech.janhoracek.debtdragon.friends.models.FriendshipModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
@@ -177,9 +179,10 @@ class FriendDetailViewModel : BaseViewModel() {
                         }
                         summaryNet = myPie - friendPie
                         if (summaryNet > 0) {
-                            _debtSummary.value = "Přítel vám dluží ${summaryNet}"
+                            _debtSummary.value = "Přítel vám dluží ${summaryNet}"+ localized(R.string.currency)
                         } else if (summaryNet < 0) {
-                            _debtSummary.value = "Dlužíte příteli ${summaryNet}"
+                            val absSummaryNet = abs(summaryNet)
+                            _debtSummary.value = "Dlužíte příteli ${absSummaryNet}" + localized(R.string.currency)
                         } else {
                             _debtSummary.value = "Vaše dluhy jsou vyrovnány"
                         }

@@ -73,7 +73,7 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
                 } else {
                     Log.w("DATA", "Current data null")
                 }
-                Log.d("KURVA", "SIZE JEST: " + snapshot!!.data!!.size)
+                //Log.d("KURVA", "SIZE JEST: " + snapshot!!.data!!.size)
             }
         }
 

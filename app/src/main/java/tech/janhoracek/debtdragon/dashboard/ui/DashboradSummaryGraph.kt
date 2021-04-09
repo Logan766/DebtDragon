@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradSummaryGraphBinding
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import kotlin.math.abs
 
@@ -45,12 +46,12 @@ class DashboradSummaryGraph : BaseFragment() {
             } else if (summary < 0) {
                 binding.tvStatusSummaryGraphDashborad.text = "Celkem dlužíte přátelům"
                 binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
-                binding.tvStatusSummaryNumberGraphDashboard.text = abs(summary).toString()
+                binding.tvStatusSummaryNumberGraphDashboard.text = abs(summary).toString() + localized(R.string.currency)
                 binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#ee1f43"))
             } else {
                 binding.tvStatusSummaryGraphDashborad.text = "Přátelé Vám celkem dluží"
                 binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
-                binding.tvStatusSummaryNumberGraphDashboard.text = summary.toString()
+                binding.tvStatusSummaryNumberGraphDashboard.text = summary.toString() + localized(R.string.currency)
                 binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#120f38"))
 
             }

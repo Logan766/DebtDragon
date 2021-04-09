@@ -36,10 +36,12 @@ class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtMode
                 //itemView.tv_payer_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.main))
                 itemView.tv_value_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.main))
                 itemView.image_View_DebtFriendDetail.borderColor = itemView.resources.getColor(R.color.main)
+                itemView.tv_currency_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.main))
                 itemView.tv_payer_debtFriendItem.text = localized(R.string.payer_me)
             } else {
                 //itemView.tv_payer_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.second))
                 itemView.tv_value_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.second))
+                itemView.tv_currency_debtFriendItem.setTextColor(itemView.resources.getColor(R.color.second))
                 //itemView.image_View_DebtFriendDetail.borderColor = itemView.resources.getColor(R.color.second)
                 itemView.tv_payer_debtFriendItem.text = payerName
             }

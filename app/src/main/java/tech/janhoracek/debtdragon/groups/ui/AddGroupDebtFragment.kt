@@ -75,6 +75,8 @@ class AddGroupDebtFragment : BaseFragment() {
 
         binding.textInputDebtorAddGroupDebt.doAfterTextChanged {
             if (it.toString() != "") {
+                Log.d("NEDELE" ,"Ted to triglo neco!")
+                Log.d("NEDELE", "A triglo to: " + it)
                 val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputDebtorAddGroupDebt.text.toString() }!!.first
                 viewModel.setImageForPayer(payerID)
             } else {

@@ -24,11 +24,20 @@
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="500 Kč"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_name_debtFriendItem"
+        app:layout_constraintEnd_toStartOf="@+id/tv_currency_debtFriendItem"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_debtFriendItem" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_currency_debtFriendItem"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/currency"
         app:layout_constraintBottom_toBottomOf="@+id/tv_name_debtFriendItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_name_debtFriendItem" />
-
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_payer_debtFriendItem"
@@ -46,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Předmět"
+        android:text="Načítání"
         app:layout_constraintBottom_toBottomOf="@+id/image_View_DebtFriendDetail"
         app:layout_constraintStart_toEndOf="@+id/image_View_DebtFriendDetail"
         app:layout_constraintTop_toTopOf="@+id/image_View_DebtFriendDetail"
