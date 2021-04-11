@@ -52,11 +52,16 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_name_debtFriendItem"
         style="@style/TextAppearance.MaterialComponents.Headline6"
-        android:layout_width="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_width="0dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Načítání"
         app:layout_constraintBottom_toBottomOf="@+id/image_View_DebtFriendDetail"
+        app:layout_constraintEnd_toStartOf="@+id/tv_value_debtFriendItem"
         app:layout_constraintStart_toEndOf="@+id/image_View_DebtFriendDetail"
         app:layout_constraintTop_toTopOf="@+id/image_View_DebtFriendDetail"
         app:layout_constraintVertical_bias="0.61" />
