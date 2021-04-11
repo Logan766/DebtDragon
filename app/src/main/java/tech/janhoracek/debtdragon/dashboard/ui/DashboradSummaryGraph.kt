@@ -18,6 +18,11 @@ import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import kotlin.math.abs
 
+/**
+ * Dashborad summary graph
+ *
+ * @constructor Create empty Dashborad summary graph
+ */
 class DashboradSummaryGraph : BaseFragment() {
     private lateinit var binding: FragmentDashboradSummaryGraphBinding
     val viewModel by navGraphViewModels<DashboradViewModel>(R.id.dashborad)
@@ -35,33 +40,42 @@ class DashboradSummaryGraph : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
+        // Observing Pie Data for Summary Pie graph
         viewModel.summaryPieData.observe(viewLifecycleOwner, Observer { pieData->
             setupSummaryPie(pieData)
         })
 
+        // Sets text of debt summary based on summary value
         viewModel.summary.observe(viewLifecycleOwner, Observer { summary ->
-            if (summary == 0) {
-                binding.tvStatusSummaryGraphDashborad.text = "Vaše dluhy jsou vyrovnány"
-                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.INVISIBLE
-            } else if (summary < 0) {
-                binding.tvStatusSummaryGraphDashborad.text = "Celkem dlužíte přátelům"
-                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
-                binding.tvStatusSummaryNumberGraphDashboard.text = abs(summary).toString() + localized(R.string.currency)
-                binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#ee1f43"))
-            } else {
-                binding.tvStatusSummaryGraphDashborad.text = "Přátelé Vám celkem dluží"
-                binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
-                binding.tvStatusSummaryNumberGraphDashboard.text = summary.toString() + localized(R.string.currency)
-                binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#120f38"))
+            when {
+                summary == 0 -> {
+                    binding.tvStatusSummaryGraphDashborad.text = getString(R.string.dashborad_summary_debts_are_equal)
+                    binding.tvStatusSummaryNumberGraphDashboard.visibility = View.INVISIBLE
+                }
+                summary < 0 -> {
+                    binding.tvStatusSummaryGraphDashborad.text = getString(R.string.dashboard_summary_you_own_to_friends)
+                    binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
+                    binding.tvStatusSummaryNumberGraphDashboard.text = abs(summary).toString() + localized(R.string.currency)
+                    binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#ee1f43"))
+                }
+                else -> {
+                    binding.tvStatusSummaryGraphDashborad.text = getString(R.string.dashboard_summary_friends_owe_you)
+                    binding.tvStatusSummaryNumberGraphDashboard.visibility = View.VISIBLE
+                    binding.tvStatusSummaryNumberGraphDashboard.text = summary.toString() + localized(R.string.currency)
+                    binding.tvStatusSummaryNumberGraphDashboard.setTextColor(Color.parseColor("#120f38"))
 
+                }
             }
         })
-
-
         return binding.root
     }
 
 
+    /**
+     * Setup summary pie of total sum of debts
+     *
+     * @param pieData
+     */
     private fun setupSummaryPie(pieData: PieData) {
         pieData.setValueFormatter(PercentFormatter(binding.pieSummaryDashboard))
         binding.pieSummaryDashboard.description.isEnabled = false

@@ -14,6 +14,11 @@ import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradUserCategoryGraphBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Dashborad user category graph
+ *
+ * @constructor Create empty Dashborad user category graph
+ */
 class DashboradUserCategoryGraph : BaseFragment() {
     private lateinit var binding: FragmentDashboradUserCategoryGraphBinding
     val viewModel by navGraphViewModels<DashboradViewModel>(R.id.dashborad)
@@ -29,15 +34,19 @@ class DashboradUserCategoryGraph : BaseFragment() {
         // Inflate the layout for this fragment
         binding = FragmentDashboradUserCategoryGraphBinding.inflate(inflater, container, false)
 
-
+        // Observes data for categories of user
         viewModel.userCategoryPieData.observe(viewLifecycleOwner, Observer { pieData ->
             setupFriendCategoryPie(pieData)
         })
 
-
         return binding.root
     }
 
+    /**
+     * Setup friend category pie
+     *
+     * @param data
+     */
     private fun setupFriendCategoryPie(data: PieData) {
         data.setValueFormatter(PercentFormatter(binding.pieUserCategoryDashboard))
         binding.pieUserCategoryDashboard.setCenterTextColor(requireActivity().getColor(R.color.white))

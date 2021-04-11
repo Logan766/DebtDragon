@@ -15,11 +15,14 @@ import tech.janhoracek.debtdragon.databinding.FragmentDashboradTopDebtorsBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 
+/**
+ * Dashborad top debtors
+ *
+ * @constructor Create empty Dashborad top debtors
+ */
 class DashboradTopDebtors : BaseFragment() {
     private lateinit var binding: FragmentDashboradTopDebtorsBinding
     val viewModel by navGraphViewModels<DashboradViewModel>(R.id.dashborad)
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,23 +36,11 @@ class DashboradTopDebtors : BaseFragment() {
         binding = FragmentDashboradTopDebtorsBinding.inflate(inflater, container, false)
         binding.recyclerViewTopDebtorsDashboard.layoutManager = LinearLayoutManager(requireContext())
 
+        // Observing data for top debtors
         viewModel.topDebtors.observe(viewLifecycleOwner, Observer {
-            Log.d("SERES", "BINDUJU!")
-            for (entry in it) {
-                Log.d("SERES", "Tisknu: " + entry)
-            }
             binding.recyclerViewTopDebtorsDashboard.adapter = TopDebtorsAdapter(it)
         })
 
-
-
-
-
         return binding.root
     }
-
-    private fun setupRecyclerView(data: MutableList<Pair<String, Int>>) {
-
-    }
-
 }

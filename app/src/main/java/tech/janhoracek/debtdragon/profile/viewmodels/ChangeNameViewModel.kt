@@ -12,6 +12,11 @@ import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Change name view model
+ *
+ * @constructor Create empty Change name view model
+ */
 class ChangeNameViewModel: BaseViewModel() {
 
     val userName = MutableLiveData<String>()
@@ -35,6 +40,10 @@ class ChangeNameViewModel: BaseViewModel() {
         }
     }
 
+    /**
+     * Change name
+     *
+     */
     fun changeName() {
         if(!userName.value.isNullOrEmpty()) {
             _nameError.value = ""

@@ -16,6 +16,12 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.utility.Constants
 import kotlin.math.abs
 
+/**
+ * Top creditors adapter
+ *
+ * @property topCreditors
+ * @constructor Create empty Top creditors adapter
+ */
 class TopCreditorsAdapter(var topCreditors: List<Pair<String, Int>>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -25,8 +31,14 @@ class TopCreditorsAdapter(var topCreditors: List<Pair<String, Int>>): RecyclerVi
         val debtorSum = itemView.tv_FriendItem2_Sum
         val currency = itemView.tv_currency_FriendItem2
 
+        /**
+         * Bind visible info of creditor
+         *
+         * @param name as creditor name
+         * @param image as URL of creditor
+         * @param sum as net sum of credit
+         */
         fun bindVisibleInfo(name: String, image: String, sum: Int) {
-            Log.d("SERES", "Binduju: " + name + sum)
             friendName.text = name
             debtorSum.text = abs(sum).toString()
             debtorSum.setTextColor(itemView.resources.getColor(R.color.second))
@@ -50,6 +62,7 @@ class TopCreditorsAdapter(var topCreditors: List<Pair<String, Int>>): RecyclerVi
         var image = ""
         var sum = topCreditors[position].second
 
+        //Gets data about creditor
         GlobalScope.launch(Dispatchers.IO) {
             db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -65,7 +78,7 @@ class TopCreditorsAdapter(var topCreditors: List<Pair<String, Int>>): RecyclerVi
                 }
             }
         }
-
+        //adds animation to ViewHolder
         holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 

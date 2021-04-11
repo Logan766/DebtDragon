@@ -14,31 +14,35 @@ import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboardFriendsCategoryGraphBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Dashboard friends category graph
+ *
+ * @constructor Create empty Dashboard friends category graph
+ */
 class DashboardFriendsCategoryGraph : BaseFragment() {
     private lateinit var binding: FragmentDashboardFriendsCategoryGraphBinding
     val viewModel by navGraphViewModels<DashboradViewModel>(R.id.dashborad)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentDashboardFriendsCategoryGraphBinding.inflate(inflater, container, false)
-
         viewModel.friendsCategoryPieData.observe(viewLifecycleOwner, Observer { pieData ->
             setupFriendCategoryPie(pieData)
         })
-
-
-
         return binding.root
     }
 
+    /**
+     * Setup friend category pie
+     *
+     * @param data as data about category of friends debts
+     */
     private fun setupFriendCategoryPie(data: PieData) {
         data.setValueFormatter(PercentFormatter(binding.pieFriendsCategoryDashboard))
         binding.pieFriendsCategoryDashboard.setCenterTextColor(requireActivity().getColor(R.color.white))

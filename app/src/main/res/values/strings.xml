@@ -41,4 +41,9 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="payer_me">Já</string>
     <string name="category_payment">Platba</string>
     <string name="category_g_debts">Dluhy ze skupin</string>
+    <string name="dashborad_summary_debts_are_equal">Vaše dluhy jsou vyrovnány</string>
+    <string name="dashboard_summary_you_own_to_friends">Celkem dlužíte přátelům</string>
+    <string name="dashboard_summary_friends_owe_you">Přátelé Vám celkem dluží</string>
+    <string name="Me">Já</string>
+    <string name="Friends">Přátelé</string>
 </resources>

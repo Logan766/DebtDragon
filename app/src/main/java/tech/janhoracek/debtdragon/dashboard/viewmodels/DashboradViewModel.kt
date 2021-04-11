@@ -15,12 +15,19 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.UserObject
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 import java.lang.Exception
 
+/**
+ * Dashborad view model
+ *
+ * @constructor Create empty Dashborad view model
+ */
 class DashboradViewModel : BaseViewModel() {
 
     private val PIE_TYPE_FRIEND = "friend"
@@ -56,101 +63,47 @@ class DashboradViewModel : BaseViewModel() {
     var mySummary = 0
     var friendsSummary = 0
 
-
-    val pozdrav = "Ahoj"
-
     init {
         GlobalScope.launch(IO) {
-            Log.d("ZIPPO", "Spoustim")
+            // Sets listener to calculate total debts for friendship and debts
             db.collection(Constants.DATABASE_FRIENDSHIPS)
-                .whereArrayContains("members", auth.currentUser.uid)
+                .whereArrayContains(Constants.DATABASE_FRIENDSHIPS_MEMBERS, auth.currentUser.uid)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
-                        Log.d("ZIPPO", error.message.toString())
+                        Log.d("LSTNR", error.message.toString())
                     }
 
                     if (snapshot != null) {
-                        Log.d("INSANE", "Ted bych nacital podle frienships")
-                        nactiPolozky()
+                        calculateDebt()
                         snapshot.forEach { document ->
-                            db.collection(Constants.DATABASE_FRIENDSHIPS).document(document.id).collection(Constants.DATABASE_DEBTS)
+                            db.collection(Constants.DATABASE_FRIENDSHIPS)
+                                .document(document.id)
+                                .collection(Constants.DATABASE_DEBTS)
                                 .addSnapshotListener { snapshot, error ->
-                                    Log.d("INSANE", "Ted bych nacital podle debts")
-                                    nactiPolozky()
+                                    calculateDebt()
                                 }
                         }
                     } else {
-                        Log.d("ZIPPO", "Current data null")
+                        Log.d("LSTNR", "Current data null")
                     }
                 }
             var url: Uri? = null
+            // Tries to load img from online storage
             try {
                 url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
             } catch (e: Exception) {
 
             }
-            Log.d("ASS", "url jest: " + url)
             _userImage.postValue(url.toString())
         }
     }
 
-    private fun printuj(
-        mySummary: Int,
-        friendSummary: Int,
-        summaryDebts: HashMap<String, Int>,
-        categoryFriends: HashMap<String, Int>,
-        categoryUser: HashMap<String, Int>
-    ) {
-        Log.d("DASHIK", "------------------Zacatek--------------------")
-        Log.d("DASHIK", "Moje summary jest: " + mySummary)
-        Log.d("DASHIK", "Friend summary jest: " + friendSummary)
-
-
-        var counter = 1
-        for (item in summaryDebts) {
-            Log.d("DASHIK", counter.toString() + ":Dluznik a castka celkem: " + item.key + ": " + item.value)
-            counter++
-        }
-
-        counter = 1
-        for (item in categoryFriends) {
-            Log.d("DASHIK", counter.toString() + ":Ostatnich kategorie: " + item.key + ": " + item.value)
-            counter++
-        }
-
-        counter = 1
-        for (item in categoryUser) {
-            Log.d("DASHIK", counter.toString() + ":Moje kategorie: " + item.key + ": " + item.value)
-            counter++
-        }
-        Log.d("DASHIK", "------------------Konec--------------------")
-    }
-
-    fun printuj2() {
-        Log.d("DASHIK", "------------------Zacatek--------------------")
-        Log.d("DASHIK", "Moje summary jest: " + mySummary)
-        Log.d("DASHIK", "Friend summary jest: " + friendsSummary)
-
-        var counter = 1
-        for (item in summaryOfFriendsDebts) {
-            Log.d("DASHIK", counter.toString() + ":Dluznik a castka celkem: " + item.key + ": " + item.value)
-            counter++
-        }
-
-        counter = 1
-        for (item in categorySummaryFriends) {
-            Log.d("DASHIK", counter.toString() + ":Ostatnich kategorie: " + item.key + ": " + item.value)
-            counter++
-        }
-
-        counter = 1
-        for (item in categorySummaryUser) {
-            Log.d("DASHIK", counter.toString() + ":Moje kategorie: " + item.key + ": " + item.value)
-            counter++
-        }
-        Log.d("DASHIK", "------------------Konec--------------------")
-    }
-
+    /**
+     * Retrieve value and category based on category strings in database
+     *
+     * @param document
+     * @return Pair(name of category, value)
+     */
     private fun retrieveValueAndCategory(document: DocumentSnapshot): Pair<String, Int> {
         val category = transformDatabaseStringToCategory(document[Constants.DATABASE_DEBTS_CATEGORY].toString())
         val value = document[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
@@ -158,7 +111,12 @@ class DashboradViewModel : BaseViewModel() {
     }
 
 
-    fun nactiPolozky() {
+    /**
+     * Calculate debt
+     *
+     * Calculates all necessary data for dashboard
+     */
+    private fun calculateDebt() {
         val categorySummaryFriends = HashMap<String, Int>()
         val categorySummaryUser = HashMap<String, Int>()
         val summaryOfFriendsDebts = HashMap<String, Int>()
@@ -168,33 +126,39 @@ class DashboradViewModel : BaseViewModel() {
         val job = GlobalScope.launch(IO) {
 
             try {
-                val friendships = db.collection(Constants.DATABASE_FRIENDSHIPS).whereArrayContains("members", UserObject.uid.toString()).get().await()
+                //Gets all current user friendships
+                val friendships = db.collection(Constants.DATABASE_FRIENDSHIPS)
+                    .whereArrayContains(Constants.DATABASE_FRIENDSHIPS_MEMBERS, UserObject.uid.toString())
+                    .get()
+                    .await()
 
                 friendships.forEach { friendship ->
-                    var friendID = if (friendship["member1"] == auth.currentUser.uid) {
+                    // Determines who is who
+                    val friendID = if (friendship["member1"] == auth.currentUser.uid) {
                         friendship["member2"].toString()
                     } else {
                         friendship["member1"].toString()
                     }
 
-                    val debts =
-                        db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendship.id).collection(Constants.DATABASE_DEBTS).get().await()
+                    // Gets friendships data
+                    val debts = db.collection(Constants.DATABASE_FRIENDSHIPS)
+                        .document(friendship.id)
+                        .collection(Constants.DATABASE_DEBTS)
+                        .get()
+                        .await()
+
+                    // Calculates data for dashboard from friendships
                     debts.forEach { debt ->
                         if (debt[Constants.DATABASE_DEBT_PAYER] == auth.currentUser.uid) {
                             val categoryAndValue = retrieveValueAndCategory(debt)
                             mySummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
                             summaryOfFriendsDebts.merge(friendID, debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
                             categorySummaryUser.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
-                            Log.d("Dashik", "Merguju: " + friendID + " s hodnotou +" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
-                            Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
                         } else {
                             val categoryAndValue = retrieveValueAndCategory(debt)
                             friendsSummary += debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt()
                             summaryOfFriendsDebts.merge(friendID, -debt[Constants.DATABASE_DEBTS_VALUE].toString().toInt(), Int::plus)
                             categorySummaryFriends.merge(categoryAndValue.first, categoryAndValue.second, Int::plus)
-                            Log.d("Dashik", "Merguju: " + friendID + " s hodnotou -" + debt[Constants.DATABASE_DEBTS_VALUE].toString())
-                            Log.d("Dashik", "Hodnota " + friendID + " je ted: " + summaryOfFriendsDebts.get(friendID))
-
                         }
                     }
                 }
@@ -203,19 +167,24 @@ class DashboradViewModel : BaseViewModel() {
             }
         }
 
+        // Sends data to variables for Views
         GlobalScope.launch(IO) {
             job.join()
             _summary.postValue(mySummary - friendsSummary)
             setupDataForSummaryPie(mySummary, friendsSummary)
             setupDataForFriendsCategoryPie(categorySummaryUser, PIE_TYPE_USER)
             setupDataForFriendsCategoryPie(categorySummaryFriends, PIE_TYPE_FRIEND)
-
-            printuj(mySummary, friendsSummary, summaryOfFriendsDebts, categorySummaryFriends, categorySummaryUser)
-            getDataForTop5(summaryOfFriendsDebts)
+            getDataForTop3(summaryOfFriendsDebts)
         }
 
     }
 
+    /**
+     * Setup data for summary pie
+     *
+     * @param mySummary summary of debts of current user
+     * @param friendSummary summary of debts of friends
+     */
     fun setupDataForSummaryPie(mySummary: Int, friendSummary: Int) {
         val summary = mySummary + friendSummary
         val friendsPercentage = (friendSummary.toFloat() / summary) * 100
@@ -223,9 +192,9 @@ class DashboradViewModel : BaseViewModel() {
         val listPie = ArrayList<PieEntry>()
         val listColors = ArrayList<Int>()
 
-        listPie.add(PieEntry(myPrecentage, "Já"))
+        listPie.add(PieEntry(myPrecentage, localized(R.string.Me)))
         listColors.add(Color.rgb(18, 15, 56))
-        listPie.add(PieEntry(friendsPercentage, "Přátelé"))
+        listPie.add(PieEntry(friendsPercentage, localized(R.string.Friends)))
         listColors.add(Color.rgb(238, 31, 67))
 
         val pieDataSet = PieDataSet(listPie, "")
@@ -234,9 +203,14 @@ class DashboradViewModel : BaseViewModel() {
         pieDataSet.valueTextColor = Color.rgb(255, 255, 255)
 
         _summaryPieData.postValue(PieData(pieDataSet))
-        //_summaryPieData.value = PieData(pieDataSet)
     }
 
+    /**
+     * Setup data for friends category pie
+     *
+     * @param data data for Category Pie (friends or users)
+     * @param type determines which data comes in @param data (friends or users)
+     */
     fun setupDataForFriendsCategoryPie(data: HashMap<String, Int>, type: String) {
         val listPieFriend = ArrayList<PieEntry>()
         val listColors = ArrayList<Int>()
@@ -260,6 +234,7 @@ class DashboradViewModel : BaseViewModel() {
         pieDataSet.sliceSpace = 3F
         pieDataSet.valueFormatter = PercentFormatter()
 
+        // Determines where to post data after settings based on @type
         if (type == PIE_TYPE_FRIEND) {
             _friendsCategoryPieData.postValue(PieData(pieDataSet))
         } else {
@@ -267,21 +242,17 @@ class DashboradViewModel : BaseViewModel() {
         }
     }
 
-    fun getDataForTop5(data: HashMap<String, Int>) {
-        //val sortedMap = data.toSortedMap(compareBy { it })
+    /**
+     * Get data for top3 debtors and creditors
+     *
+     * @param data as net of debts of each friend <ID of friend, net of debts>
+     */
+    private fun getDataForTop3(data: HashMap<String, Int>) {
         val sortedMap1 = data.toList().sortedBy { (_, value) -> value }
         val sortedMap2 = data.toList().sortedBy { (_, value) -> value }.reversed()
 
-        for (entry in sortedMap1) {
-            Log.d("SORTUJ", "1: " + entry)
-        }
-
-        for (entry in sortedMap2) {
-            Log.d("SORTUJ", "2: " + entry)
-        }
-
-        var topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
-        var topDebtors: MutableList<Pair<String, Int>> = mutableListOf()
+        val topCreditors: MutableList<Pair<String, Int>> = mutableListOf()
+        val topDebtors: MutableList<Pair<String, Int>> = mutableListOf()
 
         for (i in 0..2) {
             if (i <= sortedMap1.size - 1) {
@@ -299,77 +270,22 @@ class DashboradViewModel : BaseViewModel() {
             }
         }
 
-
-        /*try {
-            topCreditors = sortedMap1 as MutableList<Pair<String, Int>>
-            for (entry in topCreditors) {
-                if (entry.second > 0) {
-                    topCreditors.remove(entry)
-                }
-            }
-            Log.d("SERES", "Dobehlo to")
-        } catch (e: Exception) {
-            Log.d("SERES", e.message.toString())
-        }*/
-
-
-        /*
-        for (e in sortedMap1) {
-            Log.d("SORTUJ", "1: " + e)
-        }
-
-        for (b in sortedMap2) {
-            Log.d("SORTUJ", "2: " + b)
-        }
-
-        for(i in 0..2) {
-            if(i < sortedMap1.size) {
-                if (sortedMap1[i].second < 0) {
-                    topCreditors.add(sortedMap1[i])
-                }
-            }
-        }
-
-        for(i in 0..2) {
-            if(i < sortedMap2.size) {
-                if (sortedMap2[i].second > 0) {
-                    topDebtors.add(sortedMap2[i])
-                }
-            }
-        }*/
-
-
         try {
             test.postValue(topCreditors)
-            Log.d("SERES", "proslo to!")
         } catch (e: Exception) {
-            Log.d("SERES", e.message.toString())
+            Log.d("ERROR", e.message.toString())
         }
-
 
         try {
             _topCreditors.postValue(topCreditors)
             _topDebtors.postValue(topDebtors)
             GlobalScope.launch(Main) { _topDebtors.value = _topDebtors.value }
-
-            Log.d("SERES", "Pokus real prosel")
         } catch (e: Error) {
-            Log.d("SERES", "Pokus real spatne: " + e.message.toString())
+            Log.d("ERROR", e.message.toString())
         }
-
-
-        for (entry in topCreditors) {
-            Log.d("SORTUJ", "1S: " + entry)
-        }
-
-        for (entry in topDebtors) {
-            Log.d("SORTUJ", "2S: " + entry)
-        }
-
     }
 
     override fun onCleared() {
-        Log.d("KAFE", "ODHLASUJU")
         super.onCleared()
     }
 

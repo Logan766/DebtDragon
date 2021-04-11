@@ -14,6 +14,11 @@ import tech.janhoracek.debtdragon.dashboard.viewmodels.DashboradViewModel
 import tech.janhoracek.debtdragon.databinding.FragmentDashboradTopCreditorsBinding
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Dashborad top creditors
+ *
+ * @constructor Create empty Dashborad top creditors
+ */
 class DashboradTopCreditors : BaseFragment() {
     private lateinit var binding: FragmentDashboradTopCreditorsBinding
     val viewModel by navGraphViewModels<DashboradViewModel>(R.id.dashborad)
@@ -30,11 +35,10 @@ class DashboradTopCreditors : BaseFragment() {
         binding = FragmentDashboradTopCreditorsBinding.inflate(inflater, container, false)
         binding.recyclerViewTopCreditorsDashboard.layoutManager = LinearLayoutManager(requireContext())
 
+        // Observing data for top creditors
         viewModel.topCreditors.observe(viewLifecycleOwner, Observer {
             binding.recyclerViewTopCreditorsDashboard.adapter = TopCreditorsAdapter(it)
         })
-
-
         return binding.root
     }
 

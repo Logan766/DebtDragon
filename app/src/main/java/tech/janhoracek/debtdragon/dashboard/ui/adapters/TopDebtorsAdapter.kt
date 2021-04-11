@@ -14,6 +14,12 @@ import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Top debtors adapter
+ *
+ * @property topDebtors
+ * @constructor Create empty Top debtors adapter
+ */
 class TopDebtorsAdapter(var topDebtors: List<Pair<String, Int>>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -22,8 +28,14 @@ class TopDebtorsAdapter(var topDebtors: List<Pair<String, Int>>): RecyclerView.A
         val friendImage = itemView.CircImageView_FriendItem2
         val debtorSum = itemView.tv_FriendItem2_Sum
 
+        /**
+         * Bind visible info
+         *
+         * @param name as debtor name
+         * @param image as URL of debtor image
+         * @param sum as net debt sum
+         */
         fun bindVisibleInfo(name: String, image: String, sum: Int) {
-            Log.d("SERES", "Binduju: " + name + sum)
             friendName.text = name
             debtorSum.text = sum.toString()
             if (image == "null") {
@@ -46,6 +58,7 @@ class TopDebtorsAdapter(var topDebtors: List<Pair<String, Int>>): RecyclerView.A
         var image = ""
         var sum = topDebtors[position].second
 
+        //gets data about debtor
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener { snapshot, error ->
                 if (error != null) {

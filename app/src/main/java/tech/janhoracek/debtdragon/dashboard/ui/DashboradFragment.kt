@@ -13,6 +13,11 @@ import tech.janhoracek.debtdragon.databinding.FragmentDashboradBinding
 import tech.janhoracek.debtdragon.friends.ui.adapters.ViewPagerAdapter
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Dashborad fragment overall
+ *
+ * @constructor Create empty Dashborad fragment
+ */
 class DashboradFragment : BaseFragment() {
 
     private lateinit var binding: FragmentDashboradBinding
@@ -31,6 +36,7 @@ class DashboradFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // Gets all child fragments
         val graphList = arrayListOf<Fragment>(
             DashboradSummaryGraph(),
             DashboradUserCategoryGraph(),
@@ -39,6 +45,7 @@ class DashboradFragment : BaseFragment() {
             DashboradTopCreditors()
         )
 
+        // Sets up adapter for child fragments and DotsIndicator
         val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
         binding.viewPagerDashborad.adapter = graphAdapter
         binding.springDotsIndicatorDashboard.setViewPager2(binding.viewPagerDashborad)
@@ -46,15 +53,12 @@ class DashboradFragment : BaseFragment() {
             binding.viewPagerDashborad.currentItem = 0
         }
 
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
-
-
     }
 
 
