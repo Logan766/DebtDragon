@@ -17,12 +17,16 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 
+/**
+ * Friend detail category graph fragment
+ *
+ * @constructor Create empty Friend detail category graph fragment
+ */
 class FriendDetailCategoryGraphFragment : BaseFragment() {
 
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentFriendDetailCategoryGraphBinding
     val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +40,19 @@ class FriendDetailCategoryGraphFragment : BaseFragment() {
         // Inflate the layout for this fragment
         binding = FragmentFriendDetailCategoryGraphBinding.inflate(inflater, container, false)
         binding.pieChartCategoryFriendFriendDetailChildFragment.animate()
+
+        // Observe data for user category and set them
         viewModel.pieCategoryFriendData.observe(viewLifecycleOwner, Observer { pieData ->
             setupFriendCategoryPie(pieData)
         })
-
-
         return binding.root
     }
 
+    /**
+     * Setup friend category pie
+     *
+     * @param data as category as PieData
+     */
     private fun setupFriendCategoryPie(data: PieData) {
         binding.pieChartCategoryFriendFriendDetailChildFragment.centerText = "Poměr vašich dluhů"
         binding.pieChartCategoryFriendFriendDetailChildFragment.setCenterTextColor(requireActivity().getColor(R.color.white))

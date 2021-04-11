@@ -18,11 +18,14 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendsOverviewViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 
-
+/**
+ * Friends over view fragment
+ *
+ * @constructor Create empty Friends over view fragment
+ */
 class FriendsOverViewFragment : BaseFragment() {
     private lateinit var binding: FragmentFriendsOverviewBinding
     private var currentTab = 0
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,12 +35,12 @@ class FriendsOverViewFragment : BaseFragment() {
         val viewModel = ViewModelProvider(requireActivity()).get(FriendsOverviewViewModel::class.java)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        // Set up list of child fragments
         val fragmentList = arrayListOf<Fragment>(
             FriendslistFragment(),
             PendingFriendRequestsFragment()
         )
-
-
 
         val adapter = ViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         binding.viewpagerFriendsOverview.adapter = adapter
@@ -47,6 +50,7 @@ class FriendsOverViewFragment : BaseFragment() {
             tab.text = adapter.getPageTitle(position)
         }.attach()
 
+        // Set up notification on tab for requests
         viewModel.notificationCount.observe(viewLifecycleOwner, Observer { count->
             if (count == 0) {
                 binding.tabLayoutFriendsOverview.getTabAt(1)?.removeBadge()
@@ -64,14 +68,11 @@ class FriendsOverViewFragment : BaseFragment() {
     }
 
     override fun onPause() {
-        Log.d("RAZER","Je pauza")
         currentTab = binding.tabLayoutFriendsOverview.selectedTabPosition
-        Log.d("RAZER","Je pauza a tab jest: " + currentTab)
         super.onPause()
     }
 
     override fun onResume() {
-        Log.d("RAZER", "jsem zpet a tab ma bejt: " + currentTab)
         binding.viewpagerFriendsOverview.post {
             binding.viewpagerFriendsOverview.currentItem = currentTab
         }

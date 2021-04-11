@@ -16,12 +16,17 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.RequestModel
 import tech.janhoracek.debtdragon.friends.ui.adapters.FirebaseRequestAdapter
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.Constants
 
 
+/**
+ * Pending friend requests fragment
+ *
+ * @constructor Create empty Pending friend requests fragment
+ */
 class PendingFriendRequestsFragment : BaseFragment() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     var requestAdapter: FirebaseRequestAdapter? = null
 
     override fun onCreateView(
@@ -35,18 +40,23 @@ class PendingFriendRequestsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set up recycler view
         setUpRecyclerView()
         requestAdapter!!.startListening()
 
+        // Set up FAB button
         floatingActionButton.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_friendsOverViewFragment_to_addFriendDialog)
         }
 
     }
 
-
-    fun setUpRecyclerView() {
-        val query = db.collection("Users").document(auth.currentUser.uid).collection("Requests")
+    /**
+     * Set up recycler view for friend requests
+     *
+     */
+    private fun setUpRecyclerView() {
+        val query = db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_REQUESTS)
         val firestoreRecyclerOptions: FirestoreRecyclerOptions<RequestModel> = FirestoreRecyclerOptions.Builder<RequestModel>()
             .setQuery(query, RequestModel::class.java)
             .build()

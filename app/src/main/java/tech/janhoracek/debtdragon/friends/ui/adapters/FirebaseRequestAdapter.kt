@@ -14,13 +14,29 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.request_item.view.*
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.RequestModel
+import tech.janhoracek.debtdragon.localized
+import tech.janhoracek.debtdragon.utility.Constants
 
 private const val REQUEST_TYPE_SENT: Int = 0
 private const val REQUEST_TYPE_RECIEVED: Int = 1
 
+/**
+ * Firebase request adapter for friends requests
+ *
+ * @constructor
+ *
+ * @param options as Firestore Recycler Options for Request model
+ */
 class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): FirestoreRecyclerAdapter<RequestModel, FirebaseRequestAdapter.RequestAdapterViewHolder>(options) {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    /**
+     * Request adapter view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     class RequestAdapterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -34,6 +50,13 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
         var declineButton = itemView.btn_requestItem_decline
         var imageView = itemView.ImageView_request_avatar
 
+        /**
+         * Bind data to sent requests
+         *
+         * @param name as sender full name
+         * @param imgUrl as sender image url
+         * @param id as sender ID
+         */
         fun bindToSent(name: String, imgUrl: String, id: String){
             userName.text = name
             messageText.text = "Vaše žádost o přátelství byla odeslána."
@@ -45,49 +68,51 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
                 Glide.with(itemView).load(imgUrl).into(imageView)
             }
             declineButton.setOnClickListener {
-                Log.d("MAK", "Mackas decline na userovi " + id + " a ty jsi: " + auth.currentUser.uid)
-                db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(id).delete()
-                db.collection("Users").document(id).collection("Requests").document(auth.currentUser.uid).delete()
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_REQUESTS).document(id).delete()
+                db.collection(Constants.DATABASE_USERS).document(id).collection(Constants.DATABASE_REQUESTS).document(auth.currentUser.uid).delete()
             }
-            Log.d("MAK", "Vykresluju")
         }
 
+        /**
+         * Binds data to recieved requests
+         *
+         * @param name as reciever full name
+         * @param imgUrl as reciever image url
+         * @param id as reciever ID
+         */
         fun bindToRecieved(name: String, imgUrl: String, id: String) {
             userName.text = name
-            messageText.text = "Vám odesílá žádost o přátelství."
+            messageText.text = localized(R.string.is_sending_you_friend_request)
             if (imgUrl == "null") {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(imageView)
             } else {
                 Glide.with(itemView).load(imgUrl).into(imageView)
             }
+            // Sets up decline button functionality
             declineButton.setOnClickListener {
-                db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(id).delete()
-                db.collection("Users").document(id).collection("Requests").document(auth.currentUser.uid).delete()
-
-                Log.d("MAK", "Mackas decline na userovi " + id + " a ty jsi: " + auth.currentUser.uid)
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_REQUESTS).document(id).delete()
+                db.collection(Constants.DATABASE_USERS).document(id).collection(Constants.DATABASE_REQUESTS).document(auth.currentUser.uid).delete()
             }
+            // Sets up accept button functionality
             acceptButton.setOnClickListener {
-                db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(id).delete()
-                db.collection("Users").document(id).collection("Requests").document(auth.currentUser.uid).delete()
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_REQUESTS).document(id).delete()
+                db.collection(Constants.DATABASE_USERS).document(id).collection(Constants.DATABASE_REQUESTS).document(auth.currentUser.uid).delete()
 
-                val friendshipID = db.collection("Friendships").document()
+                val friendshipID = db.collection(Constants.DATABASE_FRIENDSHIPS).document()
                 val friendship: MutableMap<String, Any> = HashMap()
-                var members = ArrayList<String>()
+                val members = ArrayList<String>()
 
+                // Creates friendship requests
                 members.add(id)
                 members.add(auth.currentUser.uid)
-
                 friendship["uid"] = friendshipID.id
                 friendship["member1"] = auth.currentUser.uid
                 friendship["member2"] = id
                 friendship["members"] = members
-
                 friendshipID.set(friendship)
-
-                db.collection("Users").document(auth.currentUser.uid).collection("Friendships").document(id).set(friendship)
-                db.collection("Users").document(id).collection("Friendships").document(auth.currentUser.uid).set(friendship)
+                db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_FRIENDSHIPS).document(id).set(friendship)
+                db.collection(Constants.DATABASE_USERS).document(id).collection(Constants.DATABASE_FRIENDSHIPS).document(auth.currentUser.uid).set(friendship)
             }
-            Log.d("MAK", "Vykresluju")
         }
     }
 
@@ -98,7 +123,6 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
 
     override fun getItemViewType(position: Int): Int {
         val type = snapshots.getSnapshot(position).get("type")
-        //Log.d("MAK", "Item type jest: " + type)
         return if(type == "sent") {
             REQUEST_TYPE_SENT
         } else {
@@ -115,35 +139,26 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
         var name = ""
         var image = ""
 
-        db.collection("Users").document(id).addSnapshotListener{
+        // Gets data for friendship request
+        db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener{
             snapshot, e ->
             if (e != null) {
-                Log.w("MAK", "Listening failed: " + e)
+                Log.w("LSTNR", "Listening failed: " + e)
             }
 
             if (snapshot != null && snapshot.exists()) {
                 name = snapshot.data?.get("name").toString()
                 image = snapshot.data?.get("url").toString()
-                Log.d("MAK", "Name jest: " + name)
-                Log.d("MAK", "URL jest: " + image)
-
                 if(getItemViewType(position) == REQUEST_TYPE_SENT) {
                     holder.bindToSent(name, image, id)
                 } else {
                     holder.bindToRecieved(name, image, id)
                 }
             } else {
-                Log.w("MAK", "Current data null")
+                Log.w("DATA", "Current data null")
             }
         }
-
+        // Adds animation
         holder.view.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
-        /*
-        if(getItemViewType(position) == REQUEST_TYPE_SENT) {
-            holder.bindToSent(name, image)
-        } else {
-            holder.bindToRecieved(name, image)
-        }*/
-    //holder.bindTo(id, "ahoj")
     }
 }

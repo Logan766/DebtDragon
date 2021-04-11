@@ -16,11 +16,15 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
 
+/**
+ * Friend detail summary graph fragment
+ *
+ * @constructor Create empty Friend detail summary graph fragment
+ */
 class FriendDetailSummaryGraphFragment : BaseFragment() {
 
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentFriendDetailSummaryGraphBinding
-    //private lateinit var viewModel: FriendDetailViewModel
     val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,22 +36,20 @@ class FriendDetailSummaryGraphFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendDetailSummaryGraphBinding.inflate(inflater, container, false)
-        /*viewModel.debtSummary.observe(viewLifecycleOwner, Observer {
-            binding.tvGrafTest.text = it
-        })*/
 
+        // Observe Pie Data and setup Pie
         viewModel.pieData.observe(viewLifecycleOwner, Observer { pieData ->
             setupSummaryPie(pieData)
         })
-
-        //viewModel = ViewModelProvider(requireParentFragment()).get(FriendDetailViewModel::class.java)
-        Log.d("SUTR", "Vracim tady promenou: " + viewModel.debtSummary.value)
-        Log.d("SUTR", "Vracim tady rodice: " + requireParentFragment())
         return binding.root
     }
 
+    /**
+     * Setup summary pie
+     *
+     * @param pieData
+     */
     private fun setupSummaryPie(pieData: PieData) {
-        Log.d("KOLAC", "Sypu data do kolace")
         pieData.setValueFormatter(PercentFormatter(binding.pieChartFriendDetailChildFragment))
         binding.pieChartFriendDetailChildFragment.description.isEnabled = false
         binding.pieChartFriendDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))

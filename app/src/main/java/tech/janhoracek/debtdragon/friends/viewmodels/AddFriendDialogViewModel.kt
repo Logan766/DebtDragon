@@ -16,10 +16,13 @@ import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import java.lang.Exception
 
+/**
+ * Add friend dialog view model
+ *
+ * @constructor Create empty Add friend dialog view model
+ */
 class AddFriendDialogViewModel : BaseViewModel() {
     val friendError = MutableLiveData<String>("")
-    //val frienderror: LiveData<String> get() = _friendError
-
     val friendNameContent = MutableLiveData<String>("")
 
     private var friendId: String? = ""
@@ -28,6 +31,7 @@ class AddFriendDialogViewModel : BaseViewModel() {
     private var alreadyFriends = false
     private var alreadyRequested = false
 
+    // Events
     sealed class Event {
         object NavigateBack : Event()
         data class ShowToast(val text: String) : Event()
@@ -36,43 +40,48 @@ class AddFriendDialogViewModel : BaseViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    /**
+     * Add friend click resolve
+     *
+     */
     fun onAddFriendClick() {
         if (validateFriendName()) {
-            Log.d("PUVA", friendNameContent.value.toString())
+            // Try to get friend ID
             val friendIdGeting = GlobalScope.launch(IO) {
                 try {
                     getFriendId()
                 } catch (e: Exception) {
-                    Log.d("PUVA", "Error: " + e.message.toString())
+                    Log.d("ERROR", "Error: " + e.message.toString())
                     friendId = null
                 }
             }
 
             GlobalScope.launch(Main) {
                 friendIdGeting.join()
-                Log.d("PUVA", "current user id jest: " + auth.currentUser.uid)
-                Log.d("BURAK", "pred validaci jsou pratele: " + alreadyFriends)
-                Log.d("BURAK", "pred validaci jiz pozadano pratele: " + alreadyRequested)
 
+                // Create requests
                 if (validateRequest()) {
-                    Log.d("PUVA", "Uzivatel je ready na pridani")
                     db.collection("Users").document(auth.currentUser.uid).collection("Requests")
                         .document(friendId!!).set(createRequest("sent", auth.currentUser.uid))
                     db.collection("Users").document(friendId!!).collection("Requests")
                         .document(auth.currentUser.uid)
                         .set(createRequest("request", auth.currentUser.uid))
-                    Log.d("PUVA", "Vse proslo, odesilam te zpet")
                     friendNameContent.value = ""
                     eventChannel.send(Event.NavigateBack)
                 }
             }
 
         } else {
-            Log.d("PUVA", "ses laska")
+            //
         }
 
     }
 
+    /**
+     * Validate friend name
+     *
+     * @return true if valid
+     */
     private fun validateFriendName(): Boolean {
         return if (friendNameContent.value?.isEmpty()!!) {
             friendError.value = localized(R.string.addFriend_name_cant_be_empty)
@@ -88,26 +97,38 @@ class AddFriendDialogViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Create request
+     *
+     * @param requestType as type of request (sent/recieved)
+     * @param authorId as ID of sender
+     * @return
+     */
     private suspend fun createRequest(requestType: String, authorId: String): RequestModel {
         return RequestModel(requestType, authorId)
     }
 
+    /**
+     * Validate request
+     *
+     * @return true if valid
+     */
     private suspend fun validateRequest() : Boolean {
         return when {
             friendId == null -> {
-                friendError.value = "Uživatel nenalezen"
+                friendError.value = localized(R.string.add_friend_user_not_found)
                 false
             }
             friendId == auth.currentUser.uid -> {
-                friendError.value = "Nelze přidat sám sebe"
+                friendError.value = localized(R.string.add_friend_cannot_add_yourself)
                 false
             }
             alreadyFriends -> {
-                friendError.value = "Tento uživatel již v přátelích je"
+                friendError.value = localized(R.string.add_friend_user_already_in_friends)
                 false
             }
             alreadyRequested -> {
-                friendError.value = "Tohoto přitele jste již požádali"
+                friendError.value = localized(R.string.add_friend_request_already_sent)
                 false
             }
             else -> {
@@ -116,16 +137,17 @@ class AddFriendDialogViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Get friend id
+     *
+     */
     private suspend fun getFriendId() {
         val friendIdQuery = db.collection("Users").whereEqualTo("email", friendNameContent.value).get().await()
         friendId = friendIdQuery.documents[0].data!!["uid"].toString()
         val friendCheck = db.collection("Users").document(auth.currentUser.uid).collection("Friendships").document(friendId!!).get().await()
         alreadyFriends = friendCheck.exists()
-        Log.d("BURAK", "jsou pratele jest: " + alreadyFriends)
         val requestCheck = db.collection("Users").document(auth.currentUser.uid).collection("Requests").document(friendId!!).get().await()
         alreadyRequested = requestCheck.exists()
-        Log.d("BURAK", "Jiz vyzadano jest: " + alreadyRequested)
-        Log.d("PUVA", "User id jest: " + friendId)
     }
 
 

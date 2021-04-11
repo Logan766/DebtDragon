@@ -27,11 +27,25 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import kotlin.math.abs
 
+/**
+ * Firebase friendlist adapter
+ *
+ * @constructor
+ *
+ * @param options as FirestoreRecyclerOptions for FriendModel
+ */
 class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) :
     FirestoreRecyclerAdapter<FriendModel, FirebaseFriendlistAdapter.FriendAdapterViewHolder>(options) {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    /**
+     * Friend adapter view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     class FriendAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val friendName = itemView.tv_FriendItem2_Name
         val friendImage = itemView.CircImageView_FriendItem2
@@ -39,12 +53,14 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
         val currency = itemView.tv_currency_FriendItem2
         val view = itemView
 
+        /**
+         * Bind visible info of friend
+         *
+         * @param name as friend full name
+         * @param image as friend image
+         */
         fun bindVisibleInfo(name: String, image: String) {
             friendName.text = name
-            Log.d("AJDY", "jmeno pritele: " + name)
-            //debtSum.text = sum.toString()
-            //Log.d("AJDY", "suma jest pritele: " + sum)
-            Log.d("AJDY", "img url pritele: " + image)
             if (image == "null") {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(friendImage)
             } else {
@@ -52,30 +68,43 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
             }
         }
 
+        /**
+         * Sets on clikc listener of friend item
+         *
+         * @param friendshipID as friendship ID
+         */
         fun bindOnClick(friendshipID: String) {
             itemView.setOnClickListener {
-                Log.d("AJDY", "ID kamosu jest: " + friendshipID)
                 val action = FriendsOverViewFragmentDirections.actionFriendsOverViewFragmentToFriendDetailFragment2(friendshipID)
                 itemView.findNavController().navigate(action)
             }
         }
 
+        /**
+         * Binds summary and sets color based on value of it
+         *
+         * @param sum as friendship debt summary
+         */
         fun bindSummary(sum: Int) {
-            if(sum == 0) {
-                //blue
-                currency.setTextColor(Color.parseColor("#120f38"))
-                debtSum.setTextColor(Color.parseColor("#120f38"))
-                debtSum.text = sum.toString()
-            } else if(sum > 0) {
-                //blue
-                currency.setTextColor(Color.parseColor("#120f38"))
-                debtSum.setTextColor(Color.parseColor("#120f38"))
-                debtSum.text = sum.toString()
-            } else {
-                //red
-                currency.setTextColor(Color.parseColor("#ee1f43"))
-                debtSum.setTextColor(Color.parseColor("#ee1f43"))
-                debtSum.text = abs(sum).toString()
+            when {
+                sum == 0 -> {
+                    // Sets blue color
+                    currency.setTextColor(Color.parseColor("#120f38"))
+                    debtSum.setTextColor(Color.parseColor("#120f38"))
+                    debtSum.text = sum.toString()
+                }
+                sum > 0 -> {
+                    // Sets blue color
+                    currency.setTextColor(Color.parseColor("#120f38"))
+                    debtSum.setTextColor(Color.parseColor("#120f38"))
+                    debtSum.text = sum.toString()
+                }
+                else -> {
+                    // Sets red color
+                    currency.setTextColor(Color.parseColor("#ee1f43"))
+                    debtSum.setTextColor(Color.parseColor("#ee1f43"))
+                    debtSum.text = abs(sum).toString()
+                }
             }
 
         }
@@ -92,13 +121,13 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
         position: Int,
         model: FriendModel
     ) {
-        var id = snapshots.getSnapshot(position).id
-        Log.d("AJDY", "ID dokument jest: " + id)
+        val id = snapshots.getSnapshot(position).id
         var name = ""
         var image = ""
         var debtSum = 0
         var friendshipID = ""
 
+        // Gets data for friendship from database
         GlobalScope.launch(Main) {
             db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -108,8 +137,6 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
                 if (snapshot != null && snapshot.exists()) {
                     name = snapshot.data?.get(Constants.DATABASE_USER_NAME).toString()
                     image = snapshot.data?.get(Constants.DATABASE_USER_IMG_URL).toString()
-                    Log.d("AJDY", "Surovy jmeno jest: " + name)
-                    Log.d("AJDY", "Surovej img jest: " + image)
                     holder.bindVisibleInfo(name, image)
                 } else {
                     Log.w("DATA", "Current data null")
@@ -120,7 +147,7 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
             friendshipID = friendship[Constants.DATABASE_USER_UID].toString()
             holder.bindOnClick(friendshipID)
 
-
+            // Gets data for friendship sum
             db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -128,8 +155,6 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
                     }
 
                     if (snapshot != null) {
-                        //categorySummaryFriend.clear()
-                        //categorySummaryUser.clear()
                         snapshot.forEach { document ->
                             if (document[Constants.DATABASE_DEBT_PAYER] == auth.currentUser.uid) {
                                 debtSum += (document[Constants.DATABASE_DEBTS_VALUE]).toString().toInt()
@@ -147,7 +172,7 @@ class FirebaseFriendlistAdapter(options: FirestoreRecyclerOptions<FriendModel>) 
 
 
 
-
+        // Sets animation
         holder.view.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 }

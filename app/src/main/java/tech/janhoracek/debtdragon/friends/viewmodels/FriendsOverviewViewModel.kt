@@ -6,12 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Friends overview view model
+ *
+ * @constructor Create empty Friends overview view model
+ */
 class FriendsOverviewViewModel : BaseViewModel() {
 
     private val _notificationCount = MutableLiveData<Int>(0)
     val notificationCount: LiveData<Int> get() = _notificationCount
 
     init {
+        // Gets number of requests to show notification number
         db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid)
             .collection(Constants.DATABASE_REQUESTS).addSnapshotListener { snaphot, error ->
             if (error != null) {

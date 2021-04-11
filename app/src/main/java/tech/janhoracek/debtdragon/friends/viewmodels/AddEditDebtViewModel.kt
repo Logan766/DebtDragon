@@ -22,6 +22,11 @@ import tech.janhoracek.debtdragon.utility.transformCategoryToDatabaseString
 import tech.janhoracek.debtdragon.utility.transformDatabaseStringToCategory
 import java.lang.Exception
 
+/**
+ * Add edit debt view model
+ *
+ * @constructor Create empty Add edit debt view model
+ */
 class AddEditDebtViewModel : BaseViewModel() {
 
     private lateinit var friendshipData: FriendshipModel
@@ -58,6 +63,7 @@ class AddEditDebtViewModel : BaseViewModel() {
 
     var debtProfilePhoto = MutableLiveData<ByteArray>()
 
+    // Events
     sealed class Event {
         object NavigateBack : Event()
         object SaveDebt : Event()
@@ -70,27 +76,43 @@ class AddEditDebtViewModel : BaseViewModel() {
     val eventsFlow = eventChannel.receiveAsFlow()
 
 
+    /**
+     * Set data for add/edit debt
+     *
+     * @param debtId as nullable debt ID (null means new, any means edit task)
+     * @param friendshipData as friendship data
+     * @param friendName as name of friend in current friend detail
+     */
     fun setData(debtId: String?, friendshipData: FriendshipModel, friendName: String) {
         debtID = debtId
         this.friendshipData = friendshipData
         this.friendName = friendName
+
+        // Determine which is friend ID
         if (friendshipData.member1 == auth.currentUser.uid) {
             friendId = friendshipData.member2
         } else {
             friendId = friendshipData.member1
         }
+
+        // Sets category names
         val categoryItems =
-            listOf(localized(R.string.category_food), localized(R.string.category_entertainment), localized(R.string.categroy_finance), localized(
-                R.string.category_clothing_access), localized(R.string.category_electronics), localized(R.string.category_other))
+            listOf(localized(R.string.category_food),
+                localized(R.string.category_entertainment),
+                localized(R.string.categroy_finance),
+                localized(R.string.category_clothing_access),
+                localized(R.string.category_electronics),
+                localized(R.string.category_other))
         categoryList.value = categoryItems
 
-        val payerNames = listOf("Já", friendName)
+        val payerNames = listOf(localized(R.string.Me), friendName)
         payerList.value = payerNames
 
         if (debtId == null) {
-            Log.d("VALECEK", "Je to novej task")
+            //
         } else {
             var debtDetails: DebtModel
+            // Load data for editing debt
             db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document(debtId)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -106,12 +128,12 @@ class AddEditDebtViewModel : BaseViewModel() {
                             debtImageURL.value = debtDetails.img
                         }
                         val payerName = if (debtDetails.payer == auth.currentUser.uid) {
-                            "Já"
+                            localized(R.string.Me)
                         } else {
                             friendName
                         }
 
-
+                        // Get category name based on database category value
                         GlobalScope.launch {
                             eventChannel.send(Event.SetDropDowns(payerName,
                                 transformDatabaseStringToCategory(debtDetails.category)))
@@ -121,29 +143,27 @@ class AddEditDebtViewModel : BaseViewModel() {
                         Log.w("DATA", "Current data null")
                     }
                 }
-            //test.value = "STARY"
         }
     }
 
+    /**
+     * Save debt to database
+     *
+     * @param imageURL as img url of debt
+     * @param payer as ID of payer
+     * @param category as category
+     */
     fun saveToDatabase(imageURL: String, payer: String, category: String) {
         if (validateFields(category, payer)) {
-            var payerId: String
-            if (payer == "Já") {
+            val payerId: String
+            if (payer == localized(R.string.Me)) {
                 payerId = auth.currentUser.uid
             } else {
                 payerId = friendId
             }
 
-            Log.d("RANO", "ID jest: ")
-            Log.d("RANO", "ImgUrl jest: ")
-            Log.d("RANO", "Nazev jest: " + debtName.value)
-            Log.d("RANO", "Castka jest: " + debtValue.value)
-            Log.d("RANO", "Platce jest: " + payerId)
-            Log.d("RANO", "Kategorie jest: " + transformCategoryToDatabaseString(category))
-            Log.d("RANO", "Popis jest: " + debtDescription.value)
-
+            // Try to save image to online storage and debt
             GlobalScope.launch(IO) {
-
                 try {
                     var profileImageURL: Uri? = null
                     var debtRef: DocumentReference = if(debtID == null) {
@@ -187,6 +207,13 @@ class AddEditDebtViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate debt fields
+     *
+     * @param category as category value
+     * @param payer as payer ID
+     * @return
+     */
     private fun validateFields(category: String, payer: String): Boolean {
         val validateName = validateName()
         val validateValue = validateValue()
@@ -196,9 +223,14 @@ class AddEditDebtViewModel : BaseViewModel() {
         return validateName && validateValue && validateCategory && validatePayer
     }
 
+    /**
+     * Validate debt name
+     *
+     * @return true if valid
+     */
     private fun validateName(): Boolean {
         return if (debtName.value!!.isEmpty()) {
-            _nameError.value = "Zadejte název dluhu"
+            _nameError.value = localized(R.string.add_edit_debt_enter_debt_name)
             false
         } else {
             _nameError.value = ""
@@ -206,10 +238,15 @@ class AddEditDebtViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate debt value
+     *
+     * @return true if valid
+     */
     private fun validateValue(): Boolean {
         return when {
             debtValue.value!!.isNullOrEmpty() -> {
-                _valueError.value = "Zadejte částku"
+                _valueError.value = localized(R.string.add_edit_debt_enter_debt_value)
                 false
             }
             debtValue.value!!.toInt() > 0 -> {
@@ -217,15 +254,21 @@ class AddEditDebtViewModel : BaseViewModel() {
                 true
             }
             else -> {
-                _valueError.value = "Zadejte částku vyšší než 0"
+                _valueError.value = localized(R.string.add_edit_debt_value_must_be_grater_than_0)
                 false
             }
         }
     }
 
+    /**
+     * Validate debt category
+     *
+     * @param category
+     * @return true if valid
+     */
     private fun validateCategory(category: String): Boolean {
         return if (category.isNullOrEmpty()) {
-            _categoryError.value = "Zvolte prosím kategorii"
+            _categoryError.value = localized(R.string.add_edit_debt_please_choose_category)
             false
         } else {
             _categoryError.value = ""
@@ -233,6 +276,12 @@ class AddEditDebtViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate debt payer
+     *
+     * @param payer
+     * @return true if valid
+     */
     private fun validatePayer(payer: String): Boolean {
         return if (payer.isNullOrEmpty()) {
             _payerError.value = "Zvolte prosím plátce"
@@ -243,23 +292,23 @@ class AddEditDebtViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Delete debt
+     *
+     */
     fun deleteDebt() {
-        Log.d("DDDD", "ID debtu jest: " + debtID)
         GlobalScope.launch(IO) {
-            db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.uid).collection(Constants.DATABASE_DEBTS).document(debtID!!).delete().await()
+            db.collection(Constants.DATABASE_FRIENDSHIPS)
+                .document(friendshipData.uid)
+                .collection(Constants.DATABASE_DEBTS)
+                .document(debtID!!)
+                .delete().await()
             eventChannel.send(Event.Deleted)
         }
     }
 
     public override fun onCleared() {
         super.onCleared()
-        /* debtId = MutableLiveData<String>("")
-         debtName = MutableLiveData<String>("")
-         debtValue = MutableLiveData<String>("")
-         debtDescription = MutableLiveData<String>("")
-         debtPayer = MutableLiveData<String>("")
-         category = MutableLiveData<String>("")*/
-        Log.d("RANO", "Mazu data")
     }
 
 

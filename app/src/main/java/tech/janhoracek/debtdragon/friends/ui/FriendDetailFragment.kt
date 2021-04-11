@@ -38,6 +38,11 @@ import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
 
+/**
+ * Friend detail fragment
+ *
+ * @constructor Create empty Friend detail fragment
+ */
 class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -45,9 +50,6 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     var offsetStatus = true
 
     private lateinit var binding: FragmentFriendDetailBinding
-
-    //private lateinit var viewModel: FriendDetailViewModel
-    //val viewModel: FriendDetailViewModel by viewModels<FriendDetailViewModel>({requireParentFragment().requireParentFragment()})
     val viewModel by navGraphViewModels<FriendDetailViewModel>(R.id.friends)
     private var debtAdapter: FirebaseDebtAdapter? = null
 
@@ -62,12 +64,6 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*if (savedInstanceState == null) {
-            val args: FriendDetailFragmentArgs by navArgs()
-            viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
-            viewModel.setData(args.userId)
-        }*/
-        Log.d("SUTR", "Vracim tady sebe: " + this)
     }
 
     override fun onCreateView(
@@ -77,30 +73,32 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         binding = FragmentFriendDetailBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         val args: FriendDetailFragmentArgs by navArgs()
-        //viewModel = ViewModelProvider(requireActivity()).get(FriendDetailViewModel::class.java)
         if (savedInstanceState == null) {
             viewModel.setData(args.userId)
         }
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        Log.d("CIGO", "View model v DetailFragmentu: " + viewModel)
-
+        // Set up appbar and avatar
         appBarLayout = binding.materialupAppbar
         ivUserAvatar = binding.materialupProfileImage
 
+        // Get avatar parameters
         avatar_normalwidth = ivUserAvatar.layoutParams.width
         avatar_normalHeight = ivUserAvatar.layoutParams.height
         avatar_normalTopMargin = ivUserAvatar.marginTop
 
+        // Set appbar expanded status based on last status
         binding.materialupAppbar.setExpanded(offsetStatus, false)
 
+        // Set list of child fragments
         val graphList = arrayListOf<Fragment>(
             FriendDetailSummaryGraphFragment(),
             FriendDetailCategoryGraphFragment(),
             FriendDetailCategoryFriendFragment()
         )
 
+        // Set up adapter for child fragments and DotsIndicator
         val graphAdapter = ViewPagerAdapter(graphList, childFragmentManager, lifecycle)
         binding.viewPagerGraphFriendDetailFragment.adapter = graphAdapter
         binding.springDotsIndicator.setViewPager2(binding.viewPagerGraphFriendDetailFragment)
@@ -108,38 +106,43 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             binding.viewPagerGraphFriendDetailFragment.currentItem = 0
         }
 
+        // Set listener to observe layout changes and update UI
         appBarLayout.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, icko ->
-                Log.d("TRPOS", "Meni se offset " + icko)
                 val offset = abs(icko / appBarLayout.totalScrollRange.toFloat())
                 updateUI(offset)
             })
 
+        // Set up button to quickly expand or hide upper layout
         binding.lottieArrowUpFriendDetail.setOnClickListener {
             binding.materialupAppbar.setExpanded(false, true)
         }
 
+        // Observe debt summary and update value in friend detail
         viewModel.debtSummaryLive.observe(viewLifecycleOwner, Observer { sliderValue ->
             if(sliderValue != null) {
                 setupCreatePayment(sliderValue)
             }
         })
 
+        // Setup QR buttons
         viewModel.friendData.observe(viewLifecycleOwner, Observer { data ->
-            Log.d("QRRR", "OBSERVER")
             setupQR(data)
         })
 
 
+        // Setup image popup
         val imagePopup = ImagePopup(requireContext())
         imagePopup.windowHeight = 800
         imagePopup.windowWidth = 800
 
+        // Set up listener to image popup
         binding.materialupProfileImage.setOnClickListener {
             imagePopup.initiatePopup(binding.materialupProfileImage.drawable)
             imagePopup.viewPopup()
         }
 
+        // Set up app bar back button
         binding.toolbarFriendDetail.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -151,9 +154,11 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         super.onViewCreated(view, savedInstanceState)
         val args: FriendDetailFragmentArgs by navArgs()
 
+        // Set up reycler view with args from navigation
         setUpRecyclerView(args.userId)
         debtAdapter!!.startListening()
 
+        // Set up event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
@@ -185,25 +190,24 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
+        // Set up appbar menu
         binding.toolbarFriendDetail.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_friend -> {
                     val dialog = AlertDialog.Builder(requireContext())
-                    dialog.setTitle("Odebrat uživatele z přátel")
-                    dialog.setMessage("Provedením této akce odeberete uživatele z přátel. Pokračovat?")
-                    dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                    dialog.setTitle(getString(R.string.remove_friend_title_dialog))
+                    dialog.setMessage(getString(R.string.remove_friend_message_dialog))
+                    dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                         (activity as MainActivity).showLoading()
                         viewModel.deleteFriend()
                     }
-                    dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-                        Log.d("RANO", "Nope")
+                    dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+                        //
                     }
                     dialog.show()
-                    Log.d("RANO", "Klikas na delete friend")
                 }
                 R.id.generateQR -> {
                     navigateToQR(view)
-                    Log.d("RANO", "Klikas na generate QR")
                 }
                 R.id.createPayment -> {
                     navigateToCreatePayment(view)
@@ -212,6 +216,7 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             true
         }
 
+        // Set up create payment button click
         binding.paymentBottomFriendDetail.setOnClickListener {
             navigateToCreatePayment(view)
         }
@@ -219,8 +224,12 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
 
     }
 
+    /**
+     * Update UI based on offset value
+     *
+     * @param offset as value changing during scrolling
+     */
     private fun updateUI(offset: Float) {
-        Log.d("TRPOS", "Tady je offset pro obrazek " + offset)
         ivUserAvatar.apply {
             this.layoutParams.also {
                 it.height = (avatar_normalHeight - (offset * 150)).toInt()
@@ -228,6 +237,8 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
                 this.layoutParams = it
             }
         }
+
+        // Hide or show icons and change color based on offset
         if (offset > 0.5) {
             requireActivity().window.statusBarColor = Color.parseColor("#120f38")
             binding.lottieArrowUpFriendDetail.visibility = View.INVISIBLE
@@ -248,19 +259,39 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
     }
 
 
+    /**
+     * Go back to previous fragment
+     *
+     * @param view
+     */
     private fun goBack(view: View) {
         Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_friendsOverViewFragment)
     }
 
+    /**
+     * Navigate to QR fragment
+     *
+     * @param view
+     */
     private fun navigateToQR(view: View) {
         Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_generateQRCodeFragment)
     }
 
+    /**
+     * Navigate to create payment
+     *
+     * @param view
+     */
     private fun navigateToCreatePayment(view: View) {
         Navigation.findNavController(view).navigate(R.id.action_friendDetailFragment_to_createPaymentFragment)
         Log.d("LETY", "Klikas na create payment")
     }
 
+    /**
+     * Set up recycler view
+     *
+     * @param friendshipID as friendship ID
+     */
     private fun setUpRecyclerView(friendshipID: String) {
         val query = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS).orderBy("timestamp", Query.Direction.DESCENDING)
         val firestoreRecyclerOptions: FirestoreRecyclerOptions<DebtModel> = FirestoreRecyclerOptions.Builder<DebtModel>()
@@ -268,12 +299,15 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
             .build()
 
         debtAdapter = FirebaseDebtAdapter(firestoreRecyclerOptions, this)
-
-
         binding.recyclerViewFragmentFriendDetail.layoutManager = LinearLayoutManager(activity)
         binding.recyclerViewFragmentFriendDetail.adapter = debtAdapter
     }
 
+    /**
+     * On debt click implementation of interface from adapter
+     *
+     * @param debtID
+     */
     override fun onDebtClick(debtID: String) {
         val action = FriendDetailFragmentDirections.actionFriendDetailFragmentToAddEditDebtFragment(debtID,
             viewModel.friendshipData.value!!,
@@ -281,60 +315,44 @@ class FriendDetailFragment : BaseFragment(), FirebaseDebtAdapter.OnDebtClickList
         findNavController().navigate(action)
     }
 
+    /**
+     * Setup QR buttons based on debt summary
+     *
+     * @param data as Friend Detail Model
+     */
     private fun setupQR(data: FriendDetailModel) {
-        var summary = viewModel.debtSummaryLive.value
-        Log.d("QRRR", "summary je: " + summary)
+        val summary = viewModel.debtSummaryLive.value
         if (summary != null) {
             if (data.account.isNotEmpty() && summary < 0) {
-                Log.d("QRRR", "Nastavuji QR na true")
                 qr_bottom_FriendDetail.isClickable = true
                 qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
                 binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
             } else {
-                Log.d("QRRR", "Nastavuji QR na false")
                 qr_bottom_FriendDetail.isClickable = false
                 qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
-                //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
                 binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
             }
         }
-
-
-        /*if (data.account == "" || userIsDebter) {
-            qr_bottom_FriendDetail.isClickable = false
-            qr_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_qr_code_24_gray)
-            //qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-            binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24_gray)
-            binding.toolbarFriendDetail.menu.getItem(1).isEnabled = false
-        } else {
-            qr_bottom_FriendDetail.isClickable = true
-            qr_bottom_FriendDetail.background = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-            binding.toolbarFriendDetail.menu.getItem(1).icon = resources.getDrawable(R.drawable.ic_baseline_qr_code_24)
-            binding.toolbarFriendDetail.menu.getItem(1).isEnabled = true
-        }*/
     }
 
+    /**
+     * Setup create payment buttons based on debt summary
+     *
+     * @param sliderValue as value of slider
+     */
     private fun setupCreatePayment(sliderValue: Int) {
-        Log.d("QRRR", "Nastavuji PAYMENT")
         if (sliderValue >= 0) {
-            Log.d("Zmena", "Slider je min nez 1, nastavuju false")
             payment_bottom_FriendDetail.isClickable = false
             payment_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_payments_24_gray)
             binding.toolbarFriendDetail.menu.getItem(2).icon = resources.getDrawable(R.drawable.ic_baseline_payments_24_gray)
             binding.toolbarFriendDetail.menu.getItem(2).isEnabled = false
         } else {
-            Log.d("Zmena", "Slider je vic nez 1, nastavuju true")
             payment_bottom_FriendDetail.isClickable = true
             payment_bottom_FriendDetail.setImageResource(R.drawable.ic_baseline_payments_24)
             binding.toolbarFriendDetail.menu.getItem(2).icon = resources.getDrawable(R.drawable.ic_baseline_payments_24)
             binding.toolbarFriendDetail.menu.getItem(2).isEnabled = true
         }
     }
-
-    private fun setuIcons() {
-
-    }
-
 }

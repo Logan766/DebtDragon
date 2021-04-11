@@ -16,6 +16,11 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import java.util.*
 
+/**
+ * Friend detail category friend fragment
+ *
+ * @constructor Create empty Friend detail category friend fragment
+ */
 class FriendDetailCategoryFriendFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentFriendDetailCategoryFriendBinding
@@ -31,17 +36,22 @@ class FriendDetailCategoryFriendFragment : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFriendDetailCategoryFriendBinding.inflate(inflater, container, false)
+
+        // Observe data for Pie and set them
         viewModel.pieCategoryUserData.observe(viewLifecycleOwner, Observer { pieData ->
             setupFriendCategoryPie(pieData)
         })
 
-
-
         return binding.root
     }
 
+    /**
+     * Setup friend category pie
+     *
+     * @param data as friend debt category Pie Data
+     */
     private fun setupFriendCategoryPie(data: PieData) {
-        binding.pieChartCategoryUserUserDetailChildFragment.centerText = "Poměr dluhů přitele"
+        binding.pieChartCategoryUserUserDetailChildFragment.centerText = getString(R.string.friend_debt_ration)
         binding.pieChartCategoryUserUserDetailChildFragment.setCenterTextColor(requireActivity().getColor(R.color.white))
         binding.pieChartCategoryUserUserDetailChildFragment.description.isEnabled = false
         binding.pieChartCategoryUserUserDetailChildFragment.setHoleColor(requireActivity().getColor(R.color.transparent))

@@ -34,6 +34,11 @@ import java.text.Normalizer
 import kotlin.math.abs
 
 
+/**
+ * Friend detail view model
+ *
+ * @constructor Create empty Friend detail view model
+ */
 class FriendDetailViewModel : BaseViewModel() {
 
     private val PIE_TYPE_FRIEND = "friend"
@@ -74,8 +79,6 @@ class FriendDetailViewModel : BaseViewModel() {
 
     /////////////////////////////////////////////////////
 
-    var counter = MutableLiveData(0)
-
 
     sealed class Event {
         object NavigateBack : Event()
@@ -93,8 +96,12 @@ class FriendDetailViewModel : BaseViewModel() {
     val eventsFlow = eventChannel.receiveAsFlow()
 
 
+    /**
+     * Set data data for friend detail
+     *
+     * @param friendshipID as friendship ID
+     */
     fun setData(friendshipID: String) {
-
         GlobalScope.launch(IO) {
 
             val friendshipDocument = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).get().await()
@@ -119,7 +126,7 @@ class FriendDetailViewModel : BaseViewModel() {
                 }
 
             //Gets friendship data from Firebase
-             val neco = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).addSnapshotListener { snapshot, error ->
+             db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.w("LSTNR", error.message.toString())
                 }
@@ -179,14 +186,13 @@ class FriendDetailViewModel : BaseViewModel() {
                         }
                         summaryNet = myPie - friendPie
                         if (summaryNet > 0) {
-                            _debtSummary.value = "Přítel vám dluží ${summaryNet}"+ localized(R.string.currency)
+                            _debtSummary.value = localized(R.string.friend_detail_friend_owes_you) + summaryNet + localized(R.string.currency)
                         } else if (summaryNet < 0) {
                             val absSummaryNet = abs(summaryNet)
-                            _debtSummary.value = "Dlužíte příteli ${absSummaryNet}" + localized(R.string.currency)
+                            _debtSummary.value = localized(R.string.friend_detail_you_owe_friend) + absSummaryNet + localized(R.string.currency)
                         } else {
-                            _debtSummary.value = "Vaše dluhy jsou vyrovnány"
+                            _debtSummary.value = localized(R.string.friend_detail_your_debts_are_settled)
                         }
-                        Log.d("ZMENA", "Vkladam to max value: " + summaryNet)
                         debtSummaryLive.value = summaryNet
 
                         if(summaryNet != 0) {
@@ -195,8 +201,6 @@ class FriendDetailViewModel : BaseViewModel() {
                             maxValueForSlider.value = 1
                         }
 
-                        //maxValueForSlider.value = abs(summaryNet)
-                        Log.d("CIGO", "Tak max valuje je teda: " + maxValueForSlider.value)
                         GlobalScope.launch { eventChannel.send(Event.SetupQRforFirstTime) }
                         setupDataForSummaryPie(myPie, friendPie)
                         setupDataForFriendCategoryPie(categorySummaryFriend, PIE_TYPE_FRIEND)
@@ -208,56 +212,44 @@ class FriendDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * On back button pressed
+     *
+     */
     fun onBackPressed() {
         Log.d("RANO", "Posilam signal zpet")
         GlobalScope.launch(Main) { eventChannel.send(Event.NavigateBack) }
 
     }
 
+    /**
+     * On add debt button pressed
+     *
+     */
     fun onAddDebtPressed() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.CreateEditDebt(null))
         }
     }
 
+    /**
+     * On generate QR button pressed
+     *
+     */
     fun onGenerateQRPressed() {
         GlobalScope.launch(Main) { eventChannel.send(Event.GenerateQR) }
     }
 
-    fun onCreatePaymentPressed() {
 
-    }
+    /**
+     * Setup data for summary pie
+     *
+     * @param myPie as user debt net value
+     * @param friendPie as friend debt net value
+     */
+    private fun setupDataForSummaryPie(myPie: Int, friendPie: Int) {
 
-    fun setupDataForSummaryPie(myPie: Int, friendPie: Int) {
-        /*db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                Log.w("LSTNR", "Listening failed: " + error)
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                val userName = snapshot.data?.get("name").toString()
-                val summary = myPie + friendPie
-                val friendPercentage = (friendPie.toFloat() / summary) * 100
-                val myPercentage = (myPie.toFloat() / summary) * 100
-                val listPie = ArrayList<PieEntry>()
-                val listColors = ArrayList<Int>()
-
-                listPie.add(PieEntry(myPercentage, userName))
-                listColors.add(rgb(18, 15, 56))
-                listPie.add(PieEntry(friendPercentage, friendData.value!!.name))
-                listColors.add(rgb(238, 31, 67))
-
-                val pieDataSet = PieDataSet(listPie, "")
-                pieDataSet.colors = listColors
-
-                _pieData.value = PieData(pieDataSet)
-
-            } else {
-                Log.w("LSTNR", "Current data null")
-            }
-        }*/
-
-        val userName = "Já"
+        val userName = localized(R.string.Me)
         val summary = myPie + friendPie
         val friendPercentage = (friendPie.toFloat() / summary) * 100
         val myPercentage = (myPie.toFloat() / summary) * 100
@@ -289,17 +281,9 @@ class FriendDetailViewModel : BaseViewModel() {
         val listColors = ArrayList<Int>()
 
         for (item in data) {
-            Log.d("VALHALA", "Kategorie jsou: " + item.key + " = " + item.value)
             listPieFriend.add(PieEntry(item.value.toFloat(), item.key))
         }
 
-        /*listColors.add(rgb(27, 16, 56))
-        listColors.add(rgb(41, 17, 57))
-        listColors.add(rgb(58, 18, 58))
-        listColors.add(rgb(72, 19, 59))
-        listColors.add(rgb(59, 20, 60))
-        listColors.add(rgb(105, 21, 60))
-        listColors.add(rgb(120, 22, 61))*/
 
         listColors.add(rgb(27, 16, 56))
         listColors.add(rgb(58, 18, 58))
@@ -327,6 +311,11 @@ class FriendDetailViewModel : BaseViewModel() {
         Log.d("HILL", "Toz hodnota jest: " + value)
     }
 
+    /**
+     * Create payment button click
+     *
+     * @param value as value of payment
+     */
     fun createPaymentClick(value: Float) {
         if(validatePayment(value)) {
             GlobalScope.launch(IO) {
@@ -334,20 +323,11 @@ class FriendDetailViewModel : BaseViewModel() {
                 val paymentRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.value!!.uid).collection(Constants.DATABASE_DEBTS).document()
 
                 payment.id = paymentRef.id
-                payment.name = "Splátka dluhu"
+                payment.name = localized(R.string.create_payment_debt_payment)
                 payment.value = value.toInt()
                 payment.category = Constants.DATABASE_DEBT_CATEGORY_PAYMENT
                 payment.payer = auth.currentUser.uid
                 payment.timestamp = Timestamp.now()
-
-                Log.d("RISE", "Payment ID: " + payment.id)
-                Log.d("RISE", "Payment CATEGORY: " + payment.category)
-                Log.d("RISE", "Payment Decstiption: " + payment.description)
-                Log.d("RISE", "Payment img: " + payment.img)
-                Log.d("RISE", "Payment NAME: " + payment.name)
-                Log.d("RISE", "Payment PAYER: " + payment.payer)
-                Log.d("RISE", "Payment VALUE: " + payment.value)
-                Log.d("RISE", "Payment TIMESTAMP: " + payment.timestamp)
 
                 paymentRef.set(payment).await()
                 eventChannel.send(Event.PaymentCreated)
@@ -357,10 +337,16 @@ class FriendDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate payment
+     *
+     * @param value of payment
+     * @return true if valid
+     */
     private fun validatePayment(value: Float):Boolean {
         paymentError.value = ""
         return if(value.toInt() == 0) {
-            paymentError.value = "Částka musí být větší něž 0"
+            paymentError.value = localized(R.string.payment_error_value_must_be_greater_than_0)
             GlobalScope.launch { eventChannel.send(Event.HideLoading) }
             false
         } else {
@@ -368,6 +354,12 @@ class FriendDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Generate QR code
+     *
+     * @param text as raw string for QR
+     * @return QR as bitmap
+     */
     fun generateQRCode(text: String): Bitmap {
         val width = 500
         val height = 500
@@ -386,26 +378,38 @@ class FriendDetailViewModel : BaseViewModel() {
         return bitmap
     }
 
+    /**
+     * Gather data for QR
+     *
+     * @param value of payment
+     * @return raw string for QR generation
+     */
     fun gatherDataForQR(value: String): String {
 
             val head = "SPD*1.0*"
             val acc = "ACC:${friendData.value!!.account}*"
-            //val altAcc = "ALT-ACC:*"
             val moneyAmount = "AM:${value}*"
-            //val currency = "CC:${currency}*"
             val recieverName = "RN:${friendData.value!!.name.unaccent()}*"
-            val message = "MSG:Platba dluhu od uživatele ${UserObject.name!!.unaccent()} z aplikace DebtDragon ve výši ${value}*".unaccent()
+            val message = (localized(R.string.QR_payment_from_user) + UserObject.name!!.unaccent() + localized(R.string.QR_from_aplication_DD_with_value) + value + "*").unaccent()
 
             return head+acc+moneyAmount+recieverName+message
     }
 
+    /**
+     * Unaccent string for QR
+     *
+     * @return unnaccented string
+     */
     fun CharSequence.unaccent(): String {
         val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
         return REGEX_UNACCENT.replace(temp, "")
     }
 
+    /**
+     * Delete friend
+     *
+     */
     fun deleteFriend() {
-
         val delete = GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipData.value!!.uid).delete().await()
             db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_FRIENDSHIPS).document(friendData.value!!.uid).delete().await()

@@ -17,6 +17,11 @@ import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Create payment fragment
+ *
+ * @constructor Create empty Create payment fragment
+ */
 class CreatePaymentFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentCreatePaymentBinding
@@ -35,15 +40,15 @@ class CreatePaymentFragment : BaseFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
 
+        // Clear payment value
         viewModel.createPaymentValue.value = "0"
 
-        Log.d("CIGO", "View model v CreateFragmentu: " + viewModel)
-        //binding.sliderCreatePaymentFragment.valueTo = viewModel.maxValueForSlider.value!!.toFloat()
-
+        // Set slider on change listener to send data to text input
         binding.sliderCreatePaymentFragment.addOnChangeListener {slider, value, fromUser ->
             viewModel.createPaymentValue.value = value.toInt().toString()
         }
 
+        // Set text input listener to send data to slider
         binding.textInputValueCreatePayment.doAfterTextChanged {
             if(!it.isNullOrEmpty()) {
                 if( it.toString().toFloat() > 0 && it.toString().toFloat() <= viewModel.maxValueForSlider.value!!) {
@@ -54,24 +59,26 @@ class CreatePaymentFragment : BaseFragment() {
                 }
             }
         }
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
+        // Set back button
         binding.btnCancelCreatePaymentFragment.setOnClickListener {
             findNavController().navigateUp()
         }
 
+        // Set up create payment button
         binding.btnCreateCreatePaymentFragment.setOnClickListener {
             (activity as MainActivity).showLoading()
             viewModel.createPaymentClick(binding.sliderCreatePaymentFragment.value)
+            // Set slider to 0 (otherwise causing errors
             binding.sliderCreatePaymentFragment.value = 0F
         }
 
+        // Set up event listeners
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
@@ -89,6 +96,7 @@ class CreatePaymentFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Clear error
         viewModel.paymentError.value = ""
     }
 

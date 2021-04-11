@@ -1,31 +1,27 @@
 package tech.janhoracek.debtdragon.friends.ui
 
 import android.graphics.Color
-import android.os.BaseBundle
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
-import tech.janhoracek.debtdragon.databinding.FragmentFriendDetailBinding
 import tech.janhoracek.debtdragon.databinding.FragmentGenerateQRCodeBinding
 import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
-import tech.janhoracek.debtdragon.friends.viewmodels.GenerateQRCodeViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
 
+/**
+ * Generate QR code fragment
+ *
+ * @constructor Create empty Generate q r code fragment
+ */
 class GenerateQRCodeFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentGenerateQRCodeBinding
@@ -43,10 +39,12 @@ class GenerateQRCodeFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // Set up slider value listener and post it to text input and generate QR
         binding.sliderGenerateQR.addOnChangeListener{slider, value, fromUser ->
             viewModel.generateQRvalue.value = value.toInt().toString()
         }
 
+        // Set up text input listener and post it to slider and generate QR, show/hide save QR button
         binding.textInputValueGenerateQR.doAfterTextChanged {
             if(!it.isNullOrEmpty()) {
                 binding.imageViewQR.visibility = View.VISIBLE
@@ -67,7 +65,6 @@ class GenerateQRCodeFragment : BaseFragment() {
             }
         }
 
-
         return binding.root
     }
 
@@ -76,17 +73,19 @@ class GenerateQRCodeFragment : BaseFragment() {
         requireActivity().window.statusBarColor = Color.parseColor("#FFFFFF")
         viewModel.generateQRvalue.value = (0).toString()
 
+        // Set up generate QR button
         binding.btnCreateGenerateQRFragment.setOnClickListener {
-            Log.d("BTC", "Klikas na ulozit platbu")
             (activity as MainActivity).showLoading()
             viewModel.createPaymentClick(binding.sliderGenerateQR.value)
             binding.sliderGenerateQR.value = 0F
         }
 
+        // Set up cancel button
         binding.btnCancelGenerateQRCode.setOnClickListener {
             findNavController().navigateUp()
         }
 
+        // Set up event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {
@@ -108,6 +107,11 @@ class GenerateQRCodeFragment : BaseFragment() {
         viewModel.paymentError.value = ""
     }
 
+    /**
+     * Generate QR
+     *
+     * @param data as raw string to QR
+     */
     private fun generateQR(data: String) {
         val dataForQR = viewModel.gatherDataForQR(data)
         val qrCode = viewModel.generateQRCode(dataForQR)
