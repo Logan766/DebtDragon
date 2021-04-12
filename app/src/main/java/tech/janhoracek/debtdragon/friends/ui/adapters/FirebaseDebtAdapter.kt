@@ -70,7 +70,7 @@ class FirebaseDebtAdapter constructor(options: FirestoreRecyclerOptions<DebtMode
             if (debt.img.isNotEmpty()) {
                 Glide.with(itemView).load(debt.img).into(itemView.image_View_DebtFriendDetail)
             } else {
-                Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(itemView.image_View_DebtFriendDetail)
+                Glide.with(itemView).load(R.drawable.debt_placeholder).into(itemView.image_View_DebtFriendDetail)
             }
 
             itemView.tv_name_debtFriendItem.text = debt.name

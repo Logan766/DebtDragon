@@ -48,7 +48,7 @@ class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val m
             if(group.photoUrl.isNotEmpty()) {
                 Glide.with(itemView).load(group.photoUrl).into(itemView.CircImageView_GroupGeneral)
             } else {
-                Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(itemView.CircImageView_GroupGeneral)
+                Glide.with(itemView).load(R.drawable.avatar_groupavatar).into(itemView.CircImageView_GroupGeneral)
             }
 
             // Check if current user is owner

@@ -177,7 +177,7 @@
             app:imageUrl="@{viewmodel.groupModel.photoUrl}"
             app:layout_anchorGravity="top|center_horizontal"
             app:layout_scrollFlags="scroll"
-            app:placeholder="@{@drawable/avatar_profileavatar}"
+            app:placeholder="@{@drawable/avatar_groupavatar}"
 
             />
         <ImageView

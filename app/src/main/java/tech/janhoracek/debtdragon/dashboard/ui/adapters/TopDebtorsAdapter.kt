@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
@@ -74,6 +75,8 @@ class TopDebtorsAdapter(var topDebtors: List<Pair<String, Int>>): RecyclerView.A
                 }
             }
         }
+        //adds animation to ViewHolder
+        holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 
     override fun getItemCount(): Int {
