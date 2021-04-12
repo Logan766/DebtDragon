@@ -5,6 +5,6 @@
         android:id="@+id/delete_bill"
         android:icon="@drawable/ic_baseline_delete_24"
         android:orderInCategory="100"
-        android:title="Odstranit účet"
+        android:title="@string/bill_detail_menu_delete_bill"
         app:showAsAction="ifRoom" />
 </menu>

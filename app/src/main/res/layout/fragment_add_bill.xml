@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
-                android:text="Kdo za tento účet platil?"
+                android:text="@string/add_bill_fragment_subtitle"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout_add_bill_payer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
@@ -70,7 +70,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Plátce"
+                android:hint="@string/add_bill_fragment_payer"
 
                 android:layout_marginBottom="65dp"
                 app:layout_constraintBottom_toTopOf="@+id/materialTextView2"
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Zadejte název účtu (například Restaurace Pod Lípou)"
+                android:text="@string/add_bill_fragment_subtitle_2"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_add_bill_payer" />
@@ -104,7 +104,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Název"
+                android:hint="@string/add_bill_fragment_name"
                 app:errorEnabled="true"
                 app:errorText="@{viewmodel.billNameError}"
                 android:layout_marginBottom="120dp"
@@ -127,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="35dp"
-                android:text="Vytvořit účet"
+                android:text="@string/add_bill_fragment_btn_create_bill"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

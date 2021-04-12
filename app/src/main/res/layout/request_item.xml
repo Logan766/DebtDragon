@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="Vám odesílá žádost o přátelství" />
+            android:text="@string/is_sending_you_friend_request" />
 
     </LinearLayout>
 

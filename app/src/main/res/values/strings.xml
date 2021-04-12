@@ -14,7 +14,6 @@
     <string name="mail_is_not_in_form">E-mail není ve tvaru nazev@domena.cz</string>
     <string name="type_in_name">Zadejte jméno</string>
     <string name="currency">" Kč"</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="registration_succesful">Registrace úspěšná</string>
     <string name="registration_failed">Registrace neúspěšná</string>
@@ -23,15 +22,6 @@
     <string name="log_in_successful">Přihlášení úspěšné</string>
     <string name="addFriend_name_cant_be_empty">E-mail přítele nemůže být prázdný</string>
     <string name="Canceled">Zrušeno</string>
-    <string name="Lorem">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Etiam sapien elit, consequat eget, tristique non, venenatis quis, ante. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Pellentesque pretium lectus id turpis. Nullam rhoncus aliquam metus. Nulla pulvinar eleifend sem. Phasellus et lorem id felis nonummy placerat. Pellentesque ipsum. Duis pulvinar. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Etiam quis quam.
-
-Suspendisse sagittis ultrices augue. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Curabitur vitae diam non enim vestibulum interdum. Aliquam erat volutpat. Pellentesque sapien. Maecenas libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam dictum tincidunt diam. Mauris elementum mauris vitae tortor. In dapibus augue non sapien. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam dictum tincidunt diam.
-
-Duis risus. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Duis bibendum, lectus ut viverra rhoncus, dolor nunc faucibus libero, eget facilisis enim ipsum id lacus. Proin mattis lacinia justo. Aenean id metus id velit ullamcorper pulvinar. Duis risus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer in sapien. Nullam dapibus fermentum ipsum. Maecenas libero. Mauris suscipit, ligula sit amet pharetra semper, nibh ante cursus purus, vel sagittis velit mauris vel metus. Integer in sapien. Aliquam ante.
-
-Etiam commodo dui eget wisi. Etiam dui sem, fermentum vitae, sagittis id, malesuada in, quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi imperdiet, mauris ac auctor dictum, nisl ligula egestas nulla, et sollicitudin sem purus in lacus. Nunc tincidunt ante vitae massa. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Duis viverra diam non justo. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Proin mattis lacinia justo. Aliquam id dolor. Fusce tellus. Nullam at arcu a est sollicitudin euismod. Etiam commodo dui eget wisi. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Mauris dictum facilisis augue.
-
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Maecenas aliquet accumsan leo. Aliquam erat volutpat. Maecenas ipsum velit, consectetuer eu lobortis ut, dictum at dui. Fusce consectetuer risus a nunc. Cras elementum. Etiam commodo dui eget wisi. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Pellentesque ipsum. Fusce consectetuer risus a nunc. Etiam dictum tincidunt diam.</string>
     <string name="category_food">Potraviny</string>
     <string name="category_entertainment">Zábava</string>
     <string name="categroy_finance">Finance</string>
@@ -129,4 +119,105 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="change_password_view_model_password_cant_be_empty">Heslo nemůže být prázdné</string>
     <string name="change_password_view_model_entered_password_is_invalid">Zadané heslo není správné</string>
     <string name="email_for_password_reset_sent">E-mail pro reset hesla byl odeslán</string>
+    <string name="login_btn_forgotten_password">Zapomenuté heslo</string>
+    <string name="login_dont_have_account">Nemáte účet?</string>
+    <string name="login_register">Registrovat</string>
+    <string name="login_more_sign_in_options">Další možnosti přihlášení</string>
+    <string name="register_full_name">Celé jméno</string>
+    <string name="register_password_again">Heslo znovu</string>
+    <string name="registration_register_title">Registrace</string>
+    <string name="registration_accept_terms">Souhlasím s </string>
+    <string name="register_register_button">Registrovat</string>
+    <string name="register_btn_already_account">Již mám účet</string>
+    <string name="add_friend_dialog_title">Přidat přítele</string>
+    <string name="add_friend_dialog_enter_friend_email">Zadejte e-mailovou adresu přítele</string>
+    <string name="add_friend_dialog_friend_email">E-mail přítele</string>
+    <string name="btn_cancel">Zrušit</string>
+    <string name="add_friend_dialog_btn_add_friend">Přidat přítele</string>
+    <string name="reset_password_dialog_title">Resetovat heslo</string>
+    <string name="reset_password_dialog_subtitle">Zadejte registrační email</string>
+    <string name="reset_password_dialog_registration_mail">Registrační e-mail</string>
+    <string name="reset_password_dialog_btn_reset_password">Resetovat heslo</string>
+    <string name="add_bill_fragment_subtitle">Kdo za tento účet platil?</string>
+    <string name="add_bill_fragment_payer">Plátce</string>
+    <string name="add_bill_fragment_subtitle_2">Zadejte název účtu (například Restaurace Pod Lípou)</string>
+    <string name="add_bill_fragment_name">Název</string>
+    <string name="add_bill_fragment_btn_create_bill">Vytvořit účet</string>
+    <string name="add_edit_debt_fragment_name">Název</string>
+    <string name="add_edit_debt_fragment_value">Částka</string>
+    <string name="add_edit_debt_fragment_payer">Plátce</string>
+    <string name="add_edit_debt_fragment_category">Kategorie</string>
+    <string name="add_edit_debt_fragment_description">Popis</string>
+    <string name="add_edit_debt_fragment_btn_save">Uložit</string>
+    <string name="add_group_debt_fragment_payer">Plátce</string>
+    <string name="add_group_debt_fragment_payed_for">zaplatil za</string>
+    <string name="add_group_debt_fragment_debtor">Dlužník</string>
+    <string name="add_group_debt_fragment_enter_name_of_gdebt">Zadejte název položky</string>
+    <string name="add_group_debt_fragment_name_of_debt">Název</string>
+    <string name="add_group_debt_fragment_value">Výše částky</string>
+    <string name="add_group_debt_fragment_enter_value">Zadejte částku</string>
+    <string name="btn_ok">Potvrdit</string>
+    <string name="bill_detail_fragment_payed">Zaplatil</string>
+    <string name="change_account_fragment_enter_your_IBAN">Pečlivě zadejte svůj bankovní účet ve formátu IBAN</string>
+    <string name="change_account_fragment_account_IBAN">IBAN účtu</string>
+    <string name="change_name_fragment_enter_your_name">Zadejte jméno pod kterým Vás uvidí vaši přátelé</string>
+    <string name="change_name_fragment_full_name">Jméno a příjmení</string>
+    <string name="change_name_fragment_btn_change_name">Změnit jméno</string>
+    <string name="fragment_change_password_title">Změnit heslo</string>
+    <string name="fragment_change_password_enter_current_pass">Zadejte stávající heslo</string>
+    <string name="fragment_change_password_password">Heslo</string>
+    <string name="fragment_change_password_enter_new_password">Zadejte nové heslo</string>
+    <string name="fragment_change_password_new_password">Nové heslo</string>
+    <string name="fragment_change_password_enter_again_new_password">Zadejte znovu nové heslo</string>
+    <string name="fragment_change_password_new_password_for_check">Nové heslo pro kontrolu</string>
+    <string name="fragment_change_password_btn_change_password">Změnit heslo</string>
+    <string name="create_group_fragment_group_name">Název skupiny</string>
+    <string name="create_group_fragment_description">Popis</string>
+    <string name="create_payment_fragment_value">Částka</string>
+    <string name="create_payment_fragment_title">Zadejte nebo vyberte částku</string>
+    <string name="create_payment_fragment_choode_value">Vyberte částku</string>
+    <string name="create_payment_fragment_btn_create_payment">Vytvořit platbu</string>
+    <string name="dahsborad_friends_category_title">Kategorie pohledávek</string>
+    <string name="dahsborad_friends_category_subtitle">Rozdělení pohledávek v kategoriích</string>
+    <string name="dashborad_summary_graph_title">Celkový poměr dluhů</string>
+    <string name="dashborad_summary_graph_firends_owe_you">Přátelé vám dluží</string>
+    <string name="dashborad_top_creditors_fragment_title">Top 3 věřitelé</string>
+    <string name="dashborad_top_creditors_fragment_subtitle">Přátelé, kterým nejvíce dlužíte</string>
+    <string name="dashborad_top_debtors_title">Top 3 dlužníci</string>
+    <string name="dashborad_top_debtors_subtitle">Přátelé, kteří Vám nejvíce dluží</string>
+    <string name="dashboard_user_category_fragment_title">Kategorie dluhů</string>
+    <string name="dashboard_user_category_fragment_subtitle">Rozdělení dluhů v kategoriích</string>
+    <string name="friend_detail_summary_graph_debt_ratio">Poměr dluhů</string>
+    <string name="generate_QR_fragment_title">Zadejte částku pro generování QR kódu</string>
+    <string name="generate_QR_fragment_value">Částka</string>
+    <string name="generate_QR_fragment_save_payment">Uložit platbu</string>
+    <string name="group_detail_fragment_show_results">Zobrazit výsledky</string>
+    <string name="group_results_fragment_app_bar_title">Výsledky</string>
+    <string name="manage_members_fragment_app_bar_title">Členové skupiny</string>
+    <string name="profile_fragment_account_setttings_title">Nastavení účtu</string>
+    <string name="profile_fragment_change_name">Změnit jméno</string>
+    <string name="profile_fragment_change_password">Změnit heslo</string>
+    <string name="profile_fragment_change_bank_account">Upravit bankovní účet</string>
+    <string name="profile_fragment_application_title">Aplikace</string>
+    <string name="profile_fragment_information_about_app">Informace o aplikaci</string>
+    <string name="profile_fragment_contact_developer">Kontaktovat vývojáře</string>
+    <string name="profile_fragment_log_out">Odhlásit se</string>
+    <string name="remove_group_member_fragmnet_app_bar_title">Odebrat členy</string>
+    <string name="bill_detail_menu_delete_bill">Odstranit účet</string>
+    <string name="bottom_nav_menu_summary">Přehled</string>
+    <string name="bottom_nav_menu_friends">Přátelé</string>
+    <string name="bottom_nav_menu_groups">Skupiny</string>
+    <string name="bottom_nav_menu_profile">Profil</string>
+    <string name="addedit_friend_debt_edit_debt">Editovat dluh</string>
+    <string name="addedit_friend_debt_delete_debt">Odstranit dluh</string>
+    <string name="friend_detail_menu_remove_friend">Vymazat přítele</string>
+    <string name="friend_detail_menu_generate_qr">Generovat QR</string>
+    <string name="friend_detail_menu_create_payment">Vytvořit splátku</string>
+    <string name="group_detail_menu_show_members">Zobrazit členy</string>
+    <string name="group_detail_menu_lock_group">Uzamknout skupinu</string>
+    <string name="group_detail_menu_calculate_group">Rozpočítat dluhy</string>
+    <string name="group_detail_menu_edit_group">Upravit skupinu</string>
+    <string name="group_detail_menu_delete_group">Odstranit skupinu</string>
+    <string name="group_detail_menu_leave_group">Opustit skupinu</string>
+    <string name="group_results_menu_reset_group">Resetovat skupinu</string>
 </resources>

@@ -26,7 +26,7 @@
                 android:id="@+id/manage_members_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:title="Členové skupiny"
+                app:title="@string/manage_members_fragment_app_bar_title"
                 app:navigationIcon="?attr/homeAsUpIndicator"/>
 
         </com.google.android.material.appbar.AppBarLayout>

@@ -73,7 +73,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Název skupiny"
+                    android:hint="@string/create_group_fragment_group_name"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -91,7 +91,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Popis"
+                    android:hint="@string/create_group_fragment_description"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText

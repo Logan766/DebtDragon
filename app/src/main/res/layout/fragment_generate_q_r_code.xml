@@ -71,9 +71,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:elegantTextHeight="true"
-                android:text="Zadejte částku pro generování QR kódu"
+                android:text="@string/generate_QR_fragment_title"
                 android:textColor="@color/main"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_view_QR" />
@@ -87,7 +87,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 app:suffixText="@string/currency"
-                android:hint="Částka"
+                android:hint="@string/generate_QR_fragment_value"
                 app:errorEnabled="true"
                 app:errorText="@{viewmodel.paymentError}"
                 app:layout_constraintTop_toBottomOf="@+id/tv_main_generateQR">
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Zrušit"
+                android:text="@string/btn_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/slider_GenerateQR" />
 
@@ -127,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Uložit platbu"
+                android:text="@string/generate_QR_fragment_save_payment"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/slider_GenerateQR" />
 

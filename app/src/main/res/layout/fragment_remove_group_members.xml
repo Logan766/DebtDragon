@@ -23,7 +23,7 @@
                 android:id="@+id/remove_group_members_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:title="Odebrat členy"
+                app:title="@string/remove_group_member_fragmnet_app_bar_title"
                 app:navigationIcon="?attr/homeAsUpIndicator"/>
 
         </com.google.android.material.appbar.AppBarLayout>

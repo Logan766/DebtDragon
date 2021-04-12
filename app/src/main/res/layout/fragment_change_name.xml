@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Zadejte jméno pod kterým Vás uvidí vaši přátelé"
+                android:text="@string/change_name_fragment_enter_your_name"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_changeName_main" />
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Jméno a příjmení"
+                android:hint="@string/change_name_fragment_full_name"
                 app:errorText="@{viewmodel.nameError}"
                 app:errorEnabled="true"
                 app:layout_constraintTop_toBottomOf="@+id/tv_changeName_sub">
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Zrušit"
+                android:text="@string/btn_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInputLayout_changeName" />
 
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="@{() -> viewmodel.changeName()}"
-                android:text="Změnit jméno"
+                android:text="@string/change_name_fragment_btn_change_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_changeName" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,7 +46,7 @@
                 android:id="@+id/tv_RegisterActivity_RegisterLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Registrace"
+                android:text="@string/registration_register_title"
 
                 android:textAlignment="center"
                 android:textAllCaps="true"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Celé jméno"
+                    android:hint="@string/register_full_name"
                     app:errorEnabled="true"
                     app:errorText="@{viewmodel.nameError}">
 
@@ -138,7 +138,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Heslo znovu"
+                    android:hint="@string/register_password_again"
                     app:endIconMode="password_toggle"
                     app:errorEnabled="true"
                     app:errorText="@{viewmodel.passwordErrorSimilarity}">
@@ -167,7 +167,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:buttonTint="@color/main"
-                        android:text="Souhlasím s " />
+                        android:text="@string/registration_accept_terms" />
 
                     <TextView
                         android:id="@+id/tv_RegisterActivity_Terms"
@@ -189,7 +189,7 @@
                 android:layout_marginBottom="20dp"
                 android:enabled="false"
                 android:onClick="@{()-> viewmodel.onRegisterClick()}"
-                android:text="Registrovat"
+                android:text="@string/register_register_button"
 
                 app:layout_constraintBottom_toTopOf="@+id/btn_RegisterActvitiy_AlreadyAccount"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -204,7 +204,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="20dp"
 
-                android:text="Již mám účet"
+                android:text="@string/register_btn_already_account"
                 android:textAlignment="center"
                 android:textStyle="bold"
 

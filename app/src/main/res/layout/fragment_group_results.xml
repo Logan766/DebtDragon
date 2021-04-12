@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:menu="@menu/group_results_menu"
-                app:title="Výsledky"
+                app:title="@string/group_results_fragment_app_bar_title"
                 app:navigationIcon="?attr/homeAsUpIndicator"/>
 
         </com.google.android.material.appbar.AppBarLayout>

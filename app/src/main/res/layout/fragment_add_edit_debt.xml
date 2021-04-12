@@ -77,7 +77,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Název"
+                    android:hint="@string/add_edit_debt_fragment_name"
                     app:errorText="@{viewmodel.nameError}"
                     app:errorEnabled="true">
 
@@ -97,7 +97,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     app:suffixText="@string/currency"
-                    android:hint="Částka"
+                    android:hint="@string/add_edit_debt_fragment_value"
                     app:errorText="@{viewmodel.valueError}"
                     app:errorEnabled="true">
 
@@ -118,7 +118,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Plátce"
+                    android:hint="@string/add_edit_debt_fragment_payer"
                     app:errorText="@{viewmodel.payerError}"
                     app:errorEnabled="true">
 
@@ -138,7 +138,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Kategorie"
+                    android:hint="@string/add_edit_debt_fragment_category"
                     app:errorText="@{viewmodel.categoryError}"
                     app:errorEnabled="true">
 
@@ -158,7 +158,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="Popis"
+                    android:hint="@string/add_edit_debt_fragment_description"
 
                     app:errorEnabled="true">
 
@@ -175,7 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_margin="16dp"
-                    android:text="Uložit"/>
+                    android:text="@string/add_edit_debt_fragment_btn_save"/>
 
 
             </LinearLayout>

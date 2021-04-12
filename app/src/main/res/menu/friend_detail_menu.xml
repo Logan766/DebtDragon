@@ -5,18 +5,18 @@
         android:id="@+id/delete_friend"
         android:icon="@drawable/ic_home"
         android:orderInCategory="100"
-        android:title="Vymazat přítele"
+        android:title="@string/friend_detail_menu_remove_friend"
         app:showAsAction="never" />
     <item
         android:id="@+id/generateQR"
         android:icon="@drawable/ic_baseline_qr_code_24"
         android:orderInCategory="100"
-        android:title="Generovat QR"
+        android:title="@string/friend_detail_menu_generate_qr"
         app:showAsAction="always" />
     <item
         android:id="@+id/createPayment"
         android:icon="@drawable/ic_baseline_payments_24"
         android:orderInCategory="100"
-        android:title="Vytvořit splátku"
+        android:title="@string/friend_detail_menu_create_payment"
         app:showAsAction="ifRoom" />
 </menu>

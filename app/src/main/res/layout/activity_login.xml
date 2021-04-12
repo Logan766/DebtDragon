@@ -141,7 +141,7 @@
                 android:layout_marginEnd="16dp"
                 android:fontFamily="sans-serif"
                 android:padding="0dp"
-                android:text="Zapomenuté heslo"
+                android:text="@string/login_btn_forgotten_password"
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_LoginActivity_password" />
@@ -186,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:padding="8dp"
-                    android:text="Nemáte účet?" />
+                    android:text="@string/login_dont_have_account" />
 
                 <TextView
                     android:id="@+id/btn_LoginActivity_register"
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:padding="8dp"
-                    android:text="Registrovat"
+                    android:text="@string/login_register"
                     android:textStyle="bold"
 
                     />
@@ -217,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:padding="8dp"
-                    android:text="Další možnosti přihlášení" />
+                    android:text="@string/login_more_sign_in_options" />
             </LinearLayout>
 
 

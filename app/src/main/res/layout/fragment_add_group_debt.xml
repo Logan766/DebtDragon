@@ -71,7 +71,7 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:layout_width="0dp"
-                android:hint="Plátce"
+                android:hint="@string/add_group_debt_fragment_payer"
                 app:errorEnabled="true"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:textColor="@color/pajova"
-                android:text="zaplatil za"
+                android:text="@string/add_group_debt_fragment_payed_for"
                 app:layout_constraintBottom_toTopOf="@+id/image_view_debtor_group_debt"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout_payer_add_group_debt"
                 app:layout_constraintTop_toBottomOf="@+id/image_view_payer_group_debt" />
@@ -126,7 +126,7 @@
                 android:layout_marginStart="16dp"
                 app:errorEnabled="true"
                 app:errorText="@{viewmodel.groupDebtDebtorError}"
-                android:hint="Dlužník"
+                android:hint="@string/add_group_debt_fragment_debtor"
                 app:layout_constraintBottom_toBottomOf="@+id/image_view_debtor_group_debt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/image_view_debtor_group_debt"
@@ -146,7 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Zadejte název položky"
+                android:text="@string/add_group_debt_fragment_enter_name_of_gdebt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_view_debtor_group_debt" />
 
@@ -155,7 +155,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Název"
+                android:hint="@string/add_group_debt_fragment_name_of_debt"
                 app:errorEnabled="true"
                 app:errorText="@{viewmodel.groupDebtNameError}"
                 app:layout_constraintStart_toStartOf="parent"
@@ -174,7 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Zadejte částku"
+                android:text="@string/add_group_debt_fragment_enter_value"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_name_add_group_debt" />
 
@@ -184,7 +184,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Výše částky"
+                android:hint="@string/add_group_debt_fragment_value"
                 app:errorEnabled="true"
                 app:suffixText="@string/currency"
                 app:errorText="@{viewmodel.groupDebtValueError}"
@@ -204,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Potvrdit"
+                android:text="@string/btn_ok"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_value_add_group_debt" />
 
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:onClick="@{view -> Navigation.findNavController(view).navigateUp()}"
-                android:text="Zrušit"
+                android:text="@string/btn_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_debt_value_add_group_debt" />
 

@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:elegantTextHeight="true"
-                android:text="Přidat přítele"
+                android:text="@string/add_friend_dialog_title"
                 android:textColor="@color/main"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Zadejte e-mailovou adresu přítele"
+                android:text="@string/add_friend_dialog_enter_friend_email"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_addFriendDialog_main" />
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="E-mail přítele"
+                android:hint="@string/add_friend_dialog_friend_email"
                 app:errorText="@{viewmodel.friendError}"
                 app:errorEnabled="true"
                 app:layout_constraintTop_toBottomOf="@+id/tv_addFriendDialog_sub">
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Zrušit"
+                android:text="@string/btn_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInputLayout_addFriendFragment" />
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="@{()-> viewmodel.onAddFriendClick()}"
                 android:layout_marginTop="20dp"
-                android:text="Přidat přítele"
+                android:text="@string/add_friend_dialog_btn_add_friend"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout_addFriendFragment" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -105,46 +105,6 @@
 
             </FrameLayout>
 
-            <!--​​
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/materialup.toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:theme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                />-->
-            ​
-            <!--<LinearLayout
-                android:id="@+id/materialup.title_container"
-                android:paddingBottom="25dp"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical"
-                android:gravity="bottom|center_horizontal"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                >
-                ​
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:text="Jméno Příjmení"
-                    />
-                ​
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
-                    android:text="random@email.cz"
-                    android:textColor="@android:color/white"
-                    />
-                ​
-            </LinearLayout>-->
-            ​
 
             <FrameLayout
                 android:id="@+id/materialup.tabs"
@@ -200,8 +160,6 @@
 
 
         </com.google.android.material.appbar.AppBarLayout>
-        ​
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_FragmentFriendDetail"
             android:layout_width="match_parent"
@@ -210,8 +168,6 @@
 
 
         </androidx.recyclerview.widget.RecyclerView>
-        ​
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

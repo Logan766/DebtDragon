@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Pečlivě zadejte svůj bankovní účet ve formátu IBAN"
+                android:text="@string/change_account_fragment_enter_your_IBAN"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_addAccount_main" />
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="IBAN účtu"
+                android:hint="@string/change_account_fragment_account_IBAN"
                 app:errorEnabled="true"
                 app:errorText="@{viewmodel.accountError}"
                 app:layout_constraintTop_toBottomOf="@+id/tv_addAccount_sub">
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="@{view -> Navigation.findNavController(view).navigateUp()}"
-                android:text="Zrušit"
+                android:text="@string/btn_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInputLayout_addAccount" />
 

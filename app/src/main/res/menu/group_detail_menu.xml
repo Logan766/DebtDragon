@@ -5,20 +5,20 @@
         android:id="@+id/manage_members"
         android:icon="@drawable/ic_baseline_person_24"
         android:orderInCategory="100"
-        android:title="Zobrazit členy"
+        android:title="@string/group_detail_menu_show_members"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/lock_group"
         android:icon="@drawable/ic_baseline_lock_24"
         android:orderInCategory="100"
-        android:title="Uzamknout skupinu"
+        android:title="@string/group_detail_menu_lock_group"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/calculate_group"
         android:icon="@drawable/ic_baseline_calculate_24"
         android:orderInCategory="100"
-        android:title="Rozpočítat dluhy"
+        android:title="@string/group_detail_menu_calculate_group"
         app:showAsAction="ifRoom" />
 
 
@@ -26,19 +26,19 @@
         android:id="@+id/edit_group"
         android:icon="@drawable/ic_baseline_edit_24"
         android:orderInCategory="100"
-        android:title="Upravit skupinu"
+        android:title="@string/group_detail_menu_edit_group"
         app:showAsAction="never" />
     <item
         android:id="@+id/remove_group"
         android:icon="@drawable/ic_baseline_delete_24"
         android:orderInCategory="100"
-        android:title="Odstranit skupinu"
+        android:title="@string/group_detail_menu_delete_group"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/leave_group"
         android:icon="@drawable/ic_baseline_logout_24"
         android:orderInCategory="100"
-        android:title="Opustit skupinu"
+        android:title="@string/group_detail_menu_leave_group"
         app:showAsAction="ifRoom" />
 </menu>

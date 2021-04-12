@@ -91,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:strokeColor="@color/white"
-                        android:text="Zobrazit výsledky"/>
+                        android:text="@string/group_detail_fragment_show_results"/>
 
 
 

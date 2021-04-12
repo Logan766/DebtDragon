@@ -76,7 +76,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Zaplatil"
+                        android:text="@string/bill_detail_fragment_payed"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                         app:layout_constraintBottom_toTopOf="@+id/tv_payer_name_bill_item"
                         app:layout_constraintStart_toStartOf="@+id/tv_payer_name_bill_item" />
