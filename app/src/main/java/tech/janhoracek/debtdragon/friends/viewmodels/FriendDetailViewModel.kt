@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.friends.viewmodels
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Color.rgb
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -421,6 +422,7 @@ class FriendDetailViewModel : BaseViewModel() {
         }
 
     }
+
 
 
 }

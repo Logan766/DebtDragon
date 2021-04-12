@@ -2,12 +2,15 @@ package tech.janhoracek.debtdragon.friends.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import kotlinx.android.synthetic.main.payment_item.*
 import kotlinx.coroutines.flow.onEach
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
@@ -85,6 +88,10 @@ class GenerateQRCodeFragment : BaseFragment() {
             findNavController().navigateUp()
         }
 
+        binding.FABSaveQr.setOnClickListener {
+            saveQRtoGallery()
+        }
+
         // Set up event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
@@ -116,6 +123,17 @@ class GenerateQRCodeFragment : BaseFragment() {
         val dataForQR = viewModel.gatherDataForQR(data)
         val qrCode = viewModel.generateQRCode(dataForQR)
         binding.imageViewQR.setImageBitmap(qrCode)
+    }
+
+    /**
+     * Save QR to gallery
+     *
+     */
+    private fun saveQRtoGallery() {
+        binding.imageViewQR.isDrawingCacheEnabled = true
+        val qr = binding.imageViewQR.getDrawingCache()
+        MediaStore.Images.Media.insertImage(requireActivity().contentResolver, qr, "QR", "")
+        Toast.makeText(activity, getString(R.string.generate_qr_saved_qr), Toast.LENGTH_SHORT).show()
     }
 
 }
