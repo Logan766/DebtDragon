@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Debt Dragon</string>
+    <string name="app_name" translatable="false">Debt Dragon</string>
     <string name="loginHeader">Přihlášení</string>
     <string name="e_mail">E-mail</string>
     <string name="e_mailHint">jan.novak@domena.cz</string>
@@ -88,7 +88,7 @@
     <string name="group_detail_fragment_leave_group_dialog_message">Opuštěním skupiny do ní ztratíte přístup, vaše záznamy zůstanou zachovány, ale nebudete mít přístup k výsledkům rozpočítání. Opouštění skupiny před rozpočítáním se nedoporučuje. Chcete přesto pokračovat?</string>
     <string name="group_detail_fragment_delete_group_dialog_title">Smazat skupinu</string>
     <string name="group_detail_fragment_delete_group_dialog_message">Skupina bude smazána a veškerá data odstraněna. Přejete si pokračovat?</string>
-    <string name="group_results_reset_group_true_title">Resetovat skpuinu</string>
+    <string name="group_results_reset_group_true_title">Resetovat skupinu</string>
     <string name="group_results_reset_group_true_message">Skupina bude resetována - budou smazány všechny účty a jejich položky. Seznam členů se nezmění. Přejete si pokračovat?</string>
     <string name="group_results_reset_group_false_title">Resetovat skupinu</string>
     <string name="group_results_reset_group_false_message">Některé položky rozpočítání dluhů ještě nebyly zaplaceny. Resetováním skupiny budou smazány všechny účty a jejich položky. Seznam členů se nezmění. Přejete si přesto pokračovat?</string>
@@ -210,7 +210,7 @@
     <string name="bottom_nav_menu_profile">Profil</string>
     <string name="addedit_friend_debt_edit_debt">Editovat dluh</string>
     <string name="addedit_friend_debt_delete_debt">Odstranit dluh</string>
-    <string name="friend_detail_menu_remove_friend">Vymazat přítele</string>
+    <string name="friend_detail_menu_remove_friend">Odstranit přítele</string>
     <string name="friend_detail_menu_generate_qr">Generovat QR</string>
     <string name="friend_detail_menu_create_payment">Vytvořit splátku</string>
     <string name="group_detail_menu_show_members">Zobrazit členy</string>
@@ -221,4 +221,5 @@
     <string name="group_detail_menu_leave_group">Opustit skupinu</string>
     <string name="group_results_menu_reset_group">Resetovat skupinu</string>
     <string name="generate_qr_saved_qr">QR uloženo</string>
+    <string name="group_detail_summary_title">"Celkem utraceno "</string>
 </resources>
