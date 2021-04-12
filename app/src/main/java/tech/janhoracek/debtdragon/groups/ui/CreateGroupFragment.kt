@@ -21,6 +21,11 @@ import tech.janhoracek.debtdragon.groups.viewmodels.CreateGroupViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Create group fragment
+ *
+ * @constructor Create empty Create group fragment
+ */
 class CreateGroupFragment : BaseFragment() {
 
     override var bottomNavigationViewVisibility = View.GONE
@@ -44,6 +49,7 @@ class CreateGroupFragment : BaseFragment() {
 
         viewModel.setData(args.groupData)
 
+        // Set take photo FAB
         binding.FABTakePhotoCreateGroup.setOnClickListener {
             ImagePicker.with(this)
                 .cropSquare()
@@ -52,6 +58,7 @@ class CreateGroupFragment : BaseFragment() {
                 .start()
         }
 
+        // Set app bar back button
         binding.toolbarCreateGroup.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -63,6 +70,7 @@ class CreateGroupFragment : BaseFragment() {
         requireActivity().window.statusBarColor = Color.parseColor("#120f38")
         super.onViewCreated(view, savedInstanceState)
 
+        // Event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {
@@ -77,9 +85,7 @@ class CreateGroupFragment : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        //zobrazí loading overlay
-        //(activity as MainActivity).showLoading()
-
+        // Callback of Image Picker
         if (resultCode == Activity.RESULT_OK && requestCode == ImagePicker.REQUEST_CODE) {
 
             //Image Uri will not be null for RESULT_OK

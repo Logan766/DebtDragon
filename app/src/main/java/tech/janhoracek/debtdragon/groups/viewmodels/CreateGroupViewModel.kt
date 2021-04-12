@@ -11,13 +11,18 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import tech.janhoracek.debtdragon.friends.viewmodels.AddEditDebtViewModel
+import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.GroupModel
-import tech.janhoracek.debtdragon.groups.models.MembershipModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import java.lang.Exception
 
+/**
+ * Create group view model
+ *
+ * @constructor Create empty Create group view model
+ */
 class CreateGroupViewModel: BaseViewModel() {
 
     val groupImageURL = MutableLiveData<String>("")
@@ -46,22 +51,29 @@ class CreateGroupViewModel: BaseViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    /**
+     * Set data for create/edit group fragment
+     *
+     * @param groupData as Group Model
+     */
     fun setData(groupData: GroupModel?) {
         if(groupData != null) {
-            Log.d("SLUZ", "Uprava")
             newGroup = false
             groupModel.value = groupData!!
-            _buttonTitle.value = "Uložit změny"
-            _toolbarTitle.value = "Upravit skupinu"
+            _buttonTitle.value = localized(R.string.create_edit_group_fragment_save_changes)
+            _toolbarTitle.value = localized(R.string.create_edit_group_fragment_edit_group)
         } else {
-            Log.d("SLUZ", "Novy")
             groupModel.value = GroupModel()
             newGroup = true
-            _buttonTitle.value = "Vytvořit skupinu"
-            _toolbarTitle.value = "Vytvořit novou skupinu"
+            _buttonTitle.value = localized(R.string.create_edit_group_fragment_create_group)
+            _toolbarTitle.value = localized(R.string.create_edit_group_fragment_create_new_group)
         }
     }
 
+    /**
+     * Save group to firestore
+     *
+     */
     fun saveGroup() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -69,36 +81,30 @@ class CreateGroupViewModel: BaseViewModel() {
             var groupRef: DocumentReference
             val groupData = GroupModel()
 
+            // Determine if new group is being created
             if(newGroup) {
                 groupRef = db.collection(Constants.DATABASE_GROUPS).document()
                 groupData.id = groupRef.id
                 val members = arrayListOf<String>()
                 members.add(auth.currentUser.uid)
                 groupData.members = members
-                //val membership = MembershipModel(groupData.id, true)
-                //db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).collection(Constants.DATABASE_GROUPS).document(groupData.id).set(membership)
             } else {
                 groupRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
                 groupData.id = groupModel.value!!.id
                 groupData.members = groupModel.value!!.members
             }
 
-            Log.d("SLUZ", "Hodnota obrazku: " + groupProfilePhoto.value)
+            // Check if new profile photo was taken
             if(groupProfilePhoto.value != null) {
                 try {
                     storage.reference.child("/${Constants.DATABASE_GROUPS}/${groupData.id}/${Constants.DATABASE_NAMES_GROUP_PROFILE_IMAGE}").putBytes(groupProfilePhoto.value!!).await()
                     groupImageURL = storage.reference.child("/${Constants.DATABASE_GROUPS}/${groupData.id}/${Constants.DATABASE_NAMES_GROUP_PROFILE_IMAGE}").downloadUrl.await()
-                    Log.d("SLUZ", "URL tady je: " + groupImageURL)
                 } catch (e: Exception) {
-                    Log.d("SLUZ", "Padlo to")
                     Log.d("STRG", e.message.toString())
                 }
             }
 
-            Log.d("SLUZ", "Name jest: " + groupModel.value!!.name)
-            Log.d("SLUZ", "URL je: " + groupImageURL)
-
-
+            // Set up group data
             groupData.name = groupModel.value!!.name
             groupData.description = groupModel.value!!.description
             groupData.owner = auth.currentUser.uid
@@ -108,7 +114,6 @@ class CreateGroupViewModel: BaseViewModel() {
 
             eventChannel.send(Event.HideLoading)
             eventChannel.send(Event.GroupCreated(groupData.id))
-            Log.d("SLUZ", "Ulozeno")
         }
 
 

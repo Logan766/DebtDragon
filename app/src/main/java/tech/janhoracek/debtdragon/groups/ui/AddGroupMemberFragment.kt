@@ -21,6 +21,11 @@ import tech.janhoracek.debtdragon.groups.ui.adapters.AddRemoveGroupMemeberAdapte
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Add group member fragment
+ *
+ * @constructor Create empty Add group member fragment
+ */
 class AddGroupMemberFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentAddGroupMemberBinding
@@ -43,23 +48,25 @@ class AddGroupMemberFragment : BaseFragment() {
 
         binding.recyclerViewAddGroupMembers.layoutManager = LinearLayoutManager(this.context)
 
-
+        // Observe group data and get members
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
             viewModel.getMembers()
         })
 
+        // Observe possible friends to add and load them to recycler view
         viewModel.friendsToAdd.observe(viewLifecycleOwner, Observer {
             binding.recyclerViewAddGroupMembers.adapter = AddRemoveGroupMemeberAdapter(it)
         })
 
+        // Set up add group members button
         binding.FABAddMembers.setOnClickListener {
             val friendsToAdd = binding.recyclerViewAddGroupMembers.adapter as AddRemoveGroupMemeberAdapter
             if (friendsToAdd.checkedFriends.size == 0) {
-                Toast.makeText(requireContext(), "Nejsou vybráni žádní uživatelé", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.add_group_member_no_users_selected), Toast.LENGTH_LONG).show()
             } else {
                 viewModel.addMembers(friendsToAdd.checkedFriends)
                 findNavController().navigateUp()
-                Toast.makeText(requireContext(), "Uživatelé přidáni", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.add_group_memeber_user_added), Toast.LENGTH_LONG).show()
             }
 
         }
@@ -69,6 +76,8 @@ class AddGroupMemberFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set up app bar back button
         binding.addGroupMembersToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }

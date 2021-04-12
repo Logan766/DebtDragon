@@ -23,6 +23,11 @@ import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Add group debt fragment
+ *
+ * @constructor Create empty Add group debt fragment
+ */
 class AddGroupDebtFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
 
@@ -47,45 +52,37 @@ class AddGroupDebtFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // Hide delete button if new group debt is being added
         if (args.groupDebtID != "none") {
             binding.fabDeleteAddGroupDebt.show()
         }
 
+        // Set up delete group debt button
         binding.fabDeleteAddGroupDebt.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Odstranit dluh")
-            dialog.setMessage("Opravdu chcete odstranit dluh?")
-            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setTitle(getString(R.string.add_edit_group_debt_delete_group_debt))
+            dialog.setMessage(getString(R.string.add_edit_group_debt_delete_group_debt_message))
+            dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                 viewModel.deleteGroupDebt(args.groupDebtID!!)
             }
-            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
             }
             dialog.show()
         }
 
-
-        ///Vyzkouset nutnost!
-        //viewModel.setImageForPayer("")
-
-        /*viewModel.debtorName.observe(viewLifecycleOwner, Observer {
-            binding.textInputDebtorAddGroupDebt.setText(it)
-        })*/
-
-
+        // Text input change listener and setter image for payer
         binding.textInputDebtorAddGroupDebt.doAfterTextChanged {
             if (it.toString() != "") {
-                Log.d("NEDELE" ,"Ted to triglo neco!")
-                Log.d("NEDELE", "A triglo to: " + it)
                 val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputDebtorAddGroupDebt.text.toString() }!!.first
                 viewModel.setImageForPayer(payerID)
             } else {
-                Log.d("NEDELE" ,"Ted to triglo nic!")
                 viewModel.setImageForPayer("")
             }
 
         }
 
+        // Set up save group debt button
         binding.btnSaveAddGroupDebt.setOnClickListener {
             viewModel.saveGroupDebt(binding.textInputDebtorAddGroupDebt.text.toString())
         }
@@ -96,7 +93,7 @@ class AddGroupDebtFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        // Event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {

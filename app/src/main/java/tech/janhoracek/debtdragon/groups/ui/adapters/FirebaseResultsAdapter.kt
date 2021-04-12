@@ -14,24 +14,52 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.payment_item.view.*
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.PaymentModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Firebase results adapter
+ *
+ * @property mCheckboxListener as interface for checkbox click
+ * @property mButtonListener as interface for result button click
+ * @constructor
+ *
+ * @param options as firestore recycler view for Payment Model
+ * @param isOwner as status if current user is owner
+ */
 class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, val mCheckboxListener: OnCheckboxChangeListener, val mButtonListener: OnAddToFriendDebtsListener, isOwner: Boolean) :
     FirestoreRecyclerAdapter<PaymentModel, FirebaseResultsAdapter.PaymentViewHolder>(options){
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val isOwner = isOwner
 
-
+    /**
+     * Payment view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     inner class PaymentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
+        /**
+         * Bind payment value to viewholder
+         *
+         * @param value as payment value
+         */
         fun bindToVH(value: Int) {
             itemView.value_payment_item.text = value.toString()
         }
 
+        /**
+         * Bind creditor data to viewholder
+         *
+         * @param creditorName as creditor name
+         * @param creditorImg as creditor img url
+         * @param model as Payment Model
+         */
         fun bindCreditor(creditorName: String, creditorImg: String, model: PaymentModel) {
             if (model.creditor == auth.currentUser?.uid) {
-                itemView.tv_creditor_name_payment_item.text = "Já"
+                itemView.tv_creditor_name_payment_item.text = localized(R.string.Me)
             } else {
                 itemView.tv_creditor_name_payment_item.text = creditorName
             }
@@ -42,9 +70,16 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
             }
         }
 
+        /**
+         * Bind debtor data to view holder
+         *
+         * @param debtorName as debtor name
+         * @param debtorImg as debtor img url
+         * @param model as Payment Model
+         */
         fun bindDebtor(debtorName: String, debtorImg: String, model: PaymentModel) {
             if (model.debtor == auth.currentUser?.uid) {
-                itemView.tv_debtor_name_payment_item.text = "Já"
+                itemView.tv_debtor_name_payment_item.text = localized(R.string.Me)
             } else {
                 itemView.tv_debtor_name_payment_item.text = debtorName
             }
@@ -55,6 +90,13 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
             }
         }
 
+        /**
+         * Set up pay button in viewholder
+         *
+         * @param isFriend as status if creditor is current user friend
+         * @param model as Payment Model
+         * @param frienshipID as friendship ID
+         */
         fun setPayButton(isFriend: Boolean, model: PaymentModel, frienshipID: String) {
             itemView.FAB_payment_item.isVisible = isFriend
             itemView.FAB_payment_item.setOnClickListener {
@@ -62,6 +104,11 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
             }
         }
 
+        /**
+         * Bind checkbox to view holder
+         *
+         * @param model as Payment Model
+         */
         fun bindCheckbox(model: PaymentModel) {
             if ((model.creditor == auth.currentUser?.uid) || isOwner) {
                 itemView.checkbox_paymentItem.isVisible = true
@@ -107,18 +154,21 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
 
         holder.bindCheckbox(model)
 
+        // Gets creditor data
         db.collection(Constants.DATABASE_USERS).document(model.creditor).addSnapshotListener { userData, error ->
             creditorName = userData?.data?.get(Constants.DATABASE_USER_NAME).toString()
             creditorImg = userData?.data?.get(Constants.DATABASE_USER_IMG_URL).toString()
             holder.bindCreditor(creditorName, creditorImg, model)
         }
 
+        // Gets debtor data
         db.collection(Constants.DATABASE_USERS).document(model.debtor).addSnapshotListener { userData, error ->
             debtorName = userData?.data?.get(Constants.DATABASE_USER_NAME).toString()
             debtorImg = userData?.data?.get(Constants.DATABASE_USER_IMG_URL).toString()
             holder.bindDebtor(debtorName, debtorImg, model)
         }
 
+        // Gets data for payment button
         if (model.debtor == auth.currentUser.uid) {
             db.collection(Constants.DATABASE_USERS)
                 .document(model.debtor)
@@ -130,10 +180,10 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
                     }
 
                     if (snapshot != null && snapshot.exists()) {
-                        //je friend
+                        //creditor is friend
                         holder.setPayButton(true && !model.isResolved, model, snapshot[Constants.DATABASE_FRIENDSHIPS_UID].toString())
                     } else {
-                        //neni friend
+                        //creditor is not friend
                         holder.setPayButton(false, model, "")
                         Log.w("DATA", "Current data null")
                     }
@@ -144,10 +194,20 @@ class FirebaseResultsAdapter(options: FirestoreRecyclerOptions<PaymentModel>, va
 
     }
 
+    /**
+     * On checkbox change listener interface
+     *
+     * @constructor Create empty On checkbox change listener
+     */
     interface OnCheckboxChangeListener {
         fun onCheckboxChange(paymentID: String)
     }
 
+    /**
+     * On add to friend debts listener interface
+     *
+     * @constructor Create empty On add to friend debts listener
+     */
     interface OnAddToFriendDebtsListener {
         fun onAddToFriendsBtnClick(paymentID: String, value: Int, friendshipID: String, creditorID: String)
     }

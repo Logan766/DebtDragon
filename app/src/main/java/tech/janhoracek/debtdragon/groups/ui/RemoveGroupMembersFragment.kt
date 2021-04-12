@@ -19,6 +19,11 @@ import tech.janhoracek.debtdragon.groups.ui.adapters.AddRemoveGroupMemeberAdapte
 import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Remove group members fragment
+ *
+ * @constructor Create empty Remove group members fragment
+ */
 class RemoveGroupMembersFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentRemoveGroupMembersBinding
@@ -35,7 +40,6 @@ class RemoveGroupMembersFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("PICA", "Na remove je velikost groupy: " + viewModel.groupModel.value!!.members.size)
         // Inflate the layout for this fragment
         binding = FragmentRemoveGroupMembersBinding.inflate(inflater, container, false)
         binding.viewmodel = viewModel
@@ -43,6 +47,7 @@ class RemoveGroupMembersFragment : BaseFragment() {
 
         binding.recyclerViewRemoveGroupMembers.layoutManager = LinearLayoutManager(this.context)
 
+        // Observe group to set up recycler view to remove members
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
             val memberWithoutMe = it.members.toMutableList()
             memberWithoutMe.remove(auth.currentUser.uid)
@@ -50,18 +55,18 @@ class RemoveGroupMembersFragment : BaseFragment() {
             binding.recyclerViewRemoveGroupMembers.adapter = adapter
         })
 
+        // Set up FAB to remove group members
         binding.FABRemoveMembers.setOnClickListener {
             val membersToRemove = binding.recyclerViewRemoveGroupMembers.adapter as AddRemoveGroupMemeberAdapter
             if(membersToRemove.checkedFriends.size == 0) {
-                Toast.makeText(requireContext(), "Nejsou vybráni žádní uživatelé", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.remove_group_members_no_users_selected), Toast.LENGTH_LONG).show()
             } else {
                 viewModel.removeMembers(membersToRemove.checkedFriends)
                 findNavController().navigateUp()
-                Toast.makeText(requireContext(), "Uživatelé odebráni", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.remove_group_members_users_removed), Toast.LENGTH_LONG).show()
             }
 
         }
-
         return binding.root
     }
 

@@ -14,16 +14,22 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.friends.models.DebtModel
-import tech.janhoracek.debtdragon.friends.viewmodels.FriendDetailViewModel
 import tech.janhoracek.debtdragon.groups.models.BillModel
 import tech.janhoracek.debtdragon.groups.models.GroupDebtModel
 import tech.janhoracek.debtdragon.groups.models.GroupModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.DebtCalculator
 import java.lang.Exception
 
+/**
+ * Group detail view model
+ *
+ * @constructor Create empty Group detail view model
+ */
 class GroupDetailViewModel : BaseViewModel() {
 
     val isCurrentUserOwner = MutableLiveData<Boolean>()
@@ -94,14 +100,20 @@ class GroupDetailViewModel : BaseViewModel() {
         object NavigateUp : Event()
         object ShowLoading : Event()
         object HideLoading : Event()
-        data class areAllResolved(val status: Boolean) : Event()
+        data class AreAllResolved(val status: Boolean) : Event()
     }
 
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    /**
+     * Set data for group detail fragment
+     *
+     * @param groupID as group ID
+     */
     fun setData(groupID: String) {
         GlobalScope.launch(IO) {
+            // Get group data
             db.collection(Constants.DATABASE_GROUPS).document(groupID).addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.w("LSTNR", error.message.toString())
@@ -119,6 +131,7 @@ class GroupDetailViewModel : BaseViewModel() {
 
             _groupSummary.postValue("0")
 
+            // Get data for summary
             db.collection(Constants.DATABASE_GROUPS).document(groupID).collection(Constants.DATABASE_BILL).addSnapshotListener { bills, error ->
                 bills?.forEach { bill ->
                     getGroupSummary(groupID)
@@ -137,6 +150,11 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Get group summary
+     *
+     * @param groupID as group ID
+     */
     private fun getGroupSummary(groupID: String) {
         GlobalScope.launch(IO) {
             var summary = 0
@@ -158,11 +176,12 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Get members of the group and their data
+     *
+     */
     fun getMembers() {
         val membersInGroup = groupModel.value!!.members
-        for (member in membersInGroup) {
-            Log.d("VODA", "Member ID je: " + member)
-        }
 
         GlobalScope.launch(IO) {
             val friendList = mutableListOf<String>()
@@ -175,19 +194,16 @@ class GroupDetailViewModel : BaseViewModel() {
                     friendList.add(document["member1"].toString())
                 }
             }
-            for (friend in friendList) {
-                Log.d("VODA", "Friend ID je: " + friend)
-            }
-
             val peopleToInvite = friendList.minus(membersInGroup)
-            for (member in peopleToInvite) {
-                Log.d("VODA", "Person to invite: " + member)
-            }
-
             friendsToAdd.postValue(peopleToInvite)
         }
     }
 
+    /**
+     * Add members to group
+     *
+     * @param membersToAdd as list of possible memebers
+     */
     fun addMembers(membersToAdd: ArrayList<String>) {
         val document = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
         for (member in membersToAdd) {
@@ -195,6 +211,11 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Remove members from group
+     *
+     * @param membersToRemove as list of group members
+     */
     fun removeMembers(membersToRemove: ArrayList<String>) {
         val document = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id)
         for (member in membersToRemove) {
@@ -202,6 +223,10 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Get names for group members
+     *
+     */
     fun getNamesForGroup() {
         GlobalScope.launch(IO) {
             val membersIDs = groupModel.value!!.members
@@ -214,71 +239,71 @@ class GroupDetailViewModel : BaseViewModel() {
             }
 
             for (member in membersAndNamesArray) {
-                Log.d("KOFOLA", "ID: " + member.first + " Jméno: " + member.second)
                 membersNames.add(member.second)
             }
-
-            //Log.d("KOFOLA", "Najdi Jana Horáčka: " + membersAndNamesArray.find { it.second == "Jan Horáček" }!!.first)
-
-            //val membersNames = mutableListOf<String>()
-            //val itemArray: ArrayList<Pair<String, String>> = arrayListOf()
-            //val result = itemArray.find { it.first == "ahoj" }
 
             _membersAndNames.postValue(membersAndNamesArray)
             _membersNames.postValue(membersNames)
         }
     }
 
+    /**
+     * Edit group event implementation
+     *
+     */
     fun editGroup() {
         GlobalScope.launch(Main) { eventChannel.send(Event.EditGroup(groupModel.value!!)) }
     }
 
+    /**
+     * Set image for payer
+     *
+     * @param payerID as payer ID
+     */
     fun setImageForPayer(payerID: String) {
-        ///////////////DODELAT!
-        Log.d("KOFILA", "ID payera je: " + payerID)
+        ///////////////
         if (payerID == "") {
-            Log.d("NEDELE", "TED JE TO PRAZDNY A DAVAM NIC")
             _payerProfileImg.postValue("")
         } else {
             GlobalScope.launch(IO) {
                 try {
+                    // Try to get img for url
                     db.collection(Constants.DATABASE_USERS).document(payerID).addSnapshotListener { value, error ->
                         val url = value?.get(Constants.DATABASE_USER_IMG_URL)?.toString()
                         if (error != null) {
                             Log.w("LSTNR", error.message.toString())
-                            Log.d("KOFILA", "Nastavuju nic protoze error")
                             _payerProfileImg.postValue("")
                         }
 
                         if (url == "null") {
-                            Log.d("KOFILA", "Nastavuju nic: " + url)
                             _payerProfileImg.postValue("")
                         } else {
-                            Log.d("KOFILA", "Nastavuju img nebo url jest: " + url)
                             if (url != null) {
                                 _payerProfileImg.postValue(url!!)
                             } else {
                                 _payerProfileImg.postValue("")
                             }
                         }
-                        Log.d("KOFILA", "URL je: " + url)
-
                     }
                 } catch (e: Exception) {
-                    Log.d("ERR", e.message.toString())
+                    Log.d("ERROR", e.message.toString())
                 }
             }
         }
 
     }
 
+    /**
+     * Create bill
+     *
+     * @param payerName as payer name
+     */
     fun createBill(payerName: String) {
         if (billNameToAdd.value.isNullOrEmpty()) {
-            _billNameError.value = "Název nemůže být prádzný"
+            _billNameError.value = localized(R.string.group_detail_viewmodel_create_bill_name_cannot_empty)
         } else {
             GlobalScope.launch(Main) { eventChannel.send(Event.ShowLoading) }
             _billNameError.value = ""
-            Log.d("BILL", "Vytvářim účet")
             val payerID = membersAndNames.value!!.find { it.second == payerName }!!.first
             val billRef = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document()
             val billToAdd = BillModel()
@@ -286,11 +311,6 @@ class GroupDetailViewModel : BaseViewModel() {
             billToAdd.id = billRef.id
             billToAdd.name = billNameToAdd.value.toString()
             billToAdd.payer = payerID
-
-            Log.d("BILL", "ID billu jest: " + billToAdd.id)
-            Log.d("BILL", "Name uctu jest: " + billToAdd.name)
-            Log.d("BILL", "Payer ID jest: " + billToAdd.payer)
-            Log.d("BILL", "Timestamp jest: " + billToAdd.timestamp)
 
             billRef.set(billToAdd)
             GlobalScope.launch(Main) {
@@ -300,8 +320,14 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Set data for bill detail
+     *
+     * @param billID as bill ID
+     */
     fun setDataForBillDetail(billID: String) {
         GlobalScope.launch(IO) {
+            // Gets data for bill
             db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).document(billID)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
@@ -311,11 +337,10 @@ class GroupDetailViewModel : BaseViewModel() {
                     if (snapshot != null && snapshot.exists()) {
                         _billDetailName.postValue(snapshot.data!![Constants.DATABASE_BILL_NAME].toString())
                         val model = snapshot.toObject(BillModel::class.java)
-                        Log.d("GDEBT", "Nastavuju model: " + model!!.id)
                         billModel.value = model!!
-                        //billModel.postValue(model!!)
                         GlobalScope.launch(Main) { eventChannel.send(Event.BillDataSet) }
 
+                        // Gets data for bill payer
                         db.collection(Constants.DATABASE_USERS).document(snapshot.data!![Constants.DATABASE_BILL_PAYER].toString())
                             .addSnapshotListener { snapshot, error ->
                                 if (error != null) {
@@ -335,6 +360,7 @@ class GroupDetailViewModel : BaseViewModel() {
                     }
                 }
 
+            // Gets data for bill summary
             db.collection(Constants.DATABASE_GROUPS)
                 .document(groupModel.value!!.id)
                 .collection(Constants.DATABASE_BILL)
@@ -342,7 +368,7 @@ class GroupDetailViewModel : BaseViewModel() {
                 .collection(Constants.DATABASE_GROUPDEBT)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
-                        Log.d("ZIPPO", error.message.toString())
+                        Log.d("LSTNR", error.message.toString())
                     }
 
                     if (snapshot != null) {
@@ -358,6 +384,11 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Delete bill
+     *
+     * @param billID as bill ID
+     */
     fun deleteBill(billID: String) {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -372,6 +403,11 @@ class GroupDetailViewModel : BaseViewModel() {
 
     }
 
+    /**
+     * Set data for add/edit debt fragment
+     *
+     * @param groupDebtID
+     */
     fun setDataForAddDebt(groupDebtID: String?) {
         val memberWithoutPayer = groupModel.value!!.members.toMutableList()
         memberWithoutPayer.remove(billModel.value!!.payer)
@@ -388,13 +424,11 @@ class GroupDetailViewModel : BaseViewModel() {
         _groupDebtNameError.value = ""
 
         if (groupDebtID == "none") {
-            Log.d("NEDELE", "Ted pridavas novej groupDebt")
-            groupDebtAddEditTitle.value = "Přidat novou položku"
+            groupDebtAddEditTitle.value = localized(R.string.group_debt_view_model_add_bill_add_new_bill)
             groupDebtModel.value = GroupDebtModel()
             _debtorName.value = ""
         } else {
-            Log.d("NEDELE", "Ted to neni novej groupDebt")
-            groupDebtAddEditTitle.value = "Upravit položku"
+            groupDebtAddEditTitle.value = localized(R.string.group_debt_view_model_add_bill_edit_bill)
             GlobalScope.launch(IO) {
                 db.collection(Constants.DATABASE_GROUPS)
                     .document(groupModel.value!!.id)
@@ -416,8 +450,12 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Save group debt
+     *
+     * @param debtorName as debtor name
+     */
     fun saveGroupDebt(debtorName: String) {
-        Log.d("GDEBT", "Dluznik jest: " + debtorName)
         if (validateGroupDebt(debtorName)) {
             GlobalScope.launch(IO) {
                 eventChannel.send(Event.ShowLoading)
@@ -446,12 +484,6 @@ class GroupDetailViewModel : BaseViewModel() {
                 groupDebtToSave.name = groupDebtModel.value!!.name
                 groupDebtToSave.value = groupDebtModel.value!!.value
 
-                Log.d("GDEBT", "S: ID: " + groupDebtToSave.id)
-                Log.d("GDEBT", "S: payer: " + groupDebtToSave.payer)
-                Log.d("GDEBT", "S: debtor: " + groupDebtToSave.debtor)
-                Log.d("GDEBT", "S: name: " + groupDebtToSave.name)
-                Log.d("GDEBT", "S: value: " + groupDebtToSave.value)
-                Log.d("GDEBT", "S: timestamp: " + groupDebtToSave.timestamp)
 
                 groupDebtRef!!.set(groupDebtToSave).addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -469,6 +501,12 @@ class GroupDetailViewModel : BaseViewModel() {
 
     }
 
+    /**
+     * Validate group debt
+     *
+     * @param debtorName as debtor name
+     * @return
+     */
     private fun validateGroupDebt(debtorName: String): Boolean {
         val nameValidation = validateGroupDebtName()
         val valueValidation = validateGroupDebtValue()
@@ -477,9 +515,14 @@ class GroupDetailViewModel : BaseViewModel() {
         return nameValidation && valueValidation && debtorValidation
     }
 
+    /**
+     * Validate group debt name
+     *
+     * @return true if valid
+     */
     private fun validateGroupDebtName(): Boolean {
         return if (groupDebtModel.value!!.name == "") {
-            _groupDebtNameError.value = "Název nemůže být prázdný"
+            _groupDebtNameError.value = localized(R.string.group_debt_view_model_group_debt_name_cant_be_empty)
             false
         } else {
             _groupDebtNameError.value = ""
@@ -487,12 +530,17 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate group debt value
+     *
+     * @return true if valid
+     */
     private fun validateGroupDebtValue(): Boolean {
         return if (groupDebtModel.value!!.value == "") {
-            _groupDebtValueError.value = "Výše částky nemůže být prázdná"
+            _groupDebtValueError.value = localized(R.string.group_debt_view_model_group_debt_value_cant_be_empty)
             false
         } else if (groupDebtModel.value!!.value.toInt() <= 0) {
-            _groupDebtValueError.value = "Částka musí být větší než 0"
+            _groupDebtValueError.value = localized(R.string.group_debt_view_model_group_debt_value_must_be_grater_than_0)
             false
         } else {
             _groupDebtValueError.value = ""
@@ -500,9 +548,15 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate group debt debtor
+     *
+     * @param debtor
+     * @return true if valid
+     */
     private fun validateGroupDebtDebtor(debtor: String): Boolean {
         return if (debtor == "") {
-            _groupDebtDebtorError.value = "Vyberte dlužníka"
+            _groupDebtDebtorError.value = localized(R.string.group_debt_view_model_group_debt_select_debtor)
             false
         } else {
             _groupDebtDebtorError.value = ""
@@ -510,6 +564,11 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Delete group debt
+     *
+     * @param groupDebtID as group debt ID
+     */
     fun deleteGroupDebt(groupDebtID: String) {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -526,8 +585,13 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Calculate group and create payments
+     *
+     */
     fun calculateGroup() {
         GlobalScope.launch(Main) { eventChannel.send(Event.ShowLoading) }
+        // Check if group is unlocked and lock it
         if (groupModel.value!!.calculated == "") {
             db.collection(Constants.DATABASE_GROUPS)
                 .document(groupModel.value!!.id)
@@ -536,6 +600,7 @@ class GroupDetailViewModel : BaseViewModel() {
 
         val netMemberValues = HashMap<String, Int>()
 
+        // Get all data from bills
         val getData = GlobalScope.launch(IO) {
             val bills = db.collection(Constants.DATABASE_GROUPS).document(groupModel.value!!.id).collection(Constants.DATABASE_BILL).get().await()
             bills?.forEach { bill ->
@@ -549,9 +614,8 @@ class GroupDetailViewModel : BaseViewModel() {
                         Int::plus)
                 }
             }
-            for (member in netMemberValues) {
-                Log.d("POCITAME", "ID: " + member.key + " Castka: " + member.value)
-            }
+
+            // Calculate payment and create them in firestore
             val calculator = DebtCalculator()
             GlobalScope.launch(Dispatchers.IO) {
                 val results = calculator.calculatePayments(netMemberValues)
@@ -569,6 +633,10 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Unlock calculated group and delete payments
+     *
+     */
     fun unlockCalculatedGroup() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -587,6 +655,10 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Leave group and delete left member id
+     *
+     */
     fun leaveGroup() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -599,6 +671,10 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Delete group
+     *
+     */
     fun deleteGroup() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -608,10 +684,13 @@ class GroupDetailViewModel : BaseViewModel() {
         }
     }
 
-    fun onShowResultsClick() {
-        Log.d("UTERY", "Ukazuju vysledky")
-    }
 
+    /**
+     * Resolve payment
+     *
+     * @param paymentID as payment ID
+     * @param status as payment status
+     */
     fun resolvePayment(paymentID: String, status: Boolean) {
         db.collection(Constants.DATABASE_GROUPS)
             .document(groupModel.value!!.id)
@@ -620,31 +699,33 @@ class GroupDetailViewModel : BaseViewModel() {
             .update(Constants.DATABASE_PAYMENT_RESOLVED, status)
     }
 
+    /**
+     * Create friend debt from group payment
+     *
+     * @param creditorID as creditor ID
+     * @param value as payment value
+     * @param friendshipID as friendship ID
+     */
     fun createFriendDebt(creditorID: String, value: Int, friendshipID: String) {
         GlobalScope.launch(IO) {
             val payment = DebtModel()
             val paymentRef = db.collection(Constants.DATABASE_FRIENDSHIPS).document(friendshipID).collection(Constants.DATABASE_DEBTS).document()
 
             payment.id = paymentRef.id
-            payment.name = "Dluh ze skupiny ${groupModel.value!!.name}"
+            payment.name = localized(R.string.group_debt_view_model_create_debt_debt_from_group) + groupModel.value!!.name
             payment.value = value
             payment.category = Constants.DATABASE_DEBT_CATEGORY_GDEBT
             payment.payer = creditorID
             payment.timestamp = Timestamp.now()
 
-            Log.d("RISE", "Payment ID: " + payment.id)
-            Log.d("RISE", "Payment CATEGORY: " + payment.category)
-            Log.d("RISE", "Payment Decstiption: " + payment.description)
-            Log.d("RISE", "Payment img: " + payment.img)
-            Log.d("RISE", "Payment NAME: " + payment.name)
-            Log.d("RISE", "Payment PAYER: " + payment.payer)
-            Log.d("RISE", "Payment VALUE: " + payment.value)
-            Log.d("RISE", "Payment TIMESTAMP: " + payment.timestamp)
-
             paymentRef.set(payment).await()
         }
     }
 
+    /**
+     * Check if payments are resolved
+     *
+     */
     fun checkIfPaymentsAreResolved() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -656,11 +737,15 @@ class GroupDetailViewModel : BaseViewModel() {
                 .await()
             val areAllResolvedStatus = payments.isEmpty
             eventChannel.send(Event.HideLoading)
-            eventChannel.send(Event.areAllResolved(areAllResolvedStatus))
+            eventChannel.send(Event.AreAllResolved(areAllResolvedStatus))
         }
 
     }
 
+    /**
+     * Reset group, deletes group debts and bills
+     *
+     */
     fun resetGroup() {
         GlobalScope.launch(IO) {
             eventChannel.send(Event.ShowLoading)
@@ -691,7 +776,7 @@ class GroupDetailViewModel : BaseViewModel() {
                 .update(Constants.DATABASE_GROUPS_STATUS, "").await()
             eventChannel.send(Event.HideLoading)
             eventChannel.send(Event.NavigateUp)
-            eventChannel.send(Event.ShowToast("Skupina resetována"))
+            eventChannel.send(Event.ShowToast(localized(R.string.group_debt_view_model_group_reseted)))
         }
     }
 

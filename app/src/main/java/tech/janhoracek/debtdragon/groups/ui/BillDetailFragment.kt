@@ -35,6 +35,11 @@ import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Bill detail fragment
+ *
+ * @constructor Create empty Bill detail fragment
+ */
 class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtClickListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -56,6 +61,8 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
         requireActivity().window.statusBarColor = Color.parseColor("#83173d")
         // Inflate the layout for this fragment
         val args: BillDetailFragmentArgs by navArgs()
+
+        // Set data for bill detail
         viewModel.getNamesForGroup()
         viewModel.setDataForBillDetail(args.billID)
 
@@ -74,6 +81,7 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {
@@ -96,28 +104,28 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
                     }
                     GroupDetailViewModel.Event.GroupDeleted -> {
                         findNavController().navigate(R.id.action_global_groupsFragment)
-                        Toast.makeText(requireContext(), "Skupina byla odstraněna", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), getString(R.string.bill_detail_fragment_group_deleted), Toast.LENGTH_LONG).show()
                     }
                     GroupDetailViewModel.Event.BillDeleted -> {
                         findNavController().navigate(BillDetailFragmentDirections.actionGlobalGroupDetailFragment(viewModel.groupModel.value!!.id))
-                        Toast.makeText(requireContext(), "Účet byl smazán", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), getString(R.string.bill_detail_fragment_bill_deleted), Toast.LENGTH_LONG).show()
                     }
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
-
+        // Set up app bar menu
         binding.toolbarBillDetail.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_bill -> {
                     val dialog = AlertDialog.Builder(requireContext())
-                    dialog.setTitle("Odstranit účet")
-                    dialog.setMessage("Všechny položky na účtě budou ztraceny. Jste si jistý že chcete účet odstranit?")
-                    dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                    dialog.setTitle(getString(R.string.bill_detail_fargment_delete_bill_dialog_title))
+                    dialog.setMessage(getString(R.string.bill_detail_fragment_delete_bill_dialog_message))
+                    dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                         (activity as MainActivity).showLoading()
                         viewModel.deleteBill(viewModel.billModel.value!!.id)
                     }
-                    dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-
+                    dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+                        //
                     }
                     dialog.show()
                 }
@@ -126,6 +134,10 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
         }
     }
 
+    /**
+     * Set up recycler view for group debts in bill
+     *
+     */
     private fun setUpRecyclerView() {
         val query = db.collection(Constants.DATABASE_GROUPS)
             .document(viewModel.groupModel.value!!.id)
@@ -144,19 +156,28 @@ class BillDetailFragment : BaseFragment(), FirebaseGroupDebtAdapter.onGroupDebtC
         binding.recyclerViewGroupDebtsBillDetail.adapter = groupDebtAdapter
     }
 
+    /**
+     * On group debt click interface implementation
+     *
+     * @param groupDebtID as group debt ID
+     */
     override fun onGroupDebtClick(groupDebtID: String) {
         if(viewModel.groupModel.value!!.calculated == "") {
             if((viewModel.billModel.value!!.payer == auth.currentUser?.uid) || (viewModel.groupModel.value!!.owner == auth.currentUser?.uid)) {
                 val action = BillDetailFragmentDirections.actionBillDetailFragmentToAddGroupDebtFragment(groupDebtID)
                 findNavController().navigate(action)
             } else {
-                Toast.makeText(requireContext(), "Editovat může jenom správce skupiny  nebo plátce", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.bill_detail_gdebt_click_only_admin_owner_can_edit), Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(requireContext(), "Skupina je uzamčena", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.bill_detail_gdebt_click_group_is_locked), Toast.LENGTH_LONG).show()
         }
     }
 
+    /**
+     * Set UI based on status of the group and administrator privileges
+     *
+     */
     private fun setUIBasedOnStatusAndPriv() {
         if (viewModel.groupModel.value!!.calculated == "") {
             binding.FABBillDetail.show()

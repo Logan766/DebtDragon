@@ -19,6 +19,11 @@ import tech.janhoracek.debtdragon.groups.viewmodels.GroupDetailViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Add bill fragment
+ *
+ * @constructor Create empty Add bill fragment
+ */
 class AddBillFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentAddBillBinding
@@ -39,24 +44,28 @@ class AddBillFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
+        // Clear data
         binding.textInputPayerAddBill.setText("", false)
         viewModel.billNameToAdd.value = ""
         viewModel.setImageForPayer("")
 
+        // Observe group data and set member names
         viewModel.groupModel.observe(viewLifecycleOwner, Observer {
             viewModel.getNamesForGroup()
         })
 
+        // Change picture based on user selected
         binding.textInputPayerAddBill.doAfterTextChanged {
             val payerID = viewModel.membersAndNames.value!!.find { it.second == binding.textInputPayerAddBill.text.toString() }!!.first
             viewModel.setImageForPayer(payerID)
         }
 
+        // Set up create bill button
         binding.btnAddBill.setOnClickListener {
             viewModel.createBill(binding.textInputPayerAddBill.text.toString())
         }
 
+        // Setup app bar back button
         binding.addBillToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -67,6 +76,7 @@ class AddBillFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Event observer
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when (it) {

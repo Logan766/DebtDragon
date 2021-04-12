@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +23,11 @@ import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Group results fragment
+ *
+ * @constructor Create empty Group results fragment
+ */
 class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxChangeListener, FirebaseResultsAdapter.OnAddToFriendDebtsListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -47,10 +51,10 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // Set up app bar back button
         binding.groupResultsToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-
 
         return binding.root
     }
@@ -58,23 +62,25 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {
-                    is GroupDetailViewModel.Event.areAllResolved -> {resetGroup(it.status)}
+                    is GroupDetailViewModel.Event.AreAllResolved -> {resetGroup(it.status)}
                     GroupDetailViewModel.Event.ShowLoading -> {(activity as MainActivity).showLoading()}
                     GroupDetailViewModel.Event.HideLoading -> {(activity as MainActivity).hideLoading()}
                     GroupDetailViewModel.Event.NavigateUp -> {findNavController().navigateUp()}
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
+        // Set up recycler view for results
         setUpRecyclerView()
         paymentAdapter!!.startListening()
 
+        // Set up app bar menu
         binding.groupResultsToolbar.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.reset_group -> {viewModel.checkIfPaymentsAreResolved()}
-
             }
             true
         }
@@ -82,6 +88,10 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
 
     }
 
+    /**
+     * Set up recycler view for group results
+     *
+     */
     private fun setUpRecyclerView() {
         val query = db.collection(Constants.DATABASE_GROUPS)
             .document(viewModel.groupModel.value!!.id)
@@ -97,37 +107,53 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
         binding.recyclerViewGroupResults.adapter = paymentAdapter
     }
 
+    /**
+     * On checkbox change interface implementation
+     *
+     * @param paymentID as payment ID
+     */
     override fun onCheckboxChange(paymentID: String) {
-        Log.d("CTVRTEK", "Id tohohle paymentu jest: " + paymentID)
         viewModel.resolvePayment(paymentID, true)
-        //db.collection(Constants.DATABASE_GROUPS).document(viewModel.groupModel.value!!.id).collection(Constants.DATABASE_PAYMENT).document(paymentID).update("resolved", true)
     }
 
+    /**
+     * On add payment to friends debts button click
+     *
+     * @param paymentID as payment ID
+     * @param value as payment value
+     * @param frienshipID as friendship ID
+     * @param creditorID as creditor ID
+     */
     override fun onAddToFriendsBtnClick(paymentID: String, value: Int, frienshipID: String, creditorID: String) {
         viewModel.resolvePayment(paymentID, true)
         viewModel.createFriendDebt(creditorID, value, frienshipID)
     }
 
+    /**
+     * Reset group implementation
+     *
+     * @param status as all resolved status
+     */
     private fun resetGroup(status: Boolean) {
         if(status) {
             val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Resetovat skpuinu")
-            dialog.setMessage("Skupina bude resetována - budou smazány všechny účty a jejich položky. Seznam členů se nezmění. Přejete si pokračovat?")
-            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setTitle(getString(R.string.group_results_reset_group_true_title))
+            dialog.setMessage(getString(R.string.group_results_reset_group_true_message))
+            dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                 viewModel.resetGroup()
             }
-            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
             }
             dialog.show()
         } else {
             val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Resetovat skupinu")
-            dialog.setMessage("Některé položky rozpočítání dluhů ještě nebyly zaplaceny. Resetováním skupiny budou smazány všechny účty a jejich položky. Seznam členů se nezmění. Přejete si přesto pokračovat?")
-            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setTitle(getString(R.string.group_results_reset_group_false_title))
+            dialog.setMessage(getString(R.string.group_results_reset_group_false_message))
+            dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                 viewModel.resetGroup()
             }
-            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
             }
             dialog.show()

@@ -15,25 +15,50 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.GroupModel
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Groups firebase adapter
+ *
+ * @property mGroupListener as interface for group click
+ * @constructor
+ *
+ * @param options as firestore recycler options for Group Model
+ */
 class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val mGroupListener: OnGroupClickListener) :
     FirestoreRecyclerAdapter<GroupModel, GroupsFirebaseAdapter.GroupAdapterViewHolder>(options){
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    /**
+     * Group adapter view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     inner class GroupAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        /**
+         * Bind to view holder
+         *
+         * @param group as Group Model
+         */
         fun bindToVH(group: GroupModel) {
             itemView.tv_GroupGeneral_Name.text = group.name
+
+            // Load image
             if(group.photoUrl.isNotEmpty()) {
                 Glide.with(itemView).load(group.photoUrl).into(itemView.CircImageView_GroupGeneral)
             } else {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(itemView.CircImageView_GroupGeneral)
             }
+
+            // Check if current user is owner
             if(group.owner == auth.currentUser.uid) {
                 itemView.ImageView_isAdmin_group_item_general.visibility = View.VISIBLE
             } else {
                 itemView.ImageView_isAdmin_group_item_general.visibility = View.GONE
             }
 
+            // Check status of group and show icons respectively
             when (group.calculated) {
                 Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
                     itemView.ImageView_isLocked_group_item_general.visibility = View.VISIBLE
@@ -49,6 +74,7 @@ class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val m
                 }
             }
 
+            // Setup on click listener
             itemView.setOnClickListener {
                 mGroupListener.onGroupClick(group.id)
             }
@@ -67,9 +93,14 @@ class GroupsFirebaseAdapter(options: FirestoreRecyclerOptions<GroupModel>, val m
         model: GroupModel) {
 
         holder.bindToVH(model)
-        //holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_animation)
     }
 
+
+    /**
+     * On group click listener interface
+     *
+     * @constructor Create empty On group click listener
+     */
     interface OnGroupClickListener {
         fun onGroupClick(groupID: String)
     }

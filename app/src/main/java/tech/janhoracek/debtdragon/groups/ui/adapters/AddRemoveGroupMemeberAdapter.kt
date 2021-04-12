@@ -15,16 +15,36 @@ import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Add remove group memeber adapter
+ *
+ * @property members as array of members
+ * @constructor Create empty Add remove group memeber adapter
+ */
 class AddRemoveGroupMemeberAdapter(var members: List<String>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     var checkedFriends = ArrayList<String>()
 
+    /**
+     * Group member change view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     inner class GroupMemberChangeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val memberName = itemView.tv_member_item_checkbox_name
         val memberImage = itemView.CircImageView_member_item_checkbox
         val checkbox = itemView.chechbox_member_item
 
+        /**
+         * Bind to viewholder
+         *
+         * @param name as member name
+         * @param image as memeber url img
+         * @param id as memeber ID
+         */
         fun bindToVH(name: String, image: String, id: String) {
             memberName.text = name
 
@@ -58,6 +78,7 @@ class AddRemoveGroupMemeberAdapter(var members: List<String>): RecyclerView.Adap
         var name = ""
         var image = ""
 
+        // Gets memeber data from firestore
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener { snapshot, error ->
                 if(error != null) {

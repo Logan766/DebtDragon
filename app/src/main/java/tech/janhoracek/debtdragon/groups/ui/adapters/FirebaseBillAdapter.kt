@@ -16,19 +16,44 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.groups.models.BillModel
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Firebase bill adapter
+ *
+ * @property mBillListener as interface for clicking on bill
+ * @constructor
+ *
+ * @param options as firestore recycler options for Bill Model
+ */
 class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBillListener: OnBillClickListener) :
     FirestoreRecyclerAdapter<BillModel, FirebaseBillAdapter.BillAdapterViewHolder>(options){
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    /**
+     * Bill adapter view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     inner class BillAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val billOwnerName = itemView.tv_payer_BillItem
         val billName = itemView.tv_name_BillItem
         val billOwnerImage = itemView.image_View_BillItem
         val billValue = itemView.tv_value_BillItem
 
+        /**
+         * Bind visible info
+         *
+         * @param ownerID as owner ID
+         * @param ownerName as owner name
+         * @param image as owner img url
+         * @param billID as bill ID
+         * @param name as bill name
+         */
         fun bindVisibleInfo(ownerID: String ,ownerName: String, image: String, billID: String, name: String) {
             itemView.setOnClickListener {
                 mBillListener.onBillClick(billID)
@@ -36,20 +61,26 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
 
             billName.text = name
 
+            // Localize user name
             if(ownerID == auth.currentUser.uid) {
-                billOwnerName.text = "Já"
+                billOwnerName.text = localized(R.string.Me)
             } else {
                 billOwnerName.text = ownerName
             }
 
+            // Load image
             if(image == "null") {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(billOwnerImage)
             } else {
                 Glide.with(itemView).load(image).into(billOwnerImage)
             }
-
         }
 
+        /**
+         * Bind value of bill
+         *
+         * @param summary as bill summary
+         */
         fun bindValue(summary: Int) {
             billValue.text = summary.toString()
         }
@@ -73,6 +104,7 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
         var billSum = 0
 
         GlobalScope.launch(Main) {
+            // Gets data about owner
             db.collection(Constants.DATABASE_USERS).document(model.payer).addSnapshotListener{snapshot, error ->
                 if (error != null) {
                     Log.w("LSTNR", error.message.toString())
@@ -90,7 +122,8 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
             val groupID = snapshots.getSnapshot(position).reference.parent.parent
             val billID = snapshots.getSnapshot(position).id
             var summary = 0
-            //Log.d("UTERY", "billadapter groupID jest: " + groupID!!.id)
+
+            // Gets bill summary
             db.collection(Constants.DATABASE_GROUPS)
                 .document(groupID!!.id)
                 .collection(Constants.DATABASE_BILL)
@@ -106,6 +139,11 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
         }
     }
 
+    /**
+     * On bill click listener interface
+     *
+     * @constructor Create empty On bill click listener
+     */
     interface OnBillClickListener {
         fun onBillClick(billID: String)
     }

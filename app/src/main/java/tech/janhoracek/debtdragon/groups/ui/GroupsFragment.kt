@@ -25,6 +25,11 @@ import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.UserObject
 
 
+/**
+ * Groups fragment
+ *
+ * @constructor Create empty Groups fragment
+ */
 class GroupsFragment : BaseFragment(), GroupsFirebaseAdapter.OnGroupClickListener {
 
     private lateinit var binding: FragmentGroupsBinding
@@ -57,6 +62,10 @@ class GroupsFragment : BaseFragment(), GroupsFirebaseAdapter.OnGroupClickListene
         groupAdapter!!.startListening()
     }
 
+    /**
+     * Set up recycler view for groups
+     *
+     */
     private fun setUpRecyclerView() {
         val query = db.collection(Constants.DATABASE_GROUPS)
             .whereArrayContains("members", UserObject.uid.toString())
@@ -70,10 +79,14 @@ class GroupsFragment : BaseFragment(), GroupsFirebaseAdapter.OnGroupClickListene
         binding.recyclerViewGroups.adapter = groupAdapter
     }
 
+    /**
+     * On group click interface implementation
+     *
+     * @param groupID
+     */
     override fun onGroupClick(groupID: String) {
         val action = GroupsFragmentDirections.actionGroupsFragmentToGroupDetailFragment(groupID)
         findNavController().navigate(action)
-        Log.d("SLUZ", "ID grupy je: " + groupID)
     }
 
 }

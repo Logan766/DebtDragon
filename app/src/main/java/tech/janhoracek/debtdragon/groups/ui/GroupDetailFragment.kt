@@ -36,6 +36,11 @@ import tech.janhoracek.debtdragon.utility.Constants
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 import kotlin.math.abs
 
+/**
+ * Group detail fragment
+ *
+ * @constructor Create empty Group detail fragment
+ */
 class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListener {
     override var bottomNavigationViewVisibility = View.GONE
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -76,21 +81,25 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         appBarLayout = binding.appbarGroupdetail
         groupAvatar = binding.profileImageGroupDetail
 
+        // Get avatar parameters
         avatar_normalwidth = groupAvatar.layoutParams.width
         avatar_normalHeight = groupAvatar.layoutParams.height
         avatar_normalTopMargin = groupAvatar.marginTop
 
         appBarLayout.setExpanded(offsetStatus, false)
 
+        // Offset change listener that update UI accordingly
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val offset = abs(verticalOffset / appBarLayout.totalScrollRange.toFloat())
             updateUI(offset)
         })
 
+        // Set up button to expand upper layout
         binding.lottieArrowUpGroupDetail.setOnClickListener {
             appBarLayout.setExpanded(false, true)
         }
 
+        // Set up app bar back button
         binding.toolbarGroupDetail.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -101,6 +110,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Event listener
         binding.viewmodel!!.eventsFlow
             .onEach {
                 when(it) {
@@ -112,13 +122,14 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 }
             }.observeInLifecycle(viewLifecycleOwner)
 
+        // Set data based on group data
         viewModel.groupModel.observe(viewLifecycleOwner, Observer { groupData->
             setUIbasedOnStatus()
             setUpRecyclerView()
             billAdapter!!.startListening()
         })
 
-
+        // Set up app bar menu
         binding.toolbarGroupDetail.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.manage_members -> {
@@ -133,11 +144,17 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
             true
         }
 
+        // Update UI based on owner status
         viewModel.isCurrentUserOwner.observe(viewLifecycleOwner, Observer { status->
             setOwnerOptions()
         })
     }
 
+    /**
+     * Update UI based on offset position
+     *
+     * @param offset
+     */
     private fun updateUI(offset: Float) {
         groupAvatar.apply {
             this.layoutParams.also {
@@ -166,6 +183,10 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         }
     }
 
+    /**
+     * Set owner options
+     *
+     */
     private fun setOwnerOptions() {
         binding.toolbarGroupDetail.menu.getItem(1).isVisible = viewModel.isCurrentUserOwner.value!!
         if(viewModel.groupModel.value!!.calculated != Constants.DATABASE_GROUPS_STATUS_CALCULATED) {
@@ -179,6 +200,10 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         binding.toolbarGroupDetail.menu.getItem(5).isVisible = !viewModel.isCurrentUserOwner.value!!
     }
 
+    /**
+     * Set up recycler view for group bills
+     *
+     */
     private fun setUpRecyclerView() {
         val query = db.collection(Constants.DATABASE_GROUPS).document(viewModel.groupModel.value!!.id).collection(Constants.DATABASE_BILL).orderBy(Constants.DATABASE_BILL_TIMESTAMP, Query.Direction.DESCENDING)
         val firestoreRecyclerOptions: FirestoreRecyclerOptions<BillModel> = FirestoreRecyclerOptions.Builder<BillModel>()
@@ -191,16 +216,25 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         binding.recyclerViewFragmentGroupDetail.adapter = billAdapter
     }
 
+    /**
+     * On bill click interface implementation
+     *
+     * @param billID as bill ID
+     */
     override fun onBillClick(billID: String) {
         val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToBillDetailFragment(billID)
         findNavController().navigate(action)
-        Log.d("BILL", "ID tohoto uctu jest: " + billID)
     }
 
+    /**
+     * Set UI based on group status
+     *
+     */
     private fun setUIbasedOnStatus() {
         val status = viewModel.groupModel.value!!.calculated
         when (status) {
             "" -> {
+                // Open group
                 binding.FABGroupDetail.show()
                 manageLockButton(false)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = true
@@ -210,6 +244,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 //binding.toolbarGroupDetail.menu.getItem(2).isVisible = true
             }
             Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
+                // Locked group
                 binding.FABGroupDetail.hide()
                 manageLockButton(true)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = false
@@ -219,6 +254,7 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
                 //binding.toolbarGroupDetail.menu.getItem(2).isVisible = true
             }
             else -> {
+                // Calculated group
                 binding.FABGroupDetail.hide()
                 manageLockButton(true)
                 binding.toolbarGroupDetail.menu.getItem(0).isVisible = false
@@ -230,6 +266,11 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         }
     }
 
+    /**
+     * Manages lock button status and icon
+     *
+     * @param locked as group lock status
+     */
     private fun manageLockButton(locked: Boolean) {
         if (locked) {
             binding.toolbarGroupDetail.menu.getItem(1).setIcon(R.drawable.ic_baseline_lock_open_24)
@@ -238,48 +279,52 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         }
     }
 
+    /**
+     * On lock button clicked implementation
+     *
+     */
     private fun onLockButtonClicked() {
         val status = viewModel.groupModel.value!!.calculated
         when (status) {
             "" -> {
-                //Zamknout
+                // Lock group
                 val dialog = AlertDialog.Builder(requireContext())
-                dialog.setTitle("Uzamknout skupinu")
-                dialog.setMessage("Po uzamčení skupiny bude možné položky pouze prohlížet a nebude možné je přidávat ani upravovat. Skupinu je možné kdykoliv opět odemknout. Přejete si pokračovat?")
-                dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setTitle(getString(R.string.group_detail_lock_group_dialog_title))
+                dialog.setMessage(getString(R.string.group_detail_lock_group_dialog_message))
+                dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                     db.collection(Constants.DATABASE_GROUPS)
                         .document(viewModel.groupModel.value!!.id)
                         .update(Constants.DATABASE_GROUPS_STATUS, Constants.DATABASE_GROUPS_STATUS_LOCKED)
                 }
-                dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
                 }
                 dialog.show()
             }
             Constants.DATABASE_GROUPS_STATUS_LOCKED -> {
-                //Odemknout
+                // Unlock group
                 val dialog = AlertDialog.Builder(requireContext())
-                dialog.setTitle("Odemknout skupinu")
-                dialog.setMessage("Skupina bude odemčena a budou možné její úpravy. Ostatní členové budou moci přidávat položky. Přejete si pokračovat?")
-                dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setTitle(getString(R.string.group_detail_unlock_group_dialog_title))
+                dialog.setMessage(getString(R.string.group_detail_unlock_group_dialog_message))
+                dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                     db.collection(Constants.DATABASE_GROUPS)
                         .document(viewModel.groupModel.value!!.id)
                         .update(Constants.DATABASE_GROUPS_STATUS, "")
                 }
-                dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
                 }
                 dialog.show()
             }
             else -> {
-                //Odemknout odstranit vysledky
+                // Unlock group and remove payments
                 val dialog = AlertDialog.Builder(requireContext())
-                dialog.setTitle("Odemknout skupinu s výsledky")
-                dialog.setMessage("Odemčením skupiny budou zpřístupněny úpravy, ale rozpočítané transakce budou ztraceny a bude nutné je znovu spočítat. Chcete pokračovat?")
-                dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setTitle(getString(R.string.group_detail_unlock_group_with_payments_dialog_title))
+                dialog.setMessage(getString(R.string.group_detail_unlock_group_with_payments_dialog_message))
+                dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                     viewModel.unlockCalculatedGroup()
                 }
-                dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
+                dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
 
                 }
                 dialog.show()
@@ -287,46 +332,58 @@ class GroupDetailFragment : BaseFragment(), FirebaseBillAdapter.OnBillClickListe
         }
     }
 
+    /**
+     * On calculate group debts clicked
+     *
+     */
     private fun calculateGroupDebts() {
         if(viewModel.groupModel.value!!.calculated == "") {
             val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Uzamknout a rozpočítat")
-            dialog.setMessage("Skupina bude uzamčena a následně rozpočítány dluhy, proces může chvíli trvat. Chcete pokračovat?")
-            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+            dialog.setTitle(getString(R.string.group_detail_calculate_group_dialog_title))
+            dialog.setMessage(getString(R.string.group_detail_calculate_group_dialog_message))
+            dialog.setPositiveButton(R.string.yes) { dialogInterface: DialogInterface, i: Int ->
                 viewModel.calculateGroup()
             }
-            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-
+            dialog.setNegativeButton(R.string.No) { dialogInterface: DialogInterface, i: Int ->
+                //
             }
             dialog.show()
         } else {
-                viewModel.calculateGroup()
+            viewModel.calculateGroup()
         }
 
     }
 
+    /**
+     * Leave group button click
+     *
+     */
     private fun leaveGroup() {
         val dialog = AlertDialog.Builder(requireContext())
-        dialog.setTitle("Opustit skupinu")
-        dialog.setMessage("Opuštěním skupiny do ní ztratíte přístup, vaše záznamy zůstanou zachovány, ale nebudete mít přístup k výsledkům rozpočítání. Opouštění skupiny před rozpočítáním se nedoporučuje. Chcete přesto pokračovat?")
-        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+        dialog.setTitle(getString(R.string.group_detail_fragment_leave_group_dialog_title))
+        dialog.setMessage(getString(R.string.group_detail_fragment_leave_group_dialog_message))
+        dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
             viewModel.leaveGroup()
         }
-        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-
+        dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+            //
         }
         dialog.show()
     }
 
+    /**
+     * Delete group - deletes current group
+     *
+     */
     private fun deleteGroup() {
         val dialog = AlertDialog.Builder(requireContext())
-        dialog.setTitle("Smazat skupinu")
-        dialog.setMessage("Skupina bude smazána a veškerá data odstraněna. Přejete si pokračovat?")
-        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
+        dialog.setTitle(getString(R.string.group_detail_fragment_delete_group_dialog_title))
+        dialog.setMessage(getString(R.string.group_detail_fragment_delete_group_dialog_message))
+        dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
             viewModel.deleteGroup()
         }
-        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-
+        dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+            //
         }
         dialog.show()
     }

@@ -16,26 +16,47 @@ import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Members adapter
+ *
+ * @property members as list of memebers
+ * @property owner as id of group owner
+ * @constructor Create empty Members adapter
+ */
 class MembersAdapter(var members: List<String>, var owner: String): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
+    /**
+     * Group member view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     class GroupMemberViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val memberName = itemView.tv_member_item_name
         val memberImage = itemView.CircImageView_member_item
         val administrator = itemView.ImageView_administrator_member_item
 
+        /**
+         * Bind to viewholder
+         *
+         * @param name as group name
+         * @param image as img url of group
+         * @param owner as owner ID
+         */
         fun bindToVH(name: String, image: String, owner: Boolean) {
-            Log.d("PICA", "Binduju: " + name)
             memberName.text = name
 
+            // Set administrator options
             if(owner) {
                 administrator.visibility = View.VISIBLE
-
             } else {
                 administrator.visibility = View.GONE
             }
 
+            // Load image
             if(image == "null") {
                 Glide.with(itemView).load(R.drawable.avatar_profileavatar).into(memberImage)
             } else {
@@ -53,11 +74,12 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
         holder: RecyclerView.ViewHolder,
         position: Int) {
 
-        var id = members[position]
+        val id = members[position]
         var name =""
         var image = ""
         var isOwnerOfGroup = false
 
+        // Gets data for members
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(id).addSnapshotListener {snapshot, error ->
                 if(error != null) {
@@ -73,7 +95,6 @@ class MembersAdapter(var members: List<String>, var owner: String): RecyclerView
                 } else {
                     Log.w("DATA", "Current data null")
                 }
-                //Log.d("KURVA", "SIZE JEST: " + snapshot!!.data!!.size)
             }
         }
 
