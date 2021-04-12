@@ -1,6 +1,7 @@
 package tech.janhoracek.debtdragon.signinguser
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
+import tech.janhoracek.debtdragon.utility.Constants
 
 /**
  * Register activity
@@ -57,6 +59,11 @@ class RegisterActivity : AppCompatActivity() {
             btn_RegisterActivity_Register.isEnabled = isChecked
         }
 
+        tv_RegisterActivity_Terms.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PRIVACY_POLICY_LINK))
+            startActivity(intent)
+        }
+
         btn_RegisterActvitiy_AlreadyAccount.setOnClickListener {
             btn_RegisterActvitiy_AlreadyAccount.setTextColor(ContextCompat.getColor(this,
                 R.color.main));
@@ -65,5 +72,7 @@ class RegisterActivity : AppCompatActivity() {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
         }
+
+
     }
 }

@@ -3,6 +3,10 @@ package tech.janhoracek.debtdragon.utility
 object Constants {
     const val PASSWORD_LENGTH = 6
 
+    const val PRIVACY_POLICY_LINK = "http://www.debtdragon.janhoracek.tech/privacy-policy/"
+    const val ABOUT_APP_LINK = "http://www.debtdragon.janhoracek.tech/"
+    const val CONTACT_DEV_LINK = "http://debtdragon.janhoracek.tech/#contact"
+
     const val DATABASE_REQUESTS = "Requests"
     const val DATABASE_FRIENDSHIPS = "Friendships"
     const val DATABASE_FRIENDSHIPS_UID = "uid"

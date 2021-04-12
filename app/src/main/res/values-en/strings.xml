@@ -7,7 +7,7 @@
     <string name="password_hint">123456</string>
     <string name="login_button_text">Log in</string>
     <string name="LoginSuccessful">Login successful</string>
-    <string name="terms_and_conditions">"<u> Privacy policy</u>  "</string>
+    <string name="terms_and_conditions">"<u>Privacy policy</u>  "</string>
     <string name="password_not_same">Passwords do not match</string>
     <string name="passwor_must_have">"Password must have at least"</string>
     <string name="number_of_characters">"characters"</string>
@@ -126,7 +126,7 @@
     <string name="register_full_name">Full name</string>
     <string name="register_password_again">Password again</string>
     <string name="registration_register_title">Registration</string>
-    <string name="registration_accept_terms">I agree with</string>
+    <string name="registration_accept_terms">"I agree with "</string>
     <string name="register_register_button">Register</string>
     <string name="register_btn_already_account">I already have an account</string>
     <string name="add_friend_dialog_title">Add a friend</string>

@@ -3,6 +3,7 @@ package tech.janhoracek.debtdragon.profile.ui
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import tech.janhoracek.debtdragon.databinding.FragmentProfileBinding
 import tech.janhoracek.debtdragon.profile.viewmodels.ProfileViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
+import tech.janhoracek.debtdragon.utility.Constants
 
 /**
  * Profile fragment
@@ -67,6 +69,16 @@ class ProfileFragment : BaseFragment() {
                 //.compress(1024)	//Final image size will be less than 1 MB(Optional)
                 //.maxResultSize(1080, 1080) //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
+        }
+
+        binding.contactAuthorProfile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.CONTACT_DEV_LINK))
+            startActivity(intent)
+        }
+
+        binding.btnAboutApplicationProfile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.ABOUT_APP_LINK))
+            startActivity(intent)
         }
 
         val imagePopup = ImagePopup(requireContext())

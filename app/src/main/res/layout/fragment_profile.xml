@@ -177,7 +177,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_about_application_profile"
-                    android:onClick="@{view -> Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_aboutAppFragment)}"
+
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

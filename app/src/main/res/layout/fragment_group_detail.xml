@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                        android:text="@{Celkem utraceno  + viewmodel.groupSummary + @string/currency}"/>
+                        android:text="@{@string/group_detail_summary_title  + viewmodel.groupSummary + @string/currency}"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_show_results_group_detail"

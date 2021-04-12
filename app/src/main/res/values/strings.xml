@@ -126,7 +126,7 @@
     <string name="register_full_name">Celé jméno</string>
     <string name="register_password_again">Heslo znovu</string>
     <string name="registration_register_title">Registrace</string>
-    <string name="registration_accept_terms">Souhlasím s </string>
+    <string name="registration_accept_terms">"Souhlasím s "</string>
     <string name="register_register_button">Registrovat</string>
     <string name="register_btn_already_account">Již mám účet</string>
     <string name="add_friend_dialog_title">Přidat přítele</string>
