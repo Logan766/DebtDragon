@@ -20,6 +20,11 @@ import tech.janhoracek.debtdragon.profile.viewmodels.ChangeAccountViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Change account fragment
+ *
+ * @constructor Create empty Change account fragment
+ */
 class ChangeAccountFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentChangeAccountBinding
@@ -42,14 +47,13 @@ class ChangeAccountFragment : BaseFragment() {
 
         binding.fabDeleteAccount.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Odstranit účet")
-            dialog.setMessage("Váš účet bude odebrán z aplikace a vaši přátelé již nebudou moci generovat QR kódy pro platby. Přejete si pokračovat?")
-            dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
-                Log.d("CAJ", "Na ano!")
+            dialog.setTitle(getString(R.string.change_account_fragment_delete_account_title))
+            dialog.setMessage(getString(R.string.change_account_fragment_delete_account_message))
+            dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                 viewModel.deleteAccount()
             }
-            dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-                Log.d("CAJ", "Nope")
+            dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+                //
             }
             dialog.show()
         }
@@ -63,7 +67,7 @@ class ChangeAccountFragment : BaseFragment() {
             .onEach {
                 when(it) {
                     ChangeAccountViewModel.Event.AccountChanged -> {
-                        Toast.makeText(context, "Účet uložen", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, getString(R.string.change_account_fragment_account_added), Toast.LENGTH_LONG).show()
                         findNavController().navigateUp()
                     }
                 }

@@ -9,6 +9,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
@@ -32,6 +34,9 @@ class ChangeNameViewModel: BaseViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    /**
+     * Sets fata for change name fragment
+     */
     init {
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).get().addOnSuccessListener { document ->
@@ -52,9 +57,8 @@ class ChangeNameViewModel: BaseViewModel() {
                 db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update(Constants.DATABASE_USER_NAME, userName.value).await()
                 eventChannel.send(Event.NameChanged)
             }
-            Log.d("CAJ", "Muzeme menit jmena")
         } else {
-            _nameError.value = "Jméno nemůže být prázdné"
+            _nameError.value = localized(R.string.change_name_view_model_name_cannot_be_empty)
         }
     }
 

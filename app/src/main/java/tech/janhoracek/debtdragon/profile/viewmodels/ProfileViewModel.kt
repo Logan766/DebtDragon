@@ -13,7 +13,11 @@ import kotlinx.coroutines.tasks.await
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
-
+/**
+ * Profile view model
+ *
+ * @constructor Create empty Profile view model
+ */
 class ProfileViewModel : BaseViewModel() {
 
     private val _userName = MutableLiveData<String>("Loading")
@@ -36,14 +40,14 @@ class ProfileViewModel : BaseViewModel() {
         docRef = db.collection("Users").document(auth.currentUser.uid)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
-                    Log.w("OHEN", "Listening failed: " + e)
+                    Log.w("LSTNR", "Listening failed: " + e)
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    Log.w("OHEN", "Current data: ${snapshot.data}")
+                    Log.w("DATA", "Current data: ${snapshot.data}")
                     _userName.value = snapshot.data?.get("name").toString()
                 } else {
-                    Log.w("OHEN", "Current data null")
+                    Log.w("DATA", "Current data null")
                 }
 
 
@@ -51,52 +55,42 @@ class ProfileViewModel : BaseViewModel() {
                     var url: Uri? = null
                     try {
                         url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
-                        Log.d("OHEN", "URL obrazku je: " + url.toString())
                         _userImage.postValue(url.toString())
                     } catch (e: StorageException) {
-                        Log.d("OHEN", "Nemame obrazek")
+                        Log.d("ERROR", "No image")
                     }
-                    Log.d("OHEN", "Posilam do userImage: " + url.toString().isBlank())
-                    //_userImage.postValue(url.toString())
                 }
-
-                /*val firebaseUser = FirebaseAuth.getInstance().currentUser
-                if (firebaseUser.providerData.size > 0) {
-                    //Prints Out google.com for Google Sign In, prints facebook.com for Facebook
-                    Log.d("PERMONIK", "Provider: " + firebaseUser.providerData[firebaseUser.providerData.size - 1].providerId)
-                }*/
-
-
-
-                //Log.d("PERMONIK", "Auth provider jest: " + auth.currentUser.providerData[auth.currentUser.providerData.size - 1].providerId)
 
             }
 
 
     }
 
+    /**
+     * Click logout
+     *
+     */
     fun clickLogout() {
-        //onCleared()
         auth.signOut()
         _logOutStatus.value = true
     }
 
     public override fun onCleared() {
-        Log.d("PIRAT", "JSEM ZNICENEJ!")
-        //docRef.remove()
         super.onCleared()
     }
 
+    /**
+     * Saves profile image
+     *
+     * @param image as byte arry of profile image
+     */
     fun saveProfileImage(image: ByteArray) {
         Log.d("DOMBY", "Zkusim nahrat obrzek")
         viewModelScope.launch(IO) {
             try {
                 storage.reference.child("/images/${auth.currentUser.uid}/profile.jpg").putBytes(image).await()
-                Log.d("DOMBY", "Po nahrani")
                 val url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
-                Log.d("DOMBY", "Stahuju URL ktery je: " + url)
                 db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("url", url.toString())
-                Log.d("DOMBY", "Update URL")
             } catch (e: Exception) {
                 Log.d("STRG", "Picture upload error: " + e.message.toString())
             }

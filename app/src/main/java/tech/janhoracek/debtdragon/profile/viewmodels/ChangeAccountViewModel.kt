@@ -9,10 +9,17 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import tech.janhoracek.debtdragon.R
+import tech.janhoracek.debtdragon.localized
 import tech.janhoracek.debtdragon.profile.models.UserModel
 import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
+/**
+ * Change account view model
+ *
+ * @constructor Create empty Change account view model
+ */
 class ChangeAccountViewModel: BaseViewModel() {
 
     val ibanAccount = MutableLiveData<String>()
@@ -32,6 +39,9 @@ class ChangeAccountViewModel: BaseViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    /**
+     * Set data for change account fragment
+     */
     init {
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).addSnapshotListener { snapshot, error ->
@@ -46,10 +56,12 @@ class ChangeAccountViewModel: BaseViewModel() {
                 }
             }
         }
-        //ibanAccount.value = UserObject.account
-        Log.d("PERMONIK", "Ucet je: " + ibanAccount.value)
     }
 
+    /**
+     * Save account to firestore
+     *
+     */
     fun saveAccount() {
         if(isValidIban(ibanAccount.value!!)) {
             _accountError.value = ""
@@ -57,12 +69,17 @@ class ChangeAccountViewModel: BaseViewModel() {
                 db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("account", ibanAccount.value).await()
                 eventChannel.send(Event.AccountChanged)
             }
-            Log.d("PERMONIK", "Je to validni IBAN")
         } else {
-            _accountError.value = "Účet není ve formátu IBAN"
+            _accountError.value = localized(R.string.change_account_view_model_account_is_not_in_iban)
         }
     }
 
+    /**
+     * Check if account is in valid IBAN format
+     *
+     * @param iban as iban of account
+     * @return true if valid
+     */
     private fun isValidIban(iban: String): Boolean {
         if (!"^[0-9A-Z]*\$".toRegex().matches(iban)) {
             return false
@@ -83,6 +100,10 @@ class ChangeAccountViewModel: BaseViewModel() {
 
     }
 
+    /**
+     * Delete account
+     *
+     */
     fun deleteAccount() {
         GlobalScope.launch(IO) {
             db.collection(Constants.DATABASE_USERS).document(auth.currentUser.uid).update("account", "").await()

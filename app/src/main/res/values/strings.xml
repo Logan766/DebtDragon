@@ -117,4 +117,15 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="group_debt_view_model_group_debt_select_debtor">Vyberte dlužníka</string>
     <string name="group_debt_view_model_create_debt_debt_from_group">\"Dluh ze sk. \"</string>
     <string name="group_debt_view_model_group_reseted">Skupina resetována</string>
+    <string name="change_account_fragment_delete_account_title">Odstranit účet</string>
+    <string name="change_account_fragment_delete_account_message">Váš účet bude odebrán z aplikace a vaši přátelé již nebudou moci generovat QR kódy pro platby. Přejete si pokračovat?</string>
+    <string name="change_account_fragment_account_added">Účet uložen</string>
+    <string name="change_name_fragment_name_changed">Jméno změněno</string>
+    <string name="change_password_fragment_change_password_title">Změnit heslo</string>
+    <string name="change_password_fragment_change_password_message">Po změně hesla budete odhlášeni a bude nutné se znovu přihlásit novým heslem. Přejete si pokračovat?</string>
+    <string name="change_account_view_model_account_is_not_in_iban">Účet není ve formátu IBAN</string>
+    <string name="change_name_view_model_name_cannot_be_empty">Jméno nemůže být prázdné</string>
+    <string name="change_password_view_model_something_went_wrong">Něco se nepovedlo</string>
+    <string name="change_password_view_model_password_cant_be_empty">Heslo nemůže být prázdné</string>
+    <string name="change_password_view_model_entered_password_is_invalid">Zadané heslo není správné</string>
 </resources>

@@ -17,6 +17,11 @@ import tech.janhoracek.debtdragon.profile.viewmodels.ChangeNameViewModel
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Change name fragment
+ *
+ * @constructor Create empty Change name fragment
+ */
 class ChangeNameFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentChangeNameBinding
@@ -47,7 +52,7 @@ class ChangeNameFragment : BaseFragment() {
                 when(it) {
                     ChangeNameViewModel.Event.NameChanged -> {
                         (activity as MainActivity).hideLoading()
-                        Toast.makeText(requireContext(), "Jméno změněno", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), getString(R.string.change_name_fragment_name_changed), Toast.LENGTH_LONG).show()
                         findNavController().navigateUp()
                     }
                     ChangeNameViewModel.Event.ShowLoading -> {(activity as MainActivity).showLoading()}

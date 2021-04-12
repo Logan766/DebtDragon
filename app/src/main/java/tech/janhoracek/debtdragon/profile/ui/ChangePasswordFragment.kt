@@ -23,11 +23,15 @@ import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
 import tech.janhoracek.debtdragon.utility.observeInLifecycle
 
+/**
+ * Change password fragment
+ *
+ * @constructor Create empty Change password fragment
+ */
 class ChangePasswordFragment : BaseFragment() {
     override var bottomNavigationViewVisibility = View.GONE
     private lateinit var binding: FragmentChangePasswordBinding
     val viewModel by viewModels<ChangePasswordViewModel>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +46,6 @@ class ChangePasswordFragment : BaseFragment() {
         binding = FragmentChangePasswordBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
-
-        binding.btnChangePasswordOk.setOnClickListener {
-            //viewModel.tryToChangePassword()
-        }
 
         return binding.root
     }
@@ -66,14 +66,13 @@ class ChangePasswordFragment : BaseFragment() {
                     is ChangePasswordViewModel.Event.ShowToast -> { Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show() }
                     ChangePasswordViewModel.Event.ReadyToChange -> {
                         val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setTitle("Změnit heslo")
-                        dialog.setMessage("Po změně hesla budete odhlášeni a bude nutné se znovu přihlásit novým heslem. Přejete si pokračovat?")
-                        dialog.setPositiveButton("Ano") { dialogInterface: DialogInterface, i: Int ->
-                            Log.d("CAJ", "Na ano!")
+                        dialog.setTitle(getString(R.string.change_password_fragment_change_password_title))
+                        dialog.setMessage(getString(R.string.change_password_fragment_change_password_message))
+                        dialog.setPositiveButton(getString(R.string.yes)) { dialogInterface: DialogInterface, i: Int ->
                             viewModel.changePassword()
                         }
-                        dialog.setNegativeButton("Ne") { dialogInterface: DialogInterface, i: Int ->
-                            Log.d("CAJ", "Nope")
+                        dialog.setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int ->
+                            //
                         }
                         dialog.show()
                     }

@@ -20,17 +20,18 @@ import tech.janhoracek.debtdragon.profile.viewmodels.ProfileViewModel
 import tech.janhoracek.debtdragon.signinguser.LoginActivity
 import tech.janhoracek.debtdragon.utility.BaseFragment
 
+/**
+ * Profile fragment
+ *
+ * @constructor Create empty Profile fragment
+ */
 class ProfileFragment : BaseFragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var viewModel: ProfileViewModel
-    //private val viewModel: ProfileViewModel by navGraphViewModels(R.id.profile)
-    //private lateinit var viewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-
     }
 
     override fun onCreateView(
@@ -43,17 +44,15 @@ class ProfileFragment : BaseFragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // Logout button
         viewModel.logOutStatus.observe(viewLifecycleOwner, Observer { status ->
             if (status == true) {
                 val intentLoginActivity = Intent(activity, LoginActivity::class.java)
                 startActivity(intentLoginActivity)
                 requireActivity().viewModelStore.clear()
                 requireActivity().finish()
-
             }
         })
-
-
 
         return binding.root
     }
@@ -61,7 +60,6 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().window.statusBarColor = Color.parseColor("#120f38")
-
 
         binding.fabChangeProfilePic.setOnClickListener {
             ImagePicker.with(this)
@@ -82,26 +80,18 @@ class ProfileFragment : BaseFragment() {
 
     }
 
+    // Callback for Image Picker
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == ImagePicker.REQUEST_CODE) {
             //Image Uri will not be null for RESULT_OK
-            Log.d("DOMBY", "Result jest ok")
             val fileUri = data?.data
-            //nastaví obrá
-            //ci_WarehouseProfileImage_FragmentCreateWarehouse.setImageURI(fileUri)
 
             var inputstream = requireContext().contentResolver.openInputStream(fileUri!!)
             var byteArray = inputstream!!.readBytes()
-            Log.d("DOMBY", "Udelal jsem stream")
             viewModel.saveProfileImage(byteArray)
 
-//            You can get File object from intent
-//            val file:File = ImagePicker.getFile(data)!!
-//
-//            You can also get File Path from intent
-//            val filePath:String = ImagePicker.getFilePath(data)!!
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(requireContext(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
         } else {
@@ -112,7 +102,6 @@ class ProfileFragment : BaseFragment() {
 
 
     override fun onDestroy() {
-        Log.d("PIRAT", "FRAGMENT JE ZNICENEJ!")
         //viewModel.onCleared()
         super.onDestroy()
     }
