@@ -3,6 +3,12 @@ package tech.janhoracek.debtdragon.utility
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.localized
 
+/**
+ * Transform category to database string
+ *
+ * @param category as name of category
+ * @return string as database name of category
+ */
 fun transformCategoryToDatabaseString(category: String):String {
     return when(category) {
         localized(R.string.category_food) -> Constants.DATABASE_DEBT_CATEGORY_FOOD
@@ -18,6 +24,12 @@ fun transformCategoryToDatabaseString(category: String):String {
     }
 }
 
+/**
+ * Transform database string to category
+ *
+ * @param category as database name of category
+ * @return string as name of category
+ */
 fun transformDatabaseStringToCategory(category: String):String {
     return when(category) {
         Constants.DATABASE_DEBT_CATEGORY_FOOD -> localized(R.string.category_food)

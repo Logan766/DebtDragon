@@ -10,12 +10,17 @@ import com.google.firebase.auth.FirebaseAuth
 import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 
+/**
+ * Splash screen activity
+ *
+ * @constructor Create empty Splash screen activity
+ */
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //vypne dark mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //turn off dark mode
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
@@ -23,9 +28,8 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     /**
-     * Kontroluje zda li je uzivatel prihlasen
-     * ano - pokracuje na hlavni aktivitu
-     * ne - presmerovan na prihlasovani
+     * Check if user is already logged in and reacts on that
+     *
      */
     private fun checkIfAlreadyLoggedIn() {
         mAuth = FirebaseAuth.getInstance()

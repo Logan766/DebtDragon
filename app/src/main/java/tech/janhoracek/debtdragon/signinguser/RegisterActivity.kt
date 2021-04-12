@@ -21,6 +21,11 @@ import tech.janhoracek.debtdragon.MainActivity
 import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.ActivityRegisterBinding
 
+/**
+ * Register activity
+ *
+ * @constructor Create empty Register activity
+ */
 class RegisterActivity : AppCompatActivity() {
     private val passwordLength: Int = 5
 

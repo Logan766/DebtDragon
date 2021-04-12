@@ -12,6 +12,11 @@ import tech.janhoracek.debtdragon.utility.BaseViewModel
 import tech.janhoracek.debtdragon.utility.Constants
 
 
+/**
+ * Register view model
+ *
+ * @constructor Create empty Register view model
+ */
 class RegisterViewModel() : BaseViewModel() {
 
     val nameContent = MutableLiveData<String>("")
@@ -34,25 +39,29 @@ class RegisterViewModel() : BaseViewModel() {
     private val _registerResult = MutableLiveData<String>()
     val registerResult: LiveData<String> get() = _registerResult
 
-    //var registerResult2 = authRepository.registerResult
-
-
+    /**
+     * On register button click
+     *
+     */
     fun onRegisterClick() {
         if (validForRegistration()) {
             //authRepository.registerUser(nameContent.value!!,emailContent.value!!,password1Content.value!!)
             auth.createUserWithEmailAndPassword(emailContent.value, password1Content.value).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     createUser(auth.currentUser.uid, nameContent.value!!, emailContent.value!!)
-                    Log.d("TIGER", "Success creating user in Auth")
                 } else {
                     _registerResult.value = task.exception!!.message!!.toString()
-                    Log.d("TIGER", task.exception!!.message.toString())
                 }
             }
         }
 
     }
 
+    /**
+     * Validate data for registration
+     *
+     * @return true if valid
+     */
     private fun validForRegistration(): Boolean {
         val nameValidation = validateName()
         val emailValidation = validateEmail()
@@ -62,6 +71,11 @@ class RegisterViewModel() : BaseViewModel() {
         return nameValidation && emailValidation && samePasswordValidation && lengthPasswordValidation
     }
 
+    /**
+     * Validate name
+     *
+     * @return true if valid
+     */
     private fun validateName(): Boolean {
         return if (nameContent.value?.isEmpty()!!) {
             _nameError.value = localized(R.string.type_in_name)
@@ -72,6 +86,11 @@ class RegisterViewModel() : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate email
+     *
+     * @return true if valid
+     */
     private fun validateEmail(): Boolean {
         return if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailContent.value).matches()) {
             _emailError.value = localized(R.string.mail_is_not_in_form)
@@ -82,6 +101,11 @@ class RegisterViewModel() : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate password length
+     *
+     * @return true if valid
+     */
     private fun validatePasswordLength(): Boolean {
         return if (!(password1Content.value?.length!! >= Constants.PASSWORD_LENGTH)) {
             _passwordErrorLength.value =
@@ -94,6 +118,11 @@ class RegisterViewModel() : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate passwords are same
+     *
+     * @return true if passwords are same
+     */
     private fun validateSamePassword(): Boolean {
         return if (password1Content.value != password2Content.value) {
             _passwordErrorSimilarity.value = localized(R.string.password_not_same)
@@ -104,6 +133,13 @@ class RegisterViewModel() : BaseViewModel() {
         }
     }
 
+    /**
+     * Create user in firestore
+     *
+     * @param uid as user ID
+     * @param name as user name
+     * @param email as user email
+     */
     private fun createUser(uid: String, name: String, email: String) {
         val user = HashMap<String, String>()
         user["uid"] = auth.currentUser.uid
@@ -111,15 +147,11 @@ class RegisterViewModel() : BaseViewModel() {
         user["email"] = email
         db.collection("Users").document(uid).set(user)
             .addOnSuccessListener {
-                //_registerResult.value = context.getString(R.string.registration_succesful)
                 _registerResult.value = localized(R.string.registration_succesful)
-                Log.d("TIGER", "Success creating user in database")
             }
             .addOnFailureListener {
-                //_registerResult.value = "Registrace neúspěšná"
                 _registerResult.value = localized(R.string.registration_failed)
                 auth.currentUser.delete()
-                Log.d("TIGER", "Failure creating user in database")
             }
     }
 

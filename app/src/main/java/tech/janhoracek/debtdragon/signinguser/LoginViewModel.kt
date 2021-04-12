@@ -43,6 +43,10 @@ class   LoginViewModel : BaseViewModel() {
     private val _status = MutableLiveData<String>()
     val status: LiveData<String> get() = _status
 
+    /**
+     * On login click reaction
+     *
+     */
     fun onLoginClick() {
         if(validToLogin()) {
             auth.signInWithEmailAndPassword(emailContent.value, passwordContent.value).addOnCompleteListener { task ->
@@ -56,12 +60,22 @@ class   LoginViewModel : BaseViewModel() {
     }
 
 
+    /**
+     * Validate login data
+     *
+     * @return true if valid
+     */
     private fun validToLogin() : Boolean {
         val emailValidation = validateEmail()
         val passwordValidation = validatePassword()
         return emailValidation && passwordValidation
     }
 
+    /**
+     * Validate email
+     *
+     * @return true if valid
+     */
     private fun validateEmail() : Boolean {
         return if (emailContent.value == "") {
             _emailError.value = localized(R.string.mail_cannot_be_empty)
@@ -75,6 +89,11 @@ class   LoginViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Validate password
+     *
+     * @return true if valid
+     */
     private fun validatePassword() : Boolean {
         return if (passwordContent.value == "") {
             _passwordError.value = localized(R.string.password_cannot_be_empty)
@@ -85,15 +104,17 @@ class   LoginViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Firebase auth with google
+     *
+     * @param idToken as login token
+     */
     fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        Log.d("LADIME", "Jdeme prihlasovat")
         val job = GlobalScope.launch(Dispatchers.IO) {
             try {
-                Log.d("LADIME", "Ted se prihlasuju pres google")
                 auth.signInWithCredential(credential).await()
             } catch (e: FirebaseAuthException) {
-                Log.d("LADIME", "Google spadnul")
                 _loginResult.postValue(e.message)
                 return@launch
             }
@@ -101,16 +122,13 @@ class   LoginViewModel : BaseViewModel() {
             var docRef = db.collection("Users").document(auth.currentUser.uid)
             val doesExists = docRef.get().await()
             if (doesExists.exists()) {
-                Log.d("LADIME", "Skipuj vsechno")
                 _loginResult.postValue(localized(R.string.log_in_successful))
                 return@launch
             }
 
             try {
                 saveUserProfilePhotoFromGoogleAuth().await()
-                Log.d("LADIME", "Ted nahravam obrazek s vysledkem: ")
             } catch (e: StorageException) {
-                Log.d("LADIME", "Obrazek spadnul")
                 //Toast.makeText(applicationContext, e.message.toString(), Toast.LENGTH_LONG).show()
                 auth.currentUser.delete()
                 _loginResult.postValue(e.message)
@@ -119,24 +137,25 @@ class   LoginViewModel : BaseViewModel() {
 
             try {
                 createUserInDatabase().await()
-                Log.d("LADIME", "Ted se vyvarim zaznam v databazi")
             } catch (e: FirebaseFirestoreException) {
-                Log.d("LADIME", "Databaze spadla")
                 _loginResult.postValue(e.message)
                 auth.currentUser.delete()
                 return@launch
             }
-            Log.d("LADIME", "Probehlo to")
             _loginResult.postValue(localized(R.string.log_in_successful))
         }
 
         GlobalScope.launch(Dispatchers.Main) {
             job.join()
-            Log.d("LADIME", "jobDone")
         }
 
     }
 
+    /**
+     * Create user in database
+     *
+     * @return task result
+     */
     suspend private fun createUserInDatabase(): Task<Void> {
         val user = HashMap<String, String>()
         storage.reference
@@ -145,9 +164,7 @@ class   LoginViewModel : BaseViewModel() {
         try {
             url = storage.reference.child("images/" + auth.currentUser.uid + "/profile.jpg").downloadUrl.await()
             user["url"] = url.toString()
-            Log.d("LADIME", "Url obrazku je: " + url.toString())
         } catch (e: StorageException) {
-            Log.d("LADIME", "Nemame obrazek")
         }
 
         user["uid"] = auth.currentUser.uid
@@ -156,6 +173,11 @@ class   LoginViewModel : BaseViewModel() {
         return db.collection("Users").document(auth.currentUser.uid).set(user)
     }
 
+    /**
+     * Save user profile photo from google auth
+     *
+     * @return task result
+     */
     suspend private fun saveUserProfilePhotoFromGoogleAuth(): UploadTask {
         var userImageURL = auth.currentUser.photoUrl.toString()
         var storageRef = storage.reference
@@ -167,6 +189,12 @@ class   LoginViewModel : BaseViewModel() {
         return photoRef.putBytes(data)
     }
 
+    /**
+     * Validate reset email
+     *
+     * @param email as email to send reset password
+     * @return true if valid
+     */
     fun validateResetEmail(email: String) : Pair<Boolean, String> {
         var error = ""
         return if (email == "") {
@@ -181,13 +209,17 @@ class   LoginViewModel : BaseViewModel() {
         }
     }
 
+    /**
+     * Send reset password
+     *
+     * @param email as email to send reset password
+     */
     fun sendResetPassword(email: String) {
-        Log.d("CTVRTEK", "Odesilam reset na mail: " + email)
         auth.sendPasswordResetEmail(email).addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.d("CTVRTEK", "Uspesne odeslanej reset mail")
+                Log.d("RSTEMAIL", "Reset email sent")
             } else {
-                Log.d("CTVRTEK", "Neco se podelalo")
+                Log.d("RSTEMAIL", "Something went wrong")
             }
         }
     }

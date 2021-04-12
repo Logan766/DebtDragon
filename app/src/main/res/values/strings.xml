@@ -128,4 +128,5 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="change_password_view_model_something_went_wrong">Něco se nepovedlo</string>
     <string name="change_password_view_model_password_cant_be_empty">Heslo nemůže být prázdné</string>
     <string name="change_password_view_model_entered_password_is_invalid">Zadané heslo není správné</string>
+    <string name="email_for_password_reset_sent">E-mail pro reset hesla byl odeslán</string>
 </resources>

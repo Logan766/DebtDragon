@@ -1,5 +1,14 @@
 package tech.janhoracek.debtdragon.utility
 
+/**
+ * Combination generator
+ *
+ * @param T as any
+ * @property items as list of items
+ * @constructor
+ *
+ * @param choose combination number
+ */
 class CombinationGenerator<T>(private val items: List<T>, choose: Int = 1) : Iterator<List<T>>, Iterable<List<T>> {
     private val indices = Array(choose) { it }
     private var first = true
@@ -17,7 +26,7 @@ class CombinationGenerator<T>(private val items: List<T>, choose: Int = 1) : Ite
     }.any()
 
     override fun next(): List<T> {
-        if (!hasNext()) error("AINT NO MORE WHA HAPPEN")
+        if (!hasNext()) error("No more")
         if (!first) {
             incrementAndCarry()
         } else
@@ -25,6 +34,10 @@ class CombinationGenerator<T>(private val items: List<T>, choose: Int = 1) : Ite
         return List(indices.size) { items[indices[it]] }
     }
 
+    /**
+     * Increment and carry
+     *
+     */
     private fun incrementAndCarry() {
         var carry = false
         var place = indices.lastIndex

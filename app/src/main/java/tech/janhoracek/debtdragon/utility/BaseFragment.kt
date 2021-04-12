@@ -5,6 +5,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import tech.janhoracek.debtdragon.MainActivity
 
+/**
+ * Base fragment
+ *
+ * @constructor Create empty Base fragment
+ */
 abstract class BaseFragment : Fragment() {
     lateinit var mainActivity: MainActivity
     protected open var bottomNavigationViewVisibility = View.VISIBLE

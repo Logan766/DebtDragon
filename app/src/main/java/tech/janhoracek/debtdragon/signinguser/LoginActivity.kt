@@ -33,6 +33,11 @@ import tech.janhoracek.debtdragon.R
 import tech.janhoracek.debtdragon.databinding.ActivityLoginBinding
 
 
+/**
+ * Login activity
+ *
+ * @constructor Create empty Login activity
+ */
 class LoginActivity : AppCompatActivity() {
 
     companion object {
@@ -49,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_login)
 
         loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)
@@ -61,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
             this.viewmodel = loginViewModel
         }
 
+        // Create Google sign in intent
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -72,9 +77,7 @@ class LoginActivity : AppCompatActivity() {
 
         btn_google_sign_in.setOnClickListener {
             showLoading()
-            ///Toast.makeText(this, "COVER JE TU", Toast.LENGTH_LONG).show()
             signIn()
-            ///Toast.makeText(this, "COVER JE PRYC", Toast.LENGTH_LONG).show()
         }
 
         loginViewModel.loginResult.observe(this, Observer { result ->
@@ -91,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         val callback = onBackPressedDispatcher.addCallback(this) {
-            //Toast.makeText(applicationContext, "Mackas back", Toast.LENGTH_LONG).show()
+            //
         }
 
         btn_LoginActivity_register.setOnClickListener {
@@ -107,11 +110,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sign in with Google
+     *
+     */
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
+    // Call back from Google sign in
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
@@ -150,23 +158,34 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Show loading overlay
+     *
+     */
     private fun showLoading() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCover.visibility = VISIBLE
     }
 
+    /**
+     * Hide loading overlay
+     *
+     */
     private fun hideLoading() {
         loadingCover.visibility = GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
+    /**
+     * Forgot password dialog show
+     *
+     */
     private fun forgotPasswordDialogShow() {
         val factory = LayoutInflater.from(this)
         val deleteDialogView: View = factory.inflate(R.layout.dialog_forgotten_password, null)
         val deleteDialog: AlertDialog = AlertDialog.Builder(this).create()
         deleteDialog.setView(deleteDialogView)
         deleteDialogView.btn_cancel_forgotten_password_dialog.setOnClickListener {
-            Log.d("CTVRTEK", "Spis ne")
             deleteDialog.dismiss()
         }
         deleteDialogView.btn_reset_forgotten_password_dialog.setOnClickListener {
@@ -176,7 +195,7 @@ class LoginActivity : AppCompatActivity() {
                 deleteDialogView.textInputLayout_forgotten_password_dialog.error = validation.second
                 loginViewModel.sendResetPassword(email)
                 deleteDialog.dismiss()
-                Toast.makeText(this, "E-mail pro reset hesla byl odeslán", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.email_for_password_reset_sent), Toast.LENGTH_LONG).show()
             } else {
                 deleteDialogView.textInputLayout_forgotten_password_dialog.error = validation.second
             }

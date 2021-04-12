@@ -21,10 +21,13 @@ import tech.janhoracek.debtdragon.utility.UserObject
 private lateinit var mAuth: FirebaseAuth
 private lateinit var username: String
 
+/**
+ * Main activity
+ *
+ * @constructor Create empty Main activity
+ */
 class MainActivity : AppCompatActivity() {
-    //////////////
     private var currentNavController: LiveData<NavController>? = null
-    /////////////////
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
@@ -32,43 +35,35 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main)
-        ////////////////
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         }
 
 
-        ////////////////
-
-        ////pokus////
-
+        // Load current user to object
         GlobalScope.launch(IO) {
             db.collection(tech.janhoracek.debtdragon.utility.Constants.DATABASE_USERS).document(auth.currentUser.uid).addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.w("LSTNR", error.message.toString())
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    Log.d("PRASE", "Tady to maka")
                     snapshot.toObject(UserObject::class.java)
-                    Log.d("PRASE", "Moje jmeno jest: " + UserObject.name)
                 } else {
                     Log.w("DATA", "Current data null")
                 }
             }
         }
 
-
-        ////konec - pokus ////////////
-
-        /*val bottomNavigationView = bottomNavigationViewMain //bottomNavigationViewMain
-            val navController = findNavController(R.id.fragment)
-
-
-            bottomNavigationView.setupWithNavController(navController)*/
     }
 
 
-
+    /**
+     * On restore instance state
+     *
+     * Navigation extension function
+     *
+     * @param savedInstanceState
+     */
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         // Now that BottomNavigationBar has restored its instance state
@@ -76,14 +71,18 @@ class MainActivity : AppCompatActivity() {
         // BottomNavigationBar with Navigation
         setupBottomNavigationBar()
     }
-    //////////////////
 
 
+    /**
+     * Set bottom navigation visibility
+     *
+     * @param visibility
+     */
     fun setBottomNavigationVisibility(visibility: Int) {
         bottomNavigationViewMain.visibility = visibility
     }
 
-    /////////////////////
+
     /**
      * Called on first creation and when restoring state.
      */
@@ -112,14 +111,21 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false
     }
-    ////////////////
 
 
+    /**
+     * Show loading overlay
+     *
+     */
     fun showLoading() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         loadingCover.visibility = View.VISIBLE
     }
 
+    /**
+     * Hide loading overlay
+     *
+     */
     fun hideLoading() {
         loadingCover.visibility = View.GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)

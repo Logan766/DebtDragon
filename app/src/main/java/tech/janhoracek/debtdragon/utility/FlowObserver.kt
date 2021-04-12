@@ -12,7 +12,16 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-
+/**
+ * Flow observer
+ *
+ * @param T
+ * @property flow
+ * @property collector
+ * @constructor
+ *
+ * @param lifecycleOwner
+ */
 @OptIn(InternalCoroutinesApi::class)
 class FlowObserver<T> (
     lifecycleOwner: LifecycleOwner,
