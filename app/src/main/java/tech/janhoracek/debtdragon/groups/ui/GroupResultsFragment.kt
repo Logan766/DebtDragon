@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -85,6 +86,10 @@ class GroupResultsFragment : BaseFragment(), FirebaseResultsAdapter.OnCheckboxCh
             true
         }
 
+        // Set admin options
+        viewModel.isCurrentUserOwner.observe(viewLifecycleOwner, Observer { status->
+            binding.groupResultsToolbar.menu.getItem(0).isVisible = status
+        })
 
     }
 
