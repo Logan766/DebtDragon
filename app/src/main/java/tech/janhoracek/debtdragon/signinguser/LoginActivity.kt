@@ -132,11 +132,12 @@ class LoginActivity : AppCompatActivity() {
                     val account = task.getResult(ApiException::class.java)!!
                     loginViewModel.firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: ApiException) {
+                    hideLoading()
                     Log.w("SignInWithGoogle", "Google sign in failed", e)
                 }
             } else {
+                hideLoading()
                 Log.w("SignInWithGoogle", exception.toString())
-
             }
 
         }
