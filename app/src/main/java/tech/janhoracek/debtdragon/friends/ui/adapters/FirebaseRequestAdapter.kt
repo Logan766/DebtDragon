@@ -59,7 +59,7 @@ class FirebaseRequestAdapter(options: FirestoreRecyclerOptions<RequestModel>): F
          */
         fun bindToSent(name: String, imgUrl: String, id: String){
             userName.text = name
-            messageText.text = "Vaše žádost o přátelství byla odeslána."
+            messageText.text = localized(R.string.your_friend_request_was_sent)
             acceptButton.visibility = View.INVISIBLE
             acceptButton.isEnabled = false
             if (imgUrl == "null") {

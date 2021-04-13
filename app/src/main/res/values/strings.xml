@@ -247,5 +247,8 @@
     <string name="ucrop_rotate">Otočit</string>
     <string name="ucrop_scale">Měřítko</string>
     <string name="ucrop_crop">Oříznout</string>
+    <string name="friend_request_accept">Přijmout</string>
+    <string name="friend_request_decline">Odebrat</string>
+    <string name="your_friend_request_was_sent">Vaše žádost o přátelství byla odeslána.</string>
     <!-- uCrop string resource end -->
 </resources>

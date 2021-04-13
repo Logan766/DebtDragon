@@ -241,4 +241,7 @@
     <string name="ucrop_scale">Scale</string>
     <string name="ucrop_crop">Crop</string>
     <string name="message_gallery_permission_denied">Read External Storage permission is needed to select Image. Please turn on the requested permission from Settings > Permissions</string>
+    <string name="friend_request_accept">Accept</string>
+    <string name="friend_request_decline">Remove</string>
+    <string name="your_friend_request_was_sent">Your friend request was sent</string>
 </resources>
