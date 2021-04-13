@@ -223,4 +223,29 @@
     <string name="generate_qr_saved_qr">QR uloženo</string>
     <string name="group_detail_summary_title">"Celkem utraceno "</string>
     <string name="group_detail_viewmodel_create_bill_payer_cannot_empty">Plátce nemůže být prázdný</string>
+
+    ////Image Picker Strings
+    <string name="title_choose_image_provider">Zvolit</string>
+    <string name="action_cancel">Zrušit</string>
+    <string name="title_gallery">Galerie</string>
+    <string name="title_camera">Kamera</string>
+
+    <string name="message_gallery_permission_denied">K výběru obrázku je potřeba oprávnění k přístupu k externímu úložišti. Zapněte požadované oprávnění v části Nastavení > Oprávnění.</string>
+    <string name="message_camera_permission_denied">K pořízení obrázku je potřeba oprávnění fotoaparátu a externího úložiště. Vypnutí jakéhokoli  z těchto oprávnění znemožní hladký chod aplikace. Zapněte všechna požadovaná oprávnění v části Nastavení > Oprávnění.</string>
+
+    <string name="error_failed_to_create_camera_image_file">Nepodařilo se vytvořit soubor obrazu fotoaparátu</string>
+    <string name="error_failed_pick_gallery_image">Nepodařilo se vybrat obrázek galerie</string>
+    <string name="error_failed_to_crop_image">Oříznutí obrázku se nezdařilo</string>
+    <string name="error_failed_to_compress_image">Obrázek se nepodařilo zkomprimovat</string>
+    <string name="error_task_cancelled">Zrušeno</string>
+    <string name="error_camera_app_not_found">Aplikace fotoaparátu nenalezena</string>
+
+    <!-- uCrop string resource start -->
+    <string name="ucrop_label_original">Původní</string>
+    <string name="ucrop_label_edit_photo">Editovat fotku</string>
+    <string name="ucrop_menu_crop">Oříznout</string>
+    <string name="ucrop_rotate">Otočit</string>
+    <string name="ucrop_scale">Měřítko</string>
+    <string name="ucrop_crop">Oříznout</string>
+    <!-- uCrop string resource end -->
 </resources>
