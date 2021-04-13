@@ -9,8 +9,8 @@
     <string name="LoginSuccessful">Login successful</string>
     <string name="terms_and_conditions">"<u>Privacy policy</u>  "</string>
     <string name="password_not_same">Passwords do not match</string>
-    <string name="passwor_must_have">"Password must have at least"</string>
-    <string name="number_of_characters">"characters"</string>
+    <string name="passwor_must_have">"Password must have at least "</string>
+    <string name="number_of_characters">" characters"</string>
     <string name="mail_is_not_in_form">The e-mail is not in the form name@domain.com</string>
     <string name="type_in_name">Enter a name</string>
     <string name="currency">" ¤"</string>
@@ -62,9 +62,9 @@
     <string name="create_payment_debt_payment">Debt payment</string>
     <string name="payment_error_value_must_be_greater_than_0">Amount must be greater than 0</string>
     <string name="QR_payment_from_user">MSG: Debt payment from user</string>
-    <string name="QR_from_aplication_DD_with_value">"from DebtDragon app with value "</string>
-    <string name="friend_detail_friend_owes_you">"A friend owes you"</string>
-    <string name="friend_detail_you_owe_friend">"You owe a friend"</string>
+    <string name="QR_from_aplication_DD_with_value">" from DebtDragon app with value "</string>
+    <string name="friend_detail_friend_owes_you">"A friend owes you "</string>
+    <string name="friend_detail_you_owe_friend">"You owe a friend "</string>
     <string name="friend_detail_your_debts_are_settled">Your debts are settled</string>
     <string name="add_edit_group_debt_delete_group_debt">Eliminate debt</string>
     <string name="add_edit_group_debt_delete_group_debt_message">Are you sure you want to delete the debt?</string>
@@ -221,5 +221,5 @@
     <string name="group_detail_menu_leave_group">Leave the group</string>
     <string name="group_results_menu_reset_group">Reset group</string>
     <string name="generate_qr_saved_qr">QR saved</string>
-    <string name="group_detail_summary_title">Total spent</string>
+    <string name="group_detail_summary_title">"Total spent "</string>
 </resources>

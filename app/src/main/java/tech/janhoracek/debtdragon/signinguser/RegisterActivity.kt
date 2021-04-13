@@ -50,6 +50,7 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show()
                 val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                 startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show()
             }
