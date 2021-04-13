@@ -222,4 +222,5 @@
     <string name="group_results_menu_reset_group">Resetovat skupinu</string>
     <string name="generate_qr_saved_qr">QR uloženo</string>
     <string name="group_detail_summary_title">"Celkem utraceno "</string>
+    <string name="group_detail_viewmodel_create_bill_payer_cannot_empty">Plátce nemůže být prázdný</string>
 </resources>

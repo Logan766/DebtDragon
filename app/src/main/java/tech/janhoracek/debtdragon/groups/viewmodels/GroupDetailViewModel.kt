@@ -70,6 +70,9 @@ class GroupDetailViewModel : BaseViewModel() {
     private val _billNameError = MutableLiveData<String>("")
     val billNameError: LiveData<String> get() = _billNameError
 
+    private val _billPayerError = MutableLiveData<String>("")
+    val billPayerError: LiveData<String> get() = _billPayerError
+
     private val _billDetailName = MutableLiveData<String>("")
     val billDetailName: LiveData<String> get() = _billDetailName
 
@@ -299,9 +302,7 @@ class GroupDetailViewModel : BaseViewModel() {
      * @param payerName as payer name
      */
     fun createBill(payerName: String) {
-        if (billNameToAdd.value.isNullOrEmpty()) {
-            _billNameError.value = localized(R.string.group_detail_viewmodel_create_bill_name_cannot_empty)
-        } else {
+        if (validateBillToSave(payerName)) {
             GlobalScope.launch(Main) { eventChannel.send(Event.ShowLoading) }
             _billNameError.value = ""
             val payerID = membersAndNames.value!!.find { it.second == payerName }!!.first
@@ -317,6 +318,50 @@ class GroupDetailViewModel : BaseViewModel() {
                 eventChannel.send(Event.BillCreated(billToAdd.id))
                 eventChannel.send(Event.HideLoading)
             }
+        }
+    }
+
+    /**
+     * Validate bill to save
+     *
+     * @param payerName as name of payer
+     * @return true if valid
+     */
+    private fun validateBillToSave(payerName: String): Boolean {
+        val billNameValidation = validateBillName()
+        val payerValidation = validatePayer(payerName)
+
+        return billNameValidation && payerValidation
+    }
+
+    /**
+     * Validate bill name
+     *
+     * @return true if valid
+     */
+    private fun validateBillName(): Boolean {
+        return if (billNameToAdd.value.isNullOrEmpty()) {
+            _billNameError.value = localized(R.string.group_detail_viewmodel_create_bill_name_cannot_empty)
+            false
+        } else {
+            _billNameError.value = ""
+            true
+        }
+    }
+
+    /**
+     * Validate payer
+     *
+     * @param payerName as name of payer
+     * @return true if valid
+     */
+    private fun validatePayer(payerName: String) : Boolean {
+        return if(payerName.isNullOrEmpty()) {
+            _billPayerError.value = localized(R.string.group_detail_viewmodel_create_bill_payer_cannot_empty)
+            false
+        } else {
+            _billPayerError.value = ""
+            true
         }
     }
 

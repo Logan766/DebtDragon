@@ -71,7 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_bill_fragment_payer"
-
+                app:errorEnabled="true"
+                app:errorText="@{viewmodel.billPayerError}"
                 android:layout_marginBottom="65dp"
                 app:layout_constraintBottom_toTopOf="@+id/materialTextView2"
                 app:layout_constraintEnd_toEndOf="parent"

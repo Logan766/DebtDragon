@@ -222,4 +222,5 @@
     <string name="group_results_menu_reset_group">Reset group</string>
     <string name="generate_qr_saved_qr">QR saved</string>
     <string name="group_detail_summary_title">"Total spent "</string>
+    <string name="group_detail_viewmodel_create_bill_payer_cannot_empty">Payer cannot be empty</string>
 </resources>
