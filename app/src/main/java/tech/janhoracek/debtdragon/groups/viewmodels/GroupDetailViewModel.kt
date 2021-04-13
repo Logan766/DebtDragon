@@ -419,11 +419,12 @@ class GroupDetailViewModel : BaseViewModel() {
                     if (snapshot != null) {
                         var billSummary = 0
                         snapshot.forEach { document ->
+                            Log.d("BROUCI", "ted je bill id: " + billID)
                             billSummary += document[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt()
                         }
                         _billSummary.postValue(billSummary.toString())
                     } else {
-                        Log.d("ZIPPO", "Current data null")
+                        Log.d("DATA", "Current data null")
                     }
                 }
         }

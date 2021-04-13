@@ -177,7 +177,7 @@
     <string name="create_payment_fragment_title">Enter or select an amount</string>
     <string name="create_payment_fragment_choode_value">Select an amount</string>
     <string name="create_payment_fragment_btn_create_payment">Make a payment</string>
-    <string name="dahsborad_friends_category_title">Categories of receivables</string>
+    <string name="dahsborad_friends_category_title">Categories of claims</string>
     <string name="dahsborad_friends_category_subtitle">Distribution of receivables in categories</string>
     <string name="dashborad_summary_graph_title">Total debt ratio</string>
     <string name="dashborad_summary_graph_firends_owe_you">Your friends owe you</string>
