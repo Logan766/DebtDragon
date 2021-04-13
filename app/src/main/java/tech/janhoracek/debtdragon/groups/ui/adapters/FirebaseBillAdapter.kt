@@ -130,6 +130,7 @@ class FirebaseBillAdapter(options: FirestoreRecyclerOptions<BillModel>, val mBil
                 .document(billID)
                 .collection(Constants.DATABASE_GROUPDEBT)
                 .addSnapshotListener { groupDetbs, error ->
+                    billSum = 0 /////////////////////////
                     groupDetbs?.forEach { debt ->
                         summary += debt[Constants.DATABASE_GROUPDEBT_VALUE].toString().toInt()
                     }
