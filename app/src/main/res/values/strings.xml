@@ -105,7 +105,7 @@
     <string name="group_debt_view_model_group_debt_value_cant_be_empty">Výše částky nemůže být prázdná</string>
     <string name="group_debt_view_model_group_debt_value_must_be_grater_than_0">Částka musí být větší než 0</string>
     <string name="group_debt_view_model_group_debt_select_debtor">Vyberte dlužníka</string>
-    <string name="group_debt_view_model_create_debt_debt_from_group">\"Dluh ze sk. \"</string>
+    <string name="group_debt_view_model_create_debt_debt_from_group">Dluh ze sk". "</string>
     <string name="group_debt_view_model_group_reseted">Skupina resetována</string>
     <string name="change_account_fragment_delete_account_title">Odstranit účet</string>
     <string name="change_account_fragment_delete_account_message">Váš účet bude odebrán z aplikace a vaši přátelé již nebudou moci generovat QR kódy pro platby. Přejete si pokračovat?</string>

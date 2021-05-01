@@ -69,7 +69,7 @@ class PendingFriendRequestsFragment : BaseFragment() {
 
 
     override fun onDestroy() {
-        requestAdapter!!.stopListening()
+        requestAdapter?.stopListening()
         super.onDestroy()
     }
 
